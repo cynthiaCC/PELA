@@ -1,0 +1,4 @@
+*.project
+.settings/org.eclipse.wst.jsdt.ui.superType.name
+*.container
+.settings/.jsdtscope
