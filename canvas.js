@@ -118,6 +118,52 @@
 	    myState.addShape(new Shape(mouse.x - 10, mouse.y - 10, 20, 20, 'rgba(0,255,0,.6)'));
 	  }, true);
 	  
+	  //Eventlisteners for touches
+	  canvas.addEventListener("touchstart", function (e) {
+          mousePos = getTouchPos(canvas, e);
+          var touch = e.touches[0];
+          var mouseEvent = new MouseEvent("mousedown", {
+             clientX: touch.clientX,
+             clientY: touch.clientY
+          });
+          canvas.dispatchEvent(mouseEvent);
+       }, false);
+       canvas.addEventListener("touchend", function (e) {
+          var mouseEvent = new MouseEvent("mouseup", {});
+          canvas.dispatchEvent(mouseEvent);
+       }, false);
+       canvas.addEventListener("touchmove", function (e) {
+          var touch = e.touches[0];
+          var mouseEvent = new MouseEvent("mousemove", {
+             clientX: touch.clientX,
+             clientY: touch.clientY
+          });
+          canvas.dispatchEvent(mouseEvent);
+       }, false);
+       // Prevent scrolling when touching the canvas
+       document.body.addEventListener("touchstart", function (e) {
+          if (e.target == canvas) {
+             e.preventDefault();
+          }
+       }, false);
+       document.body.addEventListener("touchend", function (e) {
+          if (e.target == canvas) {
+             e.preventDefault();
+          }
+       }, false);
+       document.body.addEventListener("touchmove", function (e) {
+          if (e.target == canvas) {
+             e.preventDefault();
+          }
+       }, false);
+       // Get the position of a touch relative to the canvas
+       function getTouchPos(canvasDom, touchEvent) {
+          var rect = canvasDom.getBoundingClientRect();
+          return {
+             x: touchEvent.touches[0].clientX - rect.left,
+             y: touchEvent.touches[0].clientY - rect.top
+          };
+       }
 	  // **** Options! ****
 	  
 	  this.selectionColor = '#CC0000';
@@ -208,4 +254,29 @@
 	  // Lets make some partially transparent
 	  s.addShape(new Shape(80,150,60,30, 'rgba(127, 255, 212, .5)'));
 	  s.addShape(new Shape(125,80,30,80, 'rgba(245, 222, 179, .7)'));
+	  
+	  //Mobile stuff for the canvas. This includes resizing and orientation
+	  //this doesn't worke properly yet as the orientation of the device changes into landscape
+	  var canvas = document.getElementById('canvas');
+      var canvasWidth;
+      var ctx = canvas.getContext('2d');
+ 
+      function ini() {
+        canvas = document.getElementById('canvas');
+        if (canvas.getContext) {
+          ctx = canvas.getContext("2d");
+ 
+          window.addEventListener('resize', resizeCanvas, false);
+          window.addEventListener('orientationchange', resizeCanvas, false);
+          resizeCanvas();
+        }
+      }
+ 
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+	  
+	  
+	  
 	}

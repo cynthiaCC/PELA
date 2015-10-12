@@ -1,1 +1,16 @@
 @CHARSET "ISO-8859-1";
+
+html, body {
+  width:  100%;
+  height: 100%;
+  margin: 0;
+  border: 0;
+  overflow:hidden;
+}
+/* this is for IOS devices at least. This allows the user to "pinch" 
+ even with the scale set to 1*/
+html {-webkit-text-size-adjust: none;}
+
+h1{
+	text-align: center;
+}

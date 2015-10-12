@@ -1,43 +1,23 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="ISO-8859-1">
-<title>PELABlocks</title>
-
-<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.1.min.js"/></script>
-
-<script type="text/javascript" src=canvas.js></script>
-
-</head>
+   <head>
+      <meta charset="ISO-8859-1">
+      <title>PELABlocks</title>
+      <!-- viewport for mobile devices -->
+	  <meta name="viewport" content="width=device-width, initial-scale=1">
+      <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.1.min.js"/></script>
+      <script type="text/javascript" src=canvas.js></script>
+	  <link rel="stylesheet" type"text/css" href="styles.css">
+   </head>
 <body onLoad="init()">
-  <h1> This is an interaction prototype!</h1>
-  <button onClick="showText()">Press Here!</button>
-  
-  <p id="demo" ></p>
-  
-  <script>
-  //script for the basic hello world button
-  	var isClicked = false;
-	function showText() {
-		if(!isClicked){
-		    document.getElementById("demo").innerHTML = "Hello World";
-
-		}
-		else{
-			document.getElementById("demo").innerHTML = "";
-		}
-		isClicked = !isClicked;
-	}
-	</script>
-
+  <h1> PELABlocks title</h1>
 	
-	
-	  <div style="top: 50px; text-align:center">
-	<h4>Dragging Objects</h4>
-	<canvas id="canvas" width="500" height="300" style="border: 1px solid black;">
-	  This text is displayed if your browser does not support HTML5 Canvas.
-	</canvas>
+  <div style="top: 50px; text-align:center">
+	 <h4>Dragging Objects</h4>
+	 <canvas id="canvas" width="500" height="300" style="border: 1px solid black;">
+	    This text is displayed if your browser does not support HTML5 Canvas.
+	 </canvas>
 		<p>Drag the objects.</p>
-	</div>
+   </div>
 </body>
 </html>
