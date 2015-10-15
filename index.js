@@ -7,7 +7,7 @@ var path = require('path');
 // Create a new instance of Express
 var app = express();
 
-//TODO: OpenTok implementation
+//TODO: Communication implementation
 
 //Import the PELABlocks server side file
 var blocks = require('./blocks');
@@ -32,5 +32,5 @@ io.set('log level',1);
 
 // Listen for Socket.IO Connections. Once connected, start the game logic.
 io.sockets.on('connection', function (socket) {    
-    //TODO: Starting the game logic
+    blocks.initGame(io, socket);
 });
