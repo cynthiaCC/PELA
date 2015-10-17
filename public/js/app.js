@@ -59,7 +59,7 @@
 
    /**
     * Show the initial PELABlocks Title Screen
-    * (with Start and Join buttons)
+    * (with Host and Join buttons)
     */
    showInitScreen: function() {
       //TODO: Implement after UI
@@ -115,12 +115,13 @@
        */
       displayNewGameScreen : function() {
          // Fill the game screen with the appropriate HTML
-         //TODO: Implement after the UI
+         //TODO: Implement after the UI id
          // Display the URL on screen
          //$('#gameURL').text(window.location.href);
 
          // Show the gameId / room id on screen
-         $('#spanNewGameCode').text(App.gameId);
+         //TODO: Implement after the UI id
+         //$('#spanNewGameCode').text(App.gameId);
       },
 
       /**
@@ -129,7 +130,8 @@
        */
       updateWaitingScreen: function(data) {
          // Update host screen
-         $('#playersWaiting').text('Builder has joined the game.');
+         //TODO: Enable after UI id
+         //$('#playersWaiting').text('Builder has joined the game.');
 
       },
 
