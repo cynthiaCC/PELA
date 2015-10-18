@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="ISO-8859-1">
+   <title>PELABlocks</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <!--  <link rel = "stylesheet" type = "text/css" href="css/styles.css"> -->
+   
+   <!-- Load JQuery -->
+   <script src="/libs/jquery-2.0.2.min.js"></script>
+</head>
+<body>
+   <div id="gameArea">
+      <!-- This is where the templates defined below will be used -->
+      
+      <!-- Main Title Screen that appears when the page loads for the first time -->
+      <div id="pb-intro-screen-template" type="text/template">
+         <div class="titleWrapper">
+
+            <div class="title">
+               PELABlocks title!
+            </div>
+            <p id="role">Choose your role from below</p>
+            
+            <div class="buttons">
+
+               <button id="btnCreateGame" class="btn left">Instructor</button>
+               <button id="btnJoinGame" class="btn right">Builder</button>
+               <div style="clear:both"></div>
+            </div>
+
+         </div>
+      </div>
+      <!-- This screen appears when a user clicks "Guide" on the Title Screen -->
+      <div id="pb-create-game-template" type="text/template">
+         <div class="titleWrapper">
+
+            <p id="waiting">Game created!</p>
+
+
+            <p id="game_id">Game ID:</p>
+            <div id="spanNewGameCode" class="gameId">Error! Something went terribly wrong.</div>
+            
+            <p id="playersWaiting">Waiting for tourist...</p>
+            
+            <button id="backToMainMenu" class="btn">Back</button>
+            <button id="startGame" class="btn">Start</button>
+         </div>
+      </div>
+   
+      <!-- This screen appears when a player clicks "Tourist" on the Title Screen -->
+      <div id="pb-join-game-template" type="text/template">
+         <div class="titleWrapper">
+            <div class="info">
+               <p id="enter_id">Enter Game ID:</p>
+               <input id="inputGameId" type="text"/>
+            </div>
+            
+            <p id="waitingForGuide"></p>
+
+            <div class="info buttons">
+               <button id="backToMainMenu" class="btn">Back</button>
+               <button id="btnStart" class="btn">Join</button>
+            </div>
+         </div>
+      </div>
+      
+      <!-- This is the 'Tourist' screen. -->
+      <div id="pb-host-game-template" type="text/template">
+      
+      </div>
+   </div>
+   <!-- Audio files are loaded dynamically to this element -->
+   <div id="audio-files">     
+   </div>
+   
+    <!-- JavaScript Libraries -->
+    
+    <!-- If Socket.IO is used with Express, then the /socket.io/ path will
+        serve the proper Socket.IO javascript files used by the browser -->
+    <script src="/socket.io/socket.io.js"></script>
+    
+    <!-- Load game related Javascript -->
+    <script src = "js/IO.js"></script>
+    <script src = "js/app.js"></script>
+</body>
+</html>

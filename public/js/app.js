@@ -62,7 +62,9 @@
     * (with Host and Join buttons)
     */
    showInitScreen: function() {
-      //TODO: Implement after UI
+      $('#pb-create-game-template').hide();
+      $('#pb-join-game-template').hide();   
+      $('#pb-intro-screen-template').show();
    },
 
 
@@ -115,13 +117,14 @@
        */
       displayNewGameScreen : function() {
          // Fill the game screen with the appropriate HTML
-         //TODO: Implement after the UI id
+         $('#pb-intro-screen-template').hide();
+         $('#pb-create-game-template').show();
+         
          // Display the URL on screen
          //$('#gameURL').text(window.location.href);
 
          // Show the gameId / room id on screen
-         //TODO: Implement after the UI id
-         //$('#spanNewGameCode').text(App.gameId);
+         $('#spanNewGameCode').text(App.gameId);
       },
 
       /**
@@ -131,7 +134,7 @@
       updateWaitingScreen: function(data) {
          // Update host screen
          //TODO: Enable after UI id
-         //$('#playersWaiting').text('Builder has joined the game.');
+         $('#playersWaiting').text('Builder has joined the game.');
 
       },
 
@@ -157,7 +160,8 @@
        * Click handler for the 'JOIN' button
        */
       onJoinClick: function () {
-         //TODO: Implement after UI
+         $('#pb-intro-screen-template').hide();
+         $('#pb-join-game-template').show();
       },
 
       /**
@@ -186,7 +190,7 @@
        * @param data
        */
       updateWaitingScreen : function(data) {
-        if(IO.socket.socket.sessionid === data.mySocketId){
+        if(IO.socket.sessionid === data.mySocketId){
            App.myRole = 'Player';
            App.gameId = data.gameId;
 

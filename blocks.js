@@ -19,6 +19,10 @@ exports.initGame = function(sio, socket){
     // Player Events
     gameSocket.on('playerJoinGame', playerJoinGame);
     gameSocket.on('playerRestart', playerRestart);
+    
+    gameSocket.on('error', function(error) {
+       console.log(error);
+    });
 }
 
 /* ********************************************
@@ -68,13 +72,12 @@ function hostPrepareGame(gameId) {
  * @param data Contains data entered via player's input - playerName and gameId.
  */
 function playerJoinGame(data) {
-    //console.log('Player ' + data.playerName + 'attempting to join game: ' + data.gameId );
-
+    //console.log('Player ' + data.playerName + ' attempting to join game: ' + data.gameId );
     // A reference to the player's Socket.IO socket object
     var sock = this;
 
     // Look up the room ID in the Socket.IO manager object.
-    var room = gameSocket.manager.rooms["/" + data.gameId];
+    var room = gameSocket.adapter.rooms[data.gameId];
 
     // If the room exists...
     if( room != undefined ){

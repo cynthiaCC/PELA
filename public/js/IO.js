@@ -31,7 +31,7 @@ var IO = {
     */
    onConnected : function() {
        // Cache a copy of the client's socket.IO session ID on the App
-       App.mySocketId = IO.socket.socket.sessionid;
+       App.mySocketId = IO.socket.sessionid;
        // console.log(data.message);
    },
 
