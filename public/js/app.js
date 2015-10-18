@@ -133,7 +133,6 @@
        */
       updateWaitingScreen: function(data) {
          // Update host screen
-         //TODO: Enable after UI id
          $('#playersWaiting').text('Builder has joined the game.');
 
       },
@@ -190,12 +189,12 @@
        * @param data
        */
       updateWaitingScreen : function(data) {
-        if(IO.socket.sessionid === data.mySocketId){
-           App.myRole = 'Player';
-           App.gameId = data.gameId;
+         if(IO.socket.io.engine.id === data.mySocketId){
+            App.myRole = 'Player';
+            App.gameId = data.gameId;
 
-           //TODO: Localization
-           $('#playerWaitingMessage').html('Please wait for instructor to start the game.');
+            //TODO: Localization
+            $('#waitingForInstructor').html('Please wait for instructor to start the game.');
         }
       },
 
