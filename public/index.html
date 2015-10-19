@@ -4,7 +4,7 @@
    <meta charset="ISO-8859-1">
    <title>PELABlocks</title>
    <meta name="viewport" content="width=device-width, initial-scale=1">
-   <!--  <link rel = "stylesheet" type = "text/css" href="css/styles.css"> -->
+    <link rel = "stylesheet" type = "text/css" href="css/styles.css">
    
    <!-- Load JQuery -->
    <script src="/libs/jquery-2.0.2.min.js"></script>
@@ -18,49 +18,72 @@
          <div class="titleWrapper">
 
             <div class="title">
-               PELABlocks title!
+               <h1>PELABlocks!</h1>
             </div>
-            <p id="role">Choose your role from below</p>
+            <h2 id="role" class="infotext">Choose your role from below:</h2>
             
             <div class="buttons">
 
-               <button id="btnCreateGame" class="btn left">Instructor</button>
-               <button id="btnJoinGame" class="btn right">Builder</button>
+               <button id="btnCreateGame" class="bigbutton">Host a Game (Instructor)</button>
+               <br>
+               <br>
+               <button id="btnJoinGame" class="bigbutton">Join a Game (Builder)</button>
                <div style="clear:both"></div>
             </div>
-
+            <br>
+            <br>
+            <!-- Button link to the prototype canvas -->
+            <form action="Prototype.html">
+    			<input type="submit" class="bigbutton" value="Prototype">
+			</form>
+			
          </div>
       </div>
       <!-- This screen appears when a user clicks "Instructor" on the Title Screen -->
       <div id="pb-create-game-template" type="text/template">
          <div class="titleWrapper">
+         	
+         	<div class="title">
+               <h1>PELABlocks!</h1>
+            </div>
 
-            <p id="waiting">Game created!</p>
+            <h2 id="waiting" class="infotext">Game created!</h2>
 
 
-            <p id="game_id">Game ID:</p>
-            <div id="spanNewGameCode" class="gameId">Error! Something went terribly wrong.</div>
+            <h2 id="game_id" class="infotext">Game ID:</h2>
+            <div id="spanNewGameCode" class="gameId" class="infotext">Error! Something went terribly wrong.</div>
             
-            <p id="playersWaiting">Waiting for builder...</p>
+            <h2 id="playersWaiting" class="infotext">Waiting for builder...</h2>
             
-            <button id="backToMainMenu" class="btn">Back</button>
-            <button id="startGame" class="btn">Start</button>
+			<button id="startGame" class="bigbutton">Start</button>           
+		    <br>
+            <br>
+            <button id="backToMainMenu" class="bigbutton">Back</button>
+            
          </div>
       </div>
    
       <!-- This screen appears when a player clicks "Builder" on the Title Screen -->
       <div id="pb-join-game-template" type="text/template">
          <div class="titleWrapper">
+         	
+         	<div class="title">
+               <h1>PELABlocks!</h1>
+            </div>
+         
             <div class="info">
-               <p id="enter_id">Enter Game ID:</p>
-               <input id="inputGameId" type="text"/>
+               <h2 id="enter_id" class="infotext">Enter Game ID:</h2>
+               <input id="inputGameId" type="text" class="insert"/>
             </div>
             
             <p id="waitingForInstructor"></p>
 
             <div class="info buttons">
-               <button id="backToMainMenu" class="btn">Back</button>
-               <button id="btnStart" class="btn">Join</button>
+               
+               <button id="btnStart" class="bigbutton">Join</button>
+               <br>
+               <br>
+               <button id="backToMainMenu" class="bigbutton">Back</button>
             </div>
          </div>
       </div>
