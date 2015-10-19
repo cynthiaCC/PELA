@@ -23,6 +23,8 @@ var IO = {
        IO.socket.on('newGameCreated', IO.onNewGameCreated );
        IO.socket.on('playerJoinedRoom', IO.playerJoinedRoom );
        IO.socket.on('beginNewGame', IO.beginNewGame );
+       IO.socket.on('errorJoining', IO.errorJoining );
+       
        IO.socket.on('error', IO.error );
    },
 
@@ -64,13 +66,22 @@ var IO = {
    beginNewGame : function(data) {
 	   //TODO: Implement beginning of the game
    },
+   
+   /**
+    * An error occured while trying to join a room
+    * @param data
+    */
+   errorJoining : function(data) {
+      $('#waitingForInstructor').html(data.message);
+   },
+
 
    /**
     * An error has occurred.
     * @param data
     */
    error : function(data) {
-	   alert(data.message);
+      console.log(data.message);
    }
-
+   
 };

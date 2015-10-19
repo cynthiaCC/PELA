@@ -94,7 +94,7 @@ function playerJoinGame(data) {
 
     } else {
         // Otherwise, send an error message back to the player.
-        this.emit('error',{message: "This room does not exist."} );
+        sock.emit('errorJoining',{message: "This room does not exist."} );
     }
 }
 
