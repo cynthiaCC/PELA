@@ -20,6 +20,12 @@ h1{
 	text-align: center;
 	
 }
+
+/*input field scalability to mobile*/
+input, textarea{
+	max-width:100%;	
+}
+
 .insert{
 	width:100px;
 	margin:0 auto;
@@ -33,6 +39,7 @@ h1{
 }
 .bigbutton {
 	width:500px;
+	max-width:100%;
 	background: #3e9cbf; /*the colour of the button*/
 	padding: 8px 14px 10px; /*apply some padding inside the button*/
 	border:1px solid #3e9cbf; /*required or the default border for the browser will appear*/
