@@ -20,6 +20,9 @@ exports.initGame = function(sio, socket){
     gameSocket.on('playerJoinGame', playerJoinGame);
     gameSocket.on('playerRestart', playerRestart);
     
+    //General Events
+    gameSocket.on('gameStarted', startGame);
+    
     gameSocket.on('error', function(error) {
        console.log(error);
     });
@@ -109,6 +112,21 @@ function playerRestart(data) {
     // Emit the player's data back to the clients in the game room.
     data.playerId = this.id;
     io.sockets.in(data.gameId).emit('playerJoinedRoom',data);
+}
+
+/* *************************
+   *                       *
+   *      General          *
+   *                       *
+   ************************* */
+
+function startGame(gameId) {
+   var sock = this;
+   var data = {
+         mySocketId : sock.id,
+         gameId : gameId
+   };
+   io.sockets.in(data.gameId).emit('beginNewGame', data);
 }
 
 /* *************************

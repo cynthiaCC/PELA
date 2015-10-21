@@ -45,10 +45,11 @@
     * Create some click handlers for the various buttons that appear on-screen.
     */
    bindEvents: function () {
-      // Builder (Host)
+      // Instructor (Host)
       App.$doc.on('click', '#btnCreateGame', App.Host.onCreateClick);
+      App.$doc.on('click', '#startGame', App.Host.onStartClick);
 
-      // Player
+      // Builder
       App.$doc.on('click', '#btnJoinGame', App.Player.onJoinClick);
       App.$doc.on('click', '#btnStart',App.Player.onPlayerStartClick);
    },
@@ -63,8 +64,18 @@
     */
    showInitScreen: function() {
       $('#pb-create-game-template').hide();
-      $('#pb-join-game-template').hide();   
+      $('#pb-join-game-template').hide();
+      $('#pb-game-template').hide();
       $('#pb-intro-screen-template').show();
+   },
+   
+   //Start the game
+   beginNewGame : function() {
+      $('#pb-create-game-template').hide();
+      $('#pb-join-game-template').hide();
+      $('#pb-game-template').show();
+      $('#pb-intro-screen-template').hide();
+      App[App.myRole].createGameScreen();
    },
 
 
@@ -107,7 +118,6 @@
          App.mySocketId = data.mySocketId;
          App.myRole = 'Host';
          App.Host.numPlayersInRoom = 0;
-
          App.Host.displayNewGameScreen();
          // console.log("Game started with ID: " + App.gameId + ' by host: ' + App.mySocketId);
       },
@@ -136,8 +146,17 @@
          $('#playersWaiting').text('Builder has joined the game.');
 
       },
+      
+      onStartClick : function() {
+         IO.socket.emit('gameStarted', App.gameId);
+      },
 
-      //TODO: Implementing gamelogic ralated host code
+    //TODO: Implementing gamelogic ralated host code
+      //Create game screen for host with pixi.js
+      createGameScreen : function() {
+         //TODO: Create the pixi.js canvas and the first object to create, maybe different file for pixi.js logic
+      }
+      
    },
    /* *****************************
     *        PLAYER CODE        *
@@ -199,6 +218,10 @@
       },
 
       //TODO: Implement gamelogic related builder code
+    //Create game screen for player with pixi.js
+      createGameScreen : function() {
+         //TODO: Create the pixi.js canvas and the first building blocks to create, maybe different file for pixi.js logic
+      }
 
    },
 

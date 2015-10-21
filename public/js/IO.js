@@ -64,7 +64,7 @@ var IO = {
     * @param data
     */
    beginNewGame : function(data) {
-	   //TODO: Implement beginning of the game
+	   App.beginNewGame();
    },
    
    /**
