@@ -144,6 +144,9 @@
       updateWaitingScreen: function(data) {
          // Update host screen
          $('#playersWaiting').text('Builder has joined the game.');
+         
+         //Show the start game button
+         $('#startGame').fadeIn();
 
       },
       

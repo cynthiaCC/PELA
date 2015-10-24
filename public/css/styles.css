@@ -70,3 +70,12 @@ input, textarea{
 	-moz-box-shadow: inset 0px 1px 0px #3e9cbf, 0px 2px 0px 0px #205c73, 0px 2px 5px #999;
 	box-shadow: inset 0px 1px 0px #3e9cbf, 0px 2px 0px 0px #205c73, 0px 2px 5px #999;
 }
+
+.titleWrapper {
+	text-align: center;
+}
+
+/* Hide game starting button from host before player joins */
+#startGame {
+	display: none;
+}
