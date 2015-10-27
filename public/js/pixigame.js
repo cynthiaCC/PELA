@@ -44,7 +44,7 @@ function createBunny(x, y)
    bunny.position.y = y;
 
    // add it to the stage
-   pixijs.stage.addChild(bunny);
+   pixijs.objects.addChild(bunny);
 
 
 }

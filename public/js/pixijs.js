@@ -8,6 +8,11 @@ var pixijs = {
    renderer : null,
    stage : null,
    
+   //All the draggable objects are stored here
+   objects : null,
+   
+   //Probably going to need another one for UI stuff and for the menu that adds the pieces into the game area
+   
    init : function() {
       //Initiate the renderer
       pixijs.renderer = PIXI.autoDetectRenderer(pixijs.canvasW, pixijs.canvasH);
@@ -22,6 +27,10 @@ var pixijs = {
       bg.width = pixijs.canvasW;
       pixijs.stage.addChild(bg);
       pixijs.renderer.view.style.border = "3px dashed black";
+      
+      //Create a container for all the objects and add it to stage
+      pixijs.objects = new PIXI.Container();
+      pixijs.stage.addChild(pixijs.objects);
       
       //start the animation
       requestAnimationFrame( pixijs.animate );
