@@ -1,4 +1,4 @@
- var App = {
+var App = {
 
    /**
     * Keep track of the gameId, which is identical to the ID
@@ -158,6 +158,10 @@
       //Create game screen for host with pixi.js
       createGameScreen : function() {
          //TODO: Create the pixi.js canvas and the first object to create, maybe different file for pixi.js logic
+         pixijs.init();
+         $('#pixi-canvas').append(pixijs.renderer.view);
+         //TODO: replace this
+         bunnies();
       }
       
    },
@@ -224,6 +228,10 @@
     //Create game screen for player with pixi.js
       createGameScreen : function() {
          //TODO: Create the pixi.js canvas and the first building blocks to create, maybe different file for pixi.js logic
+         pixijs.init();
+         $('#pixi-canvas').append(pixijs.renderer.view);
+         //TODO: replace this
+         bunnies();
       }
 
    },
