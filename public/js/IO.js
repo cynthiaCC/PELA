@@ -19,7 +19,7 @@ var IO = {
     * by the Socket.IO server, then run the appropriate function.
     */
    bindEvents : function() {
-	   IO.socket.on('connected', IO.onConnected );
+      IO.socket.on('connected', IO.onConnected );
        IO.socket.on('newGameCreated', IO.onNewGameCreated );
        IO.socket.on('playerJoinedRoom', IO.playerJoinedRoom );
        IO.socket.on('beginNewGame', IO.beginNewGame );
@@ -64,7 +64,7 @@ var IO = {
     * @param data
     */
    beginNewGame : function(data) {
-	   App.beginNewGame();
+      App.beginNewGame();
    },
    
    /**
