@@ -22,6 +22,7 @@ h1{
 	
 }
 
+
 /*input field scalability to mobile*/
 input, textarea{
 	max-width:100%;	
@@ -79,4 +80,12 @@ input, textarea{
 /* Hide game starting button from host before player joins */
 #startGame {
 	display: none;
+}
+
+.game{
+	
+	margin:0 auto;
+	text-align:center;
+	display: table;
+	
 }

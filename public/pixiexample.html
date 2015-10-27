@@ -22,7 +22,7 @@
  
 	var renderer = PIXI.autoDetectRenderer(600, 490);
 	document.body.appendChild(renderer.view);
-
+	renderer.view.style.border = "3px dashed black";
 	// create the root of the scene graph
 	var stage = new PIXI.Container();
 
@@ -39,7 +39,7 @@
 	
 	for (var i = 0; i < 10; i++)
 	{
-	    createBunny(Math.floor(Math.random() * 800) , Math.floor(Math.random() * 600));
+	    createBunny(Math.floor(Math.random() * 600) , Math.floor(Math.random() * 490));
 	}
 
 	function createBunny(x, y)
@@ -118,10 +118,43 @@
 	        var newPosition = this.data.getLocalPosition(this.parent);
 	        this.position.x = newPosition.x;
 	        this.position.y = newPosition.y;
+	        
+	        var hitBorder = contain(bunny, {x: this.position.x, y: this.position.y, width: 600, height: 490});
+	        
+	        if(hitBorder === "left" || hitBorder === "right" || hitBorder === "down" || hitBorder === "up"){
+	        	
+	        	bunny.onDragEnd();
+	        }
 	    }
 	}
 
- 
+	
+	//contain-fucntion that tries to check if the object is out of bounds
+	function contain(sprite, container) {
+		  var collision = undefined;
+		  //Left
+		  if (sprite.x < container.x) {
+		    sprite.x = container.x;
+		    collision = "left";
+		  }
+		  //Top
+		  if (sprite.y < container.y) {
+		    sprite.y = container.y;
+		    collision = "top";
+		  }
+		  //Right
+		  if (sprite.x + sprite.width > container.width) {
+		    sprite.x = container.width - sprite.width;
+		    collision = "right";
+		  }
+		  //Bottom
+		  if (sprite.y + sprite.height > container.height) {
+		    sprite.y = container.height - sprite.height;
+		    collision = "bottom";
+		  }
+		  //Return the `collision` value
+		  return collision;
+		}
 	</script>
  
 	</body>
