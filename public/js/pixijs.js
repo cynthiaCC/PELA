@@ -11,6 +11,9 @@ var pixijs = {
    //All the draggable objects are stored here
    objects : null,
    
+   //Store all the rotators in this, this makes them easier to remove when finished with building.
+   rotators : [],
+   
    //Probably going to need another one for UI stuff and for the menu that adds the pieces into the game area
    
    init : function() {
@@ -73,4 +76,14 @@ var pixijs = {
          this.position.y = Math.max(0, Math.min(newPosition.y, pixijs.canvasH));
       }
    },
+   
+   //Function to rotate an object with a rotator child object
+   //Note, DO NOT APPLY THIS EVEN TO AN OBJECT WITHOUT PARENT OBJECT. 
+   //Only apply to rotators. Place the rotator above the sprite when rotation is set to 0
+   onDragRotate : function() {
+      if (this.dragging) {
+         var pointerPosition = this.data.global;
+         this.parent.rotation = Math.atan2(pointerPosition.y - this.parent.position.y, pointerPosition.x - this.parent.position.x) + (PIXI.DEG_TO_RAD * 90);
+      }
+   }
 };

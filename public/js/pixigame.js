@@ -42,6 +42,27 @@ function createBunny(x, y)
    // move the sprite to its designated position
    bunny.position.x = x;
    bunny.position.y = y;
+   
+   //make a rotator for the bunny
+   var circle = new PIXI.Graphics();
+   circle.lineStyle(2, 0x0000FF, 1);
+   circle.beginFill(0xFF700B, 1);
+   circle.drawCircle(0, -20, 2);
+   circle.interactive = true;
+   circle
+   // events for drag start
+   .on('mousedown', pixijs.onDragStart)
+   .on('touchstart', pixijs.onDragStart)
+   // events for drag end
+   .on('mouseup', pixijs.onDragEnd)
+   .on('mouseupoutside', pixijs.onDragEnd)
+   .on('touchend', pixijs.onDragEnd)
+   .on('touchendoutside', pixijs.onDragEnd)
+   // events for drag rotate
+   .on('mousemove', pixijs.onDragRotate)
+   .on('touchmove', pixijs.onDragRotate);
+   
+   bunny.addChild(circle);
 
    // add it to the stage
    pixijs.objects.addChild(bunny);
