@@ -38,17 +38,18 @@ exports.initGame = function(sio, socket){
  * The 'START' button was clicked and 'hostCreateNewGame' event occurred.
  */
 function hostCreateNewGame() {
-    // Create a unique Socket.IO Room
-    var thisGameId = ( Math.random() * 100000 ) | 0;
+   // Create a unique Socket.IO Room
+   var thisGameId = ( Math.random() * 100000 ) | 0;
+   //TODO: Add OpenTok related stuff
+   var instance = this;
+   // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
+   instance.emit('newGameCreated', {gameId: thisGameId, mySocketId: this.id});
 
-    // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
-    this.emit('newGameCreated', {gameId: thisGameId, mySocketId: this.id});
-
-    // Join the Room and wait for the players
-    this.join(thisGameId.toString());
+   // Join the Room and wait for the players
+   instance.join(thisGameId.toString());
 };
 
-/*
+/**
  * Player has joined. Alert the host!
  * @param gameId The game ID / room ID
  */

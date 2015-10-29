@@ -114,6 +114,7 @@ var App = {
        * @param data{{ gameId: int, mySocketId: * }}
        */
       gameInit: function (data) {
+         //TODO: Add OpenTok related stuff
          App.gameId = data.gameId;
          App.mySocketId = data.mySocketId;
          App.myRole = 'Host';
@@ -150,6 +151,7 @@ var App = {
 
       },
       
+      //TODO: add OpenTok stuff
       onStartClick : function() {
          IO.socket.emit('gameStarted', App.gameId);
       },
