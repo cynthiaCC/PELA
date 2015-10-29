@@ -10,7 +10,8 @@ var app = express();
 //TODO: Communication implementation
 var OpenTok = require('opentok');
 //Include the credentials stored in a seperate file
-var credentials = require('./creditentials');
+var credentials = require('./credentials');
+console.log(credentials.apiKey);
 var apiKey = credentials.apiKey;
 var apiSecret = credentials.apiSecret;
 var opentok = new OpenTok(apiKey, apiSecret);
@@ -37,5 +38,5 @@ var io = require('socket.io').listen(server);
 
 // Listen for Socket.IO Connections. Once connected, start the game logic.
 io.sockets.on('connection', function (socket) {    
-    blocks.initGame(io, socket, opentok);
+    blocks.initGame(io, socket, opentok, credentials);
 });

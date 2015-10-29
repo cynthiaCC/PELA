@@ -104,7 +104,8 @@
          <!-- This is where the pixi.js canvas will be created for the game as well as any other in game elements -->
          <div id = "pixi-canvas" class="game">
          <!-- audio elements -->
-         <!-- TODO: Add the audio button with id "audio-button" here it will -->
+         <!-- TODO: Add a proper button for enabling sound here -->
+         <img src="img/mute_mike.png" id="audio-button" />
          <div id="publisherContainer"></div>
          <br>
          <br>
@@ -119,6 +120,9 @@
    </div>
    
     <!-- JavaScript Libraries -->
+    
+    <!-- OpenTok audio transmission -->
+   <script src='//static.opentok.com/webrtc/v2.2/js/opentok.min.js'></script> 
     
     <!-- If Socket.IO is used with Express, then the /socket.io/ path will
         serve the proper Socket.IO javascript files used by the browser -->

@@ -10,7 +10,6 @@ $(document).ready(function() {
          console.log(App.audioSettings);
          if(App.audioSettings !== 'mute-audio-video') {
             console.log('Launched, audio settings: ' + App.audioSettings);
-            App.initAudio(App.audioSettings);
             if (App.sessionID !== 'undefined') {
                IO.socket.emit('audioStarted', App.gameId);
             } else {
@@ -23,7 +22,7 @@ $(document).ready(function() {
          }
       } else {
          console.log('Launched, audio settings: ' + App.audioSettings);
-         App.initAudio(App.audioSettings);
+         IO.socket.emit('requestApiKey', App.gameId);
          $('#audio-button').hide();
       }
    });

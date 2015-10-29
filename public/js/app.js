@@ -245,7 +245,7 @@ var App = {
 
    },
    
-   initAudio: function (settings) {
+   initAudio: function (settings, apiKey) {
       // init session and publisher
       var pubSettings = '';
       
@@ -255,8 +255,7 @@ var App = {
       } else {
          pubSettings = {publishAudio:true, publishVideo:true};
       }
-      
-      var session = OT.initSession('44968542', App.audioSessionID),
+      var session = OT.initSession(apiKey, App.audioSessionId),
          publisher = OT.initPublisher('publisherContainer', pubSettings);
       
       // assign token for instructor and builder

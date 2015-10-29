@@ -25,7 +25,8 @@ var IO = {
        IO.socket.on('beginNewGame', IO.beginNewGame );
        IO.socket.on('errorJoining', IO.errorJoining );
        
-       IO.socket.on('audioStarted', IO.enableBuilderAudio );
+       IO.socket.on('audioStarted', IO.enableInstructorAudio );
+       IO.socket.on('sentApiKey', IO.enableBuilderAudio);
        
        IO.socket.on('error', IO.error );
    },
@@ -84,14 +85,23 @@ var IO = {
    },
    
    /**
-    * Enable audio button for builder
+    * Enable audio BUTTON for builder and audio for instructor
     * @param data
     */
-   enableTouristAudio : function(data) {
-       if(App.myRole === 'Player') {          
+   enableInstructorAudio : function(apiKey) {
+       if(App.myRole === 'Player') {
            $('#audio-button').show();
        }
+       else {
+          App.initAudio(App.audioSettings, apiKey);
+       }
    },
+   
+   enableBuilderAudio : function(apiKey) {
+      if(App.myRole === 'Player') {
+         App.initAudio(App.audioSettings, apiKey);
+      }
+  },
 
 
    /**

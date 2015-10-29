@@ -1,6 +1,7 @@
 var io;
 var gameSocket;
 var opentok;
+var credentials
 
 var gameID = '';
 var audioSessionId = '';
@@ -13,10 +14,11 @@ var builderToken = '';
  * @param sio The Socket.IO library
  * @param socket The socket object for the connected client.
  */
-exports.initGame = function(sio, socket, ot){
+exports.initGame = function(sio, socket, ot, cred){
     io = sio;
     gameSocket = socket;
     opentok = ot;
+    credentials = cred;
     gameSocket.emit('connected', { message: "You are connected!" });
 
     // Host Events
@@ -30,6 +32,8 @@ exports.initGame = function(sio, socket, ot){
     //General Events
     gameSocket.on('gameStarted', startGame);
     gameSocket.on('audioStarted', audioStarted);
+    
+    gameSocket.on('requestApiKey', requestApiKey);
     
     gameSocket.on('error', function(error) {
        console.log(error);
@@ -142,7 +146,7 @@ function startGame(gameId, audioSettings) {
    var sock = this;
    var data = {
          mySocketId : sock.id,
-         gameId : gameId
+         gameId : gameId,
          audioSettings : audioSettings,
          audioSessionId : audioSessionId,
          builderToken : builderToken
@@ -151,8 +155,11 @@ function startGame(gameId, audioSettings) {
 }
 
 function audioStarted(gameId) {
-   console.log(gameId);
-   io.sockets.in(gameId).emit('audioStarted');
+   io.sockets.in(gameId).emit('audioStarted', credentials.apiKey);
+}
+
+function requestApiKey(gameId) {
+   io.sockets.in(gameId).emit('sentApiKey', credentials.apiKey);
 }
 
 /* *************************
