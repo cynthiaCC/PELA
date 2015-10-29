@@ -1,5 +1,11 @@
 var io;
 var gameSocket;
+var opentok;
+
+var gameID = '';
+var audioSessionId = '';
+var instructorToken = '';
+var builderToken = '';
 
 /**
  * This function is called by index.js to initialize a new game instance.
@@ -7,9 +13,10 @@ var gameSocket;
  * @param sio The Socket.IO library
  * @param socket The socket object for the connected client.
  */
-exports.initGame = function(sio, socket){
+exports.initGame = function(sio, socket, ot){
     io = sio;
     gameSocket = socket;
+    opentok = ot;
     gameSocket.emit('connected', { message: "You are connected!" });
 
     // Host Events
@@ -22,6 +29,7 @@ exports.initGame = function(sio, socket){
     
     //General Events
     gameSocket.on('gameStarted', startGame);
+    gameSocket.on('audioStarted', audioStarted);
     
     gameSocket.on('error', function(error) {
        console.log(error);
@@ -40,13 +48,22 @@ exports.initGame = function(sio, socket){
 function hostCreateNewGame() {
    // Create a unique Socket.IO Room
    var thisGameId = ( Math.random() * 100000 ) | 0;
-   //TODO: Add OpenTok related stuff
    var instance = this;
-   // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
-   instance.emit('newGameCreated', {gameId: thisGameId, mySocketId: this.id});
-
-   // Join the Room and wait for the players
-   instance.join(thisGameId.toString());
+   gameId = thisGameId;
+   
+   //Start opentok session
+   opentok.createSession({mediaMode:"routed"}, function(err,session){
+      //Generate tokens
+      instructorToken = opentok.generateToken(session.sessionId);
+      builderToken = opentok.generateToken(session.sessionId);
+      //assign session id
+      audioSessionId = session.sessionId;
+      // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
+      instance.emit('newGameCreated', {gameId: thisGameId, mySocketId: instance.id, audioSessionId : audioSessionId, instructorToken : instructorToken});
+   
+      // Join the Room and wait for the players
+      instance.join(thisGameId.toString());
+   });
 };
 
 /**
@@ -94,7 +111,7 @@ function playerJoinGame(data) {
         //console.log('Player ' + data.playerName + ' joining game: ' + data.gameId );
 
         // Emit an event notifying the clients that the player has joined the room.
-        io.sockets.in(data.gameId).emit('playerJoinedRoom', data);
+        io.sockets.in(data.gameId).emit('playerJoinedRoom', data, builderToken);
 
     } else {
         // Otherwise, send an error message back to the player.
@@ -121,13 +138,21 @@ function playerRestart(data) {
    *                       *
    ************************* */
 
-function startGame(gameId) {
+function startGame(gameId, audioSettings) {
    var sock = this;
    var data = {
          mySocketId : sock.id,
          gameId : gameId
+         audioSettings : audioSettings,
+         audioSessionId : audioSessionId,
+         builderToken : builderToken
    };
    io.sockets.in(data.gameId).emit('beginNewGame', data);
+}
+
+function audioStarted(gameId) {
+   console.log(gameId);
+   io.sockets.in(gameId).emit('audioStarted');
 }
 
 /* *************************

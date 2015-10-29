@@ -8,9 +8,16 @@ var path = require('path');
 var app = express();
 
 //TODO: Communication implementation
+var OpenTok = require('opentok');
+//Include the credentials stored in a seperate file
+var credentials = require('./creditentials');
+var apiKey = credentials.apiKey;
+var apiSecret = credentials.apiSecret;
+var opentok = new OpenTok(apiKey, apiSecret);
 
 //Import the PELABlocks server side file
 var blocks = require('./blocks');
+
 
 //Create a simple Express application
 // Turn down the logging activity
@@ -30,5 +37,5 @@ var io = require('socket.io').listen(server);
 
 // Listen for Socket.IO Connections. Once connected, start the game logic.
 io.sockets.on('connection', function (socket) {    
-    blocks.initGame(io, socket);
+    blocks.initGame(io, socket, opentok);
 });

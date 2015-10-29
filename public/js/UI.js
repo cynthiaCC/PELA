@@ -5,3 +5,25 @@ $(document).ready(function() {
       App.showInitScreen();
    });
 })
+   $(document.body).on('click', '#audio-button', function() {
+      if(App.myRole == 'Host') {
+         console.log(App.audioSettings);
+         if(App.audioSettings !== 'mute-audio-video') {
+            console.log('Launched, audio settings: ' + App.audioSettings);
+            App.initAudio(App.audioSettings);
+            if (App.sessionID !== 'undefined') {
+               IO.socket.emit('audioStarted', App.gameId);
+            } else {
+               IO.socket.emit('audioStarted', App.gameId);
+            }
+            $('#audio-button').hide();
+         }
+         else {
+            $('#publisherContainer').hide();
+         }
+      } else {
+         console.log('Launched, audio settings: ' + App.audioSettings);
+         App.initAudio(App.audioSettings);
+         $('#audio-button').hide();
+      }
+   });
