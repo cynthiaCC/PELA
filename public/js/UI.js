@@ -4,7 +4,7 @@ $(document).ready(function() {
    $(document.body).on('click', '#backToMainMenu', function() {
       App.showInitScreen();
    });
-})
+
    $(document.body).on('click', '#audio-button', function() {
       if(App.myRole == 'Host') {
          console.log(App.audioSettings);
@@ -26,3 +26,4 @@ $(document).ready(function() {
          $('#audio-button').hide();
       }
    });
+})
