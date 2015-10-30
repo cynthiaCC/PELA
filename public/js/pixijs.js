@@ -52,9 +52,20 @@ var pixijs = {
       // store a reference to the data
       // the reason for this is because of multitouch
       // we want to track the movement of this particular touch
-      this.data = event.data;
-      this.alpha = 0.5;
-      this.dragging = true;
+      if (typeof this.rotating == "undefined" || this.rotating == false){
+         this.data = event.data;
+         this.alpha = 0.5;
+         this.dragging = true;
+         this.rotating = false;
+      }
+   },
+   
+   onRotateStart : function(event) {
+      if (typeof this.parent.dragging == "undefined" || this.parent.dragging == false){
+         this.data = event.data;
+         this.parent.rotating = true;
+         this.parent.dragging = false;
+      }
    },
 
    onDragEnd : function()
@@ -64,6 +75,11 @@ var pixijs = {
       this.dragging = false;
 
       // set the interaction data to null
+      this.data = null;
+   },
+   
+   onRotateEnd : function() {
+      this.parent.rotating = false;
       this.data = null;
    },
 
@@ -81,7 +97,7 @@ var pixijs = {
    //Note, DO NOT APPLY THIS EVEN TO AN OBJECT WITHOUT PARENT OBJECT. 
    //Only apply to rotators. Place the rotator above the sprite when rotation is set to 0
    onDragRotate : function() {
-      if (this.dragging) {
+      if (this.parent.rotating) {
          var pointerPosition = this.data.global;
          this.parent.rotation = Math.atan2(pointerPosition.y - this.parent.position.y, pointerPosition.x - this.parent.position.x) + (PIXI.DEG_TO_RAD * 90);
       }

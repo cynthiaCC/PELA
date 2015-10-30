@@ -45,19 +45,18 @@ function createBunny(x, y)
    
    //make a rotator for the bunny
    var circle = new PIXI.Graphics();
-   circle.lineStyle(2, 0x0000FF, 1);
    circle.beginFill(0xFF700B, 1);
-   circle.drawCircle(0, -20, 2);
+   circle.drawCircle(0, -15, 4);
    circle.interactive = true;
    circle
    // events for drag start
-   .on('mousedown', pixijs.onDragStart)
-   .on('touchstart', pixijs.onDragStart)
+   .on('mousedown', pixijs.onRotateStart)
+   .on('touchstart', pixijs.onRotateStart)
    // events for drag end
-   .on('mouseup', pixijs.onDragEnd)
-   .on('mouseupoutside', pixijs.onDragEnd)
-   .on('touchend', pixijs.onDragEnd)
-   .on('touchendoutside', pixijs.onDragEnd)
+   .on('mouseup', pixijs.onRotateEnd)
+   .on('mouseupoutside', pixijs.onRotateEnd)
+   .on('touchend', pixijs.onRotateEnd)
+   .on('touchendoutside', pixijs.onRotateEnd)
    // events for drag rotate
    .on('mousemove', pixijs.onDragRotate)
    .on('touchmove', pixijs.onDragRotate);
