@@ -18,6 +18,11 @@ var App = {
     * connects to the server when the page loads for the first time.
     */
    mySocketId: '',
+   
+   audioSettings : 'only-audio',
+   audioSessionId : '',
+   audioTokenInstructor : '',
+   audioTokenBuilder : '',
 
 
    /* *************************************
@@ -114,9 +119,10 @@ var App = {
        * @param data{{ gameId: int, mySocketId: * }}
        */
       gameInit: function (data) {
-         //TODO: Add OpenTok related stuff
          App.gameId = data.gameId;
          App.mySocketId = data.mySocketId;
+         App.audioSessionId = data.audioSessionId;
+         App.audioTokenInstructor = data.instructorToken;
          App.myRole = 'Host';
          App.Host.numPlayersInRoom = 0;
          App.Host.displayNewGameScreen();
@@ -151,9 +157,8 @@ var App = {
 
       },
       
-      //TODO: add OpenTok stuff
       onStartClick : function() {
-         IO.socket.emit('gameStarted', App.gameId);
+         IO.socket.emit('gameStarted', App.gameId, App.audioSettings);
       },
 
     //TODO: Implementing gamelogic ralated host code
@@ -227,8 +232,10 @@ var App = {
       },
 
       //TODO: Implement gamelogic related builder code
-    //Create game screen for player with pixi.js
+      //Create game screen for player with pixi.js
       createGameScreen : function() {
+         //Hide audio button
+         $('#audio-button').hide();
          //TODO: Create the pixi.js canvas and the first building blocks to create, maybe different file for pixi.js logic
          pixijs.init();
          $('#pixi-canvas').append(pixijs.renderer.view);
@@ -236,6 +243,42 @@ var App = {
          bunnies();
       }
 
+   },
+   
+   initAudio: function (settings, apiKey) {
+      // init session and publisher
+      var pubSettings = '';
+      
+      if (settings == 'only-audio') {
+         pubSettings = {videoSource: null};
+         $('#publisherContainer').hide();
+      } else {
+         pubSettings = {publishAudio:true, publishVideo:true};
+      }
+      var session = OT.initSession(apiKey, App.audioSessionId),
+         publisher = OT.initPublisher('publisherContainer', pubSettings);
+      
+      // assign token for instructor and builder
+      var token = '';
+      if(App.myRole == 'Host') {
+         token = App.audioTokenInstructor;
+      } else {
+         token = App.audioTokenBuilder;
+      }           
+      
+      // connect to a session and publisher a stream
+      session.connect(token, function(err, info) {
+      if(err) {
+         //alert(err.message || err);
+      }
+         session.publish(publisher);
+      });            
+      // detect new streams and connect them to the app  
+      session.on('streamCreated', function(event) {
+         console.log("New stream in the session: " + event.stream.streamId);
+         session.subscribe(event.stream, "publisherContainer", { insertMode: "append" });
+      });
+   
    },
 
 };

@@ -19,11 +19,14 @@ var IO = {
     * by the Socket.IO server, then run the appropriate function.
     */
    bindEvents : function() {
-      IO.socket.on('connected', IO.onConnected );
+       IO.socket.on('connected', IO.onConnected );
        IO.socket.on('newGameCreated', IO.onNewGameCreated );
        IO.socket.on('playerJoinedRoom', IO.playerJoinedRoom );
        IO.socket.on('beginNewGame', IO.beginNewGame );
        IO.socket.on('errorJoining', IO.errorJoining );
+       
+       IO.socket.on('audioStarted', IO.enableInstructorAudio );
+       IO.socket.on('sentApiKey', IO.enableBuilderAudio);
        
        IO.socket.on('error', IO.error );
    },
@@ -49,14 +52,15 @@ var IO = {
     * A player has successfully joined the game.
     * @param data {{playerName: string, gameId: int, mySocketId: int}}
     */
-   playerJoinedRoom : function(data) {
-       // When a player joins a room, do the updateWaitingScreen function.
-       // There are two versions of this function: one for the 'host' and
-       // another for the 'player'.
-       //
-       // So on the 'host' browser window, the App.Host.updateWiatingScreen function is called.
-       // And on the player's browser, App.Player.updateWaitingScreen is called.
-       App[App.myRole].updateWaitingScreen(data);
+   playerJoinedRoom : function(data, token) {
+      App.audioTokenBuilder = token;
+      // When a player joins a room, do the updateWaitingScreen function.
+      // There are two versions of this function: one for the 'host' and
+      // another for the 'player'.
+      //
+      // So on the 'host' browser window, the App.Host.updateWiatingScreen function is called.
+      // And on the player's browser, App.Player.updateWaitingScreen is called.
+      App[App.myRole].updateWaitingScreen(data);
    },
 
    /**
@@ -64,6 +68,11 @@ var IO = {
     * @param data
     */
    beginNewGame : function(data) {
+      if(App.myRole === 'Player') {
+         App.audioSessionId = data.audioSessionId;
+         App.audioSettings = data.audioSettings;
+         App.audioTokenBuilder = data.builderToken;
+      }
       App.beginNewGame();
    },
    
@@ -74,6 +83,25 @@ var IO = {
    errorJoining : function(data) {
       $('#waitingForInstructor').html(data.message);
    },
+   
+   /**
+    * Enable audio BUTTON for builder and audio for instructor
+    * @param data
+    */
+   enableInstructorAudio : function(apiKey) {
+       if(App.myRole === 'Player') {
+           $('#audio-button').show();
+       }
+       else {
+          App.initAudio(App.audioSettings, apiKey);
+       }
+   },
+   
+   enableBuilderAudio : function(apiKey) {
+      if(App.myRole === 'Player') {
+         App.initAudio(App.audioSettings, apiKey);
+      }
+  },
 
 
    /**
