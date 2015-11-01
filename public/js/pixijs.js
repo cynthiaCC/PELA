@@ -16,6 +16,9 @@ var pixijs = {
    //Store all the rotators in this, this makes them easier to remove when finished with building.
    rotators : [],
    
+   //BlockMenu is stored inside this
+   menu : null,
+   
    //The default texture for rotator
    rotatorTexture : PIXI.Texture.fromImage('img/rotate.png'),
    
@@ -40,6 +43,9 @@ var pixijs = {
       pixijs.objects = new PIXI.Container();
       pixijs.stage.addChild(pixijs.objects);
       
+      //Create the menu
+      pixijs.blockMenu();
+      
       //start the animation
       requestAnimationFrame( pixijs.animate );
       
@@ -48,22 +54,18 @@ var pixijs = {
    
    blockMenu : function(){
 	   
-	   var blockMenu = PIXI.Texture.fromImage('img/block-menu.png');
-	      var bm = new PIXI.Sprite(blockMenu);
-	      bm.height = pixijs.canvasH;
-	      bm.width = pixijs.canvasBlockW;
+	   var blockMenu = PIXI.Texture.fromImage('img/block.menu.png');
+	   menu = new PIXI.Sprite(blockMenu);
+	   menu.height = pixijs.canvasH;
+	   menu.width = pixijs.canvasBlockW;
 	      
-	      bm.position.x = 824;
-	      bm.position.y = 0;
-	      
-	      pixijs.stage.addChild(bm);
-	      
-	      pixijs.stage.addChild(pixijs.objects);
-	      
-	      //start the animation
-	      requestAnimationFrame( pixijs.animate );
+	   menu.position.x = pixijs.canvasBlueprintW;
+	   menu.position.y = 0;
 	   
+	   console.log(menu);
+	   pixijs.stage.addChild(menu);
    },
+   
    animate : function() {
 
       requestAnimationFrame(pixijs.animate);
@@ -132,7 +134,6 @@ var pixijs = {
    addSprite : function(texture, scale) {
       //Create the sprite
       var sprite = new PIXI.Sprite(texture);
-      console.log(sprite);
       
       //Set it interactive
       sprite.interactive = true;
@@ -161,7 +162,7 @@ var pixijs = {
             .on('mousemove', pixijs.onDragMove)
             .on('touchmove', pixijs.onDragMove);
       
-      sprite.position.x = pixijs.canvasW/2;
+      sprite.position.x = pixijs.canvasBlueprintW/2;
       sprite.position.y = pixijs.canvasH/2;
       
       //Make the rotator
