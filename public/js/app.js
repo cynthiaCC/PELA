@@ -33,11 +33,11 @@ var App = {
     * This runs when the page initially loads.
     */
    init: function () {
-      Console.log("Initiating App");
+      console.log("Initiating App");
       App.cacheElements();
       App.showInitScreen();
       App.bindEvents();
-      Console.log("Finished initiating App");
+      console.log("Finished initiating App");
    },
 
    /**
