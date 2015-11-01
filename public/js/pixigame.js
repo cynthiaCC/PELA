@@ -4,7 +4,7 @@ var texture = PIXI.Texture.fromImage('img/bunny.png');
 function bunnies() {
    for (var i = 0; i < 10; i++)
    {
-      createBunny(Math.floor(Math.random() * pixijs.canvasW) , Math.floor(Math.random() * pixijs.canvasH));
+      createBunny(Math.floor(Math.random() * pixijs.canvasBlueprintW) , Math.floor(Math.random() * pixijs.canvasH));
    }
 }
 

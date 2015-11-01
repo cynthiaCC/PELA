@@ -20,7 +20,7 @@
    sodipodi:docname="block-menu.svg"><metadata
      id="metadata11"><rdf:RDF><cc:Work
          rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title /></cc:Work></rdf:RDF></metadata><defs
      id="defs9" /><sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -35,7 +35,7 @@
      id="namedview7"
      showgrid="false"
      inkscape:zoom="0.37400951"
-     inkscape:cx="100.5"
+     inkscape:cx="-299.22246"
      inkscape:cy="315.5"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
@@ -46,5 +46,9 @@
 	.st0{fill:#C0C0C0;stroke:#999999;stroke-miterlimit:10;}
 </style><path
      class="st0"
-     d="M194.8,630.5H6.2c-3.1,0-5.7-2.6-5.7-5.7V6.2c0-3.1,2.6-5.7,5.7-5.7l188.7,0c3.1,0,5.7,2.6,5.7,5.7v618.7  C200.5,627.9,197.9,630.5,194.8,630.5z"
-     id="path5" /></svg>
+     d="m 193.73579,630.50414 -187.5710289,0 c -3.0830868,0 -5.66890156,-2.57115 -5.66890156,-5.63674 l 0,-611.734801 c 0,-3.065596 2.58581476,-5.6367411 5.66890156,-5.6367411 l 187.6704789,0 c 3.08309,0 5.6689,2.5711451 5.6689,5.6367411 l 0,611.833691 c -0.0995,2.9667 -2.68527,5.53785 -5.76835,5.53785 z"
+     id="path5"
+     inkscape:connector-curvature="0"
+     style="fill:#c0c0c0;stroke:#999999;stroke-width:0.99171907;stroke-miterlimit:10"
+     inkscape:export-xdpi="90"
+     inkscape:export-ydpi="90" /></svg>

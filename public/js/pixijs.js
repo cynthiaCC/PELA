@@ -1,8 +1,10 @@
 /* This is for all the pixi.js related functions */
 var pixijs = {
    //Dimensions of the canvas
-   canvasW : 600,
-   canvasH : 490,
+   canvasW : 1024,
+   canvasH : 624,
+   canvasBlueprintW : 824,
+   canvasBlockW : 200,
    
    //The renderer and the stage
    renderer : null,
@@ -30,7 +32,7 @@ var pixijs = {
       var background = PIXI.Texture.fromImage('img/blueprint.png');
       var bg = new PIXI.Sprite(background);
       bg.height = pixijs.canvasH;
-      bg.width = pixijs.canvasW;
+      bg.width = pixijs.canvasBlueprintW;
       pixijs.stage.addChild(bg);
       pixijs.renderer.view.style.border = "3px dashed black";
       
@@ -40,8 +42,28 @@ var pixijs = {
       
       //start the animation
       requestAnimationFrame( pixijs.animate );
+      
+      
    },
    
+   blockMenu : function(){
+	   
+	   var blockMenu = PIXI.Texture.fromImage('img/block-menu.png');
+	      var bm = new PIXI.Sprite(blockMenu);
+	      bm.height = pixijs.canvasH;
+	      bm.width = pixijs.canvasBlockW;
+	      
+	      bm.position.x = 824;
+	      bm.position.y = 0;
+	      
+	      pixijs.stage.addChild(bm);
+	      
+	      pixijs.stage.addChild(pixijs.objects);
+	      
+	      //start the animation
+	      requestAnimationFrame( pixijs.animate );
+	   
+   },
    animate : function() {
 
       requestAnimationFrame(pixijs.animate);
@@ -91,7 +113,7 @@ var pixijs = {
       if (this.dragging)
       {
          var newPosition = this.data.getLocalPosition(this.parent);
-         this.position.x = Math.max(0, Math.min(newPosition.x, pixijs.canvasW));
+         this.position.x = Math.max(0, Math.min(newPosition.x, pixijs.canvasBlueprintW));
          this.position.y = Math.max(0, Math.min(newPosition.y, pixijs.canvasH));
       }
    },
