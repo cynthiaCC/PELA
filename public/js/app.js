@@ -169,6 +169,7 @@ var App = {
          $('#pixi-canvas').append(pixijs.renderer.view);
          //TODO: replace this
          bunnies();
+         pixijs.addSprite(PIXI.Texture.fromImage('img/bunny.png'));
       }
       
    },
@@ -241,6 +242,7 @@ var App = {
          $('#pixi-canvas').append(pixijs.renderer.view);
          //TODO: replace this
          bunnies();
+         pixijs.addSprite(PIXI.Texture.fromImage('img/bunny.png'));
       }
 
    },

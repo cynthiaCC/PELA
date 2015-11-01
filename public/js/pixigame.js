@@ -44,22 +44,25 @@ function createBunny(x, y)
    bunny.position.y = y;
    
    //make a rotator for the bunny
-   var circle = new PIXI.Graphics();
-   circle.beginFill(0xFF700B, 1);
-   circle.drawCircle(0, -15, 4);
+   var circle = new PIXI.Sprite(pixijs.rotatorTexture);
    circle.interactive = true;
+   circle.anchor.set(0.5);
+   circle.scale.set(0.4);
+   circle.buttonMode = true;
+   circle.position.x = 0;
+   circle.position.y = -20;
    circle
-   // events for drag start
-   .on('mousedown', pixijs.onRotateStart)
-   .on('touchstart', pixijs.onRotateStart)
-   // events for drag end
-   .on('mouseup', pixijs.onRotateEnd)
-   .on('mouseupoutside', pixijs.onRotateEnd)
-   .on('touchend', pixijs.onRotateEnd)
-   .on('touchendoutside', pixijs.onRotateEnd)
-   // events for drag rotate
-   .on('mousemove', pixijs.onDragRotate)
-   .on('touchmove', pixijs.onDragRotate);
+         // events for drag start
+         .on('mousedown', pixijs.onRotateStart)
+         .on('touchstart', pixijs.onRotateStart)
+         // events for drag end
+         .on('mouseup', pixijs.onRotateEnd)
+         .on('mouseupoutside', pixijs.onRotateEnd)
+         .on('touchend', pixijs.onRotateEnd)
+         .on('touchendoutside', pixijs.onRotateEnd)
+         // events for drag rotate
+         .on('mousemove', pixijs.onDragRotate)
+         .on('touchmove', pixijs.onDragRotate);
    
    bunny.addChild(circle);
 

@@ -14,6 +14,9 @@ var pixijs = {
    //Store all the rotators in this, this makes them easier to remove when finished with building.
    rotators : [],
    
+   //The default texture for rotator
+   rotatorTexture : PIXI.Texture.fromImage('img/rotate.png'),
+   
    //Probably going to need another one for UI stuff and for the menu that adds the pieces into the game area
    
    init : function() {
@@ -101,5 +104,68 @@ var pixijs = {
          var pointerPosition = this.data.global;
          this.parent.rotation = Math.atan2(pointerPosition.y - this.parent.position.y, pointerPosition.x - this.parent.position.x) + (PIXI.DEG_TO_RAD * 90);
       }
+   },
+   
+   //This function adds the sprite in middle of the playable area
+   addSprite : function(texture, scale) {
+      //Create the sprite
+      var sprite = new PIXI.Sprite(texture);
+      console.log(sprite);
+      
+      //Set it interactive
+      sprite.interactive = true;
+      
+      //Set the cursor to change into clicking mode when hovering over it
+      sprite.buttonMode = true;
+      
+      //Set the anchor in the middle of the sprite
+      sprite.anchor.set(0.5);
+      
+      //Set the scale of the sprite if defined
+      if (typeof scale != "undefined") {
+         sprite.scale = scale;
+      }
+      
+      //Add events
+      sprite
+            .on('mousedown', pixijs.onDragStart)
+            .on('touchstart', pixijs.onDragStart)
+            // events for drag end
+            .on('mouseup', pixijs.onDragEnd)
+            .on('mouseupoutside', pixijs.onDragEnd)
+            .on('touchend', pixijs.onDragEnd)
+            .on('touchendoutside', pixijs.onDragEnd)
+            // events for drag move
+            .on('mousemove', pixijs.onDragMove)
+            .on('touchmove', pixijs.onDragMove);
+      
+      sprite.position.x = pixijs.canvasW/2;
+      sprite.position.y = pixijs.canvasH/2;
+      
+      //Make the rotator
+      var rotator = new PIXI.Sprite(pixijs.rotatorTexture);
+      rotator.interactive = true;
+      rotator.anchor.set(0.5);
+      rotator.buttonMode = true;
+      rotator.position.x = 0;
+      //This y value places the rotator above the sprite
+      rotator.position.y = -20;
+      rotator
+            // events for drag start
+            .on('mousedown', pixijs.onRotateStart)
+            .on('touchstart', pixijs.onRotateStart)
+            // events for drag end
+            .on('mouseup', pixijs.onRotateEnd)
+            .on('mouseupoutside', pixijs.onRotateEnd)
+            .on('touchend', pixijs.onRotateEnd)
+            .on('touchendoutside', pixijs.onRotateEnd)
+            // events for drag rotate
+            .on('mousemove', pixijs.onDragRotate)
+            .on('touchmove', pixijs.onDragRotate);
+      
+      //Add rotator to the sprite
+      sprite.addChild(rotator);
+      //Add the sprite to the objects container
+      pixijs.objects.addChild(sprite);
    }
 };
