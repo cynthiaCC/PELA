@@ -40,15 +40,7 @@
             </div>
             <br>
             <br>
-            <!-- Button link to the prototype canvas -->
-            <form action="Prototype.html">
-               <input type="submit" class="bigbutton" value="Prototype">
-            </form>
-            <br>
-            <br>
-            <form action="pixiexample.html">
-            <input type="submit" class="bigbutton" value="Pixi.js example">
-            </form>
+            
             
          </div>
       </div>
@@ -103,9 +95,11 @@
       <div id="pb-game-template" type="text/template" >
          <!-- This is where the pixi.js canvas will be created for the game as well as any other in game elements -->
          <div id = "pixi-canvas" class="game">
+         <div class ="menubutton"><button class="smallbutton">Menu</button>
+         </div>
          <!-- audio elements -->
-         <!-- TODO: Add a proper button for enabling sound here -->
-         <img src="img/mute_mike.png" id="audio-button" />
+         <!-- TODO: Add a proper button for enabling sound here (some changes done so the img is a proper button now. Still needs work though) -->
+         <button class="smallbutton" name="audio" ><img src="img/mute_mike.png" id="audio-button" onmouseover="" style="cursor: pointer;" /></button>
          <div id="publisherContainer"></div>
          <br>
          <br>

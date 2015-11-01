@@ -43,10 +43,22 @@ function createBunny(x, y)
    bunny.position.x = x;
    bunny.position.y = y;
    
-   //make a rotator for the bunny
+   /**/
+   
+   /*The old circle draw code
    var circle = new PIXI.Graphics();
    circle.beginFill(0xFF700B, 1);
-   circle.drawCircle(0, -15, 4);
+   circle.drawCircle(0, -15, 4);*/
+   //make a rotator for the bunny
+   
+   //TODO: maybe rescale the rotation icon a bit more and place it better by messing with the x and y values
+   
+   //Rotator for the bunny
+   var rotationIcon = new PIXI.Texture.fromImage('img/Rotate.png');
+   var circle = new PIXI.Sprite(rotationIcon);
+   circle.scale.set(0.35);
+   circle.position.x = -4;
+   circle.position.y = -20;
    circle.interactive = true;
    circle
    // events for drag start

@@ -1,8 +1,11 @@
 /* This is for all the pixi.js related functions */
 var pixijs = {
    //Dimensions of the canvas
-   canvasW : 600,
-   canvasH : 490,
+   canvasW : 1024,
+   canvasH : 642,
+   //dimension for the blueprint
+   canvasBlueW : 824,
+   canvasBlockW : 200,
    
    //The renderer and the stage
    renderer : null,
@@ -16,6 +19,7 @@ var pixijs = {
    
    //Probably going to need another one for UI stuff and for the menu that adds the pieces into the game area
    
+   
    init : function() {
       //Initiate the renderer
       pixijs.renderer = PIXI.autoDetectRenderer(pixijs.canvasW, pixijs.canvasH);
@@ -27,9 +31,10 @@ var pixijs = {
       var background = PIXI.Texture.fromImage('img/blueprint.png');
       var bg = new PIXI.Sprite(background);
       bg.height = pixijs.canvasH;
-      bg.width = pixijs.canvasW;
+      bg.width = pixijs.canvasBlueW;
       pixijs.stage.addChild(bg);
       pixijs.renderer.view.style.border = "3px dashed black";
+      
       
       //Create a container for all the objects and add it to stage
       pixijs.objects = new PIXI.Container();
@@ -37,6 +42,25 @@ var pixijs = {
       
       //start the animation
       requestAnimationFrame( pixijs.animate );
+   },
+   
+   blockMenu : function(){
+	   
+	   var blockMenu = PIXI.Texture.fromImage('img/block-menu.svg');
+	      var bm = new PIXI.Sprite(blockMenu);
+	      bm.height = pixijs.canvasH;
+	      bm.width = pixijs.canvasBlockW;
+	      
+	      bm.position.x = 824;
+	      bm.position.y = 0;
+	      
+	      pixijs.stage.addChild(bm);
+	      
+	    
+	      
+	      //start the animation
+	      requestAnimationFrame( pixijs.animate );
+	   
    },
    
    animate : function() {
