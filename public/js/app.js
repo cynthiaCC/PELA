@@ -150,7 +150,7 @@ var App = {
        */
       updateWaitingScreen: function(data) {
          // Update host screen
-         $('#playersWaiting').text('Builder has joined the game.');
+         $('#playersWaiting').text('Builder ' + data.PlayerName + ' has joined the game.');
          
          //Show the start game button
          $('#startGame').fadeIn();
@@ -159,6 +159,19 @@ var App = {
       
       onStartClick : function() {
          IO.socket.emit('gameStarted', App.gameId, App.audioSettings);
+      },
+      
+      /**
+       * Check the answer clicked by a player.
+       * 
+       */
+      checkAnswer : function(data) {
+         
+      },
+      
+      endGame : function(data){
+    	  App.showInitScreen();
+    	  
       },
 
     //TODO: Implementing gamelogic ralated host code

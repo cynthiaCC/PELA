@@ -24,6 +24,8 @@ var IO = {
        IO.socket.on('playerJoinedRoom', IO.playerJoinedRoom );
        IO.socket.on('beginNewGame', IO.beginNewGame );
        IO.socket.on('errorJoining', IO.errorJoining );
+       IO.socket.on('builderFinished', IO.gameOver);
+       IO.socket.on('gameOver', IO.gameOver);
        
        IO.socket.on('audioStarted', IO.enableInstructorAudio );
        IO.socket.on('sentApiKey', IO.enableBuilderAudio);
@@ -82,6 +84,30 @@ var IO = {
     */
    errorJoining : function(data) {
       $('#waitingForInstructor').html(data.message);
+   },
+   
+  /**
+   * The builder has finished. If this is the host, check the answer.
+   * @param data
+   */
+   builderFinished : function(data) {
+       if(App.myRole === 'Host') {
+           App.Host.checkAnswer(data);
+       }
+   },
+   
+   /**
+    * The player ends the game after finishing the build
+    */
+   gameOver : function(data) {
+	   App[App.myRole].endGame(data);
+   },
+   /**
+    * The builder hit the 'Start Again' button after the end of a game.
+    */
+   restartGame : function() {
+       App.$gameArea.html(App.$templateNewGame);
+       $('#spanNewGameCode').text(App.gameId);
    },
    
    /**
