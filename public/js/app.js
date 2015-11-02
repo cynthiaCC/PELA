@@ -152,7 +152,7 @@ var App = {
        */
       updateWaitingScreen: function(data) {
          // Update host screen
-         $('#playersWaiting').text('Builder ' + data.PlayerName + ' has joined the game.');
+         $('#playersWaiting').text('Builder ' + data.playerName + ' has joined the game.');
          
          //Show the start game button
          $('#startGame').fadeIn();

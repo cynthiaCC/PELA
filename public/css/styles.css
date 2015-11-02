@@ -133,5 +133,13 @@ smallbutton {
    margin: 0;
    padding: 0;
    vertical-align: baseline;
-   float: left;
+   /* float: left; */
+}
+
+#pb-game-template {
+   text-align:center;
+}
+
+#pixi-canvas {
+   clear : both;
 }
