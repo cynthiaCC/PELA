@@ -33,10 +33,11 @@ var App = {
     * This runs when the page initially loads.
     */
    init: function () {
+      console.log("Initiating App");
       App.cacheElements();
       App.showInitScreen();
       App.bindEvents();
-
+      console.log("Finished initiating App");
    },
 
    /**
@@ -68,6 +69,7 @@ var App = {
     * (with Host and Join buttons)
     */
    showInitScreen: function() {
+      console.log("Showing initial screen");
       $('#pb-create-game-template').hide();
       $('#pb-join-game-template').hide();
       $('#pb-game-template').hide();
