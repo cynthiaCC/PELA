@@ -26,6 +26,7 @@ var IO = {
        IO.socket.on('errorJoining', IO.errorJoining );
        IO.socket.on('builderFinished', IO.gameOver);
        IO.socket.on('gameOver', IO.gameOver);
+       IO.socket.on('constructionFinished', IO.constructionFinished);
        
        IO.socket.on('audioStarted', IO.enableInstructorAudio );
        IO.socket.on('sentApiKey', IO.enableBuilderAudio);
@@ -127,6 +128,10 @@ var IO = {
       if(App.myRole === 'Player') {
          App.initAudio(App.audioSettings, apiKey);
       }
+  },
+  
+  constructionFinished : function(data) {
+     App.loadConstruction(data);
   },
 
 

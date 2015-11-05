@@ -185,11 +185,11 @@ var App = {
          //TODO: replace this
          bunnies();
          pixijs.addSprite(PIXI.Texture.fromImage('img/bunny.png'));
-      }
+      },
       
    },
    /* *****************************
-    *        PLAYER CODE        *
+    *        PLAYER CODE          *
     ***************************** */
 
    Player : {
@@ -258,8 +258,32 @@ var App = {
          //TODO: replace this
          bunnies();
          pixijs.addSprite(PIXI.Texture.fromImage('img/bunny.png'));
-      }
+      },
+      
+      /**
+       * Player finishes the construction and the built construction is sent to host
+       * @param data Holds the objects pixijs container
+       */
+      finishConstruction : function(data){
+         IO.socket.emit('constructionFinished', data, App.gameId);
+      },
+      
+      
 
+   },
+   
+   /* *************** 
+    *    GENERAL    *
+    ***************** */
+   
+   /**
+    * Load the instructions for the builder and built construct for instructor after construction is finished
+    * @param data holds the pixijs container to load for instructor
+    */
+   loadConstruction : function(data) {
+      if (App.myRole == 'Host') {
+         pixijs.loadTemp(data);
+      }
    },
    
    initAudio: function (settings, apiKey) {

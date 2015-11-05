@@ -28,6 +28,7 @@ exports.initGame = function(sio, socket, ot, cred){
     // Player Events
     gameSocket.on('playerJoinGame', playerJoinGame);
     gameSocket.on('playerRestart', playerRestart);
+    gameSocket.on('constructionFinished', constructionFinished);
     
     //General Events
     gameSocket.on('gameStarted', startGame);
@@ -134,6 +135,10 @@ function playerRestart(data) {
     // Emit the player's data back to the clients in the game room.
     data.playerId = this.id;
     io.sockets.in(data.gameId).emit('playerJoinedRoom',data);
+}
+
+function constructionFinished(data, gameId) {
+   io.sockets.in(gameId).emit('constructionFinished', data);
 }
 
 /* *************************

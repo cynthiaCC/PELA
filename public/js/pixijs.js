@@ -13,6 +13,12 @@ var pixijs = {
    //All the draggable objects are stored here
    objects : null,
    
+   //Container for the temporary objects when finished with construction
+   tempCont : null,
+   
+   //Container for UI elements within gameArea
+   UI : null,
+   
    //Store all the rotators in this, this makes them easier to remove when finished with building.
    rotators : [],
    
@@ -21,8 +27,7 @@ var pixijs = {
    
    //The default texture for rotator
    rotatorTexture : PIXI.Texture.fromImage('img/rotate.png'),
-   
-   //Probably going to need another one for UI stuff and for the menu that adds the pieces into the game area
+
    
    init : function() {
       //Initiate the renderer
@@ -43,6 +48,15 @@ var pixijs = {
       pixijs.objects = new PIXI.Container();
       pixijs.stage.addChild(pixijs.objects);
       
+      //
+      pixijs.tempCont = new PIXI.Container();
+      pixijs.stage.addChild(pixijs.tempCont);
+      
+      //Create container for UI elements
+      pixijs.UI = new PIXI.Container();
+      pixijs.stage.addChild(pixijs.UI);
+      pixijs.addFinished();
+      
       //Create the menu
       pixijs.blockMenu();
       
@@ -62,10 +76,48 @@ var pixijs = {
 	   menu.position.x = pixijs.canvasBlueprintW;
 	   menu.position.y = 0;
 	   
-	   console.log(menu);
 	   pixijs.stage.addChild(menu);
    },
    
+   addFinished : function() {
+      //TODO: replace with the proper button and placement
+      var button = new PIXI.Graphics();
+      button.lineStyle(2, 0x0000FF, 1);
+      button.beginFill(0xFF700B, 1);
+      button.drawRect(50, 250, 120, 120);
+      
+      button.interactive = true;
+      button.buttonMode = true;
+      button
+            .on('mousedown', pixijs.onFinished);
+      pixijs.UI.addChild(button);
+   },
+   
+   //Recursively destroy the given pixijs object
+   recursiveDestroy: function(object) {
+      if(object.children.length > 0) {
+         object.children.forEach(function(child,index,array){
+            pixijs.recursiveDestroy(child);
+         })
+      }
+    //Finally destroy the object itself
+      object.destroy();
+   },
+   
+ //Load the temporary container sent by app
+   loadTemp : function(data) {
+      //First clear the container
+      pixijs.tempCont.children.forEach(function(child,index,array){
+         pixijs.recursiveDestroy(child);
+      })
+      var image = new Image();
+      var texture = PIXI.Texture.fromImage(data);
+      console.log(texture);
+      pixijs.tempCont.addChild(new PIXI.Sprite(texture));
+      pixijs.stage.addChild(pixijs.tempCont);
+   },
+   
+   //The animation function, set any per frame calculations and functions here
    animate : function() {
 
       requestAnimationFrame(pixijs.animate);
@@ -74,6 +126,7 @@ var pixijs = {
       pixijs.renderer.render(pixijs.stage);
    },
 
+   //On functions
    onDragStart : function(event)
    {
       // store a reference to the data
@@ -190,5 +243,14 @@ var pixijs = {
       sprite.addChild(rotator);
       //Add the sprite to the objects container
       pixijs.objects.addChild(sprite);
-   }
+   },
+   
+   //Function to call when player clicks the button to finish the build, also hide the button again
+   onFinished : function() {
+      this.renderable = false;
+      pixijs.renderer.render(pixijs.stage);
+      var texture = pixijs.renderer.view.toDataURL();
+      App.Player.finishConstruction(texture);
+   },
+   
 };
