@@ -3,3 +3,4 @@
 *.container
 .settings/.jsdtscope
 node_modules
+credentials.js

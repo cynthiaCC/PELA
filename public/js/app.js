@@ -1,4 +1,4 @@
- var App = {
+var App = {
 
    /**
     * Keep track of the gameId, which is identical to the ID
@@ -18,6 +18,11 @@
     * connects to the server when the page loads for the first time.
     */
    mySocketId: '',
+   
+   audioSettings : 'only-audio',
+   audioSessionId : '',
+   audioTokenInstructor : '',
+   audioTokenBuilder : '',
 
 
    /* *************************************
@@ -28,10 +33,11 @@
     * This runs when the page initially loads.
     */
    init: function () {
+      console.log("Initiating App");
       App.cacheElements();
       App.showInitScreen();
       App.bindEvents();
-
+      console.log("Finished initiating App");
    },
 
    /**
@@ -63,6 +69,7 @@
     * (with Host and Join buttons)
     */
    showInitScreen: function() {
+      console.log("Showing initial screen");
       $('#pb-create-game-template').hide();
       $('#pb-join-game-template').hide();
       $('#pb-game-template').hide();
@@ -116,6 +123,8 @@
       gameInit: function (data) {
          App.gameId = data.gameId;
          App.mySocketId = data.mySocketId;
+         App.audioSessionId = data.audioSessionId;
+         App.audioTokenInstructor = data.instructorToken;
          App.myRole = 'Host';
          App.Host.numPlayersInRoom = 0;
          App.Host.displayNewGameScreen();
@@ -143,18 +152,39 @@
        */
       updateWaitingScreen: function(data) {
          // Update host screen
-         $('#playersWaiting').text('Builder has joined the game.');
+         $('#playersWaiting').text('Builder ' + data.playerName + ' has joined the game.');
+         
+         //Show the start game button
+         $('#startGame').fadeIn();
 
       },
       
       onStartClick : function() {
-         IO.socket.emit('gameStarted', App.gameId);
+         IO.socket.emit('gameStarted', App.gameId, App.audioSettings);
+      },
+      
+      /**
+       * Check the answer clicked by a player.
+       * 
+       */
+      checkAnswer : function(data) {
+         
+      },
+      
+      endGame : function(data){
+    	  App.showInitScreen();
+    	  
       },
 
     //TODO: Implementing gamelogic ralated host code
       //Create game screen for host with pixi.js
       createGameScreen : function() {
          //TODO: Create the pixi.js canvas and the first object to create, maybe different file for pixi.js logic
+         pixijs.init();
+         $('#pixi-canvas').append(pixijs.renderer.view);
+         //TODO: replace this
+         bunnies();
+         pixijs.addSprite(PIXI.Texture.fromImage('img/bunny.png'));
       }
       
    },
@@ -218,11 +248,54 @@
       },
 
       //TODO: Implement gamelogic related builder code
-    //Create game screen for player with pixi.js
+      //Create game screen for player with pixi.js
       createGameScreen : function() {
+         //Hide audio button
+         $('#audio-button').hide();
          //TODO: Create the pixi.js canvas and the first building blocks to create, maybe different file for pixi.js logic
+         pixijs.init();
+         $('#pixi-canvas').append(pixijs.renderer.view);
+         //TODO: replace this
+         bunnies();
+         pixijs.addSprite(PIXI.Texture.fromImage('img/bunny.png'));
       }
 
+   },
+   
+   initAudio: function (settings, apiKey) {
+      // init session and publisher
+      var pubSettings = '';
+      
+      if (settings == 'only-audio') {
+         pubSettings = {videoSource: null};
+         $('#publisherContainer').hide();
+      } else {
+         pubSettings = {publishAudio:true, publishVideo:true};
+      }
+      var session = OT.initSession(apiKey, App.audioSessionId),
+         publisher = OT.initPublisher('publisherContainer', pubSettings);
+      
+      // assign token for instructor and builder
+      var token = '';
+      if(App.myRole == 'Host') {
+         token = App.audioTokenInstructor;
+      } else {
+         token = App.audioTokenBuilder;
+      }           
+      
+      // connect to a session and publisher a stream
+      session.connect(token, function(err, info) {
+      if(err) {
+         //alert(err.message || err);
+      }
+         session.publish(publisher);
+      });            
+      // detect new streams and connect them to the app  
+      session.on('streamCreated', function(event) {
+         console.log("New stream in the session: " + event.stream.streamId);
+         session.subscribe(event.stream, "publisherContainer", { insertMode: "append" });
+      });
+   
    },
 
 };
