@@ -19,6 +19,9 @@ var pixijs = {
    //Container for UI elements within gameArea
    UI : null,
    
+   //The background for easy access
+   bg : null,
+   
    //Store all the rotators in this, this makes them easier to remove when finished with building.
    rotators : [],
    
@@ -31,17 +34,17 @@ var pixijs = {
    
    init : function() {
       //Initiate the renderer
-      pixijs.renderer = PIXI.autoDetectRenderer(pixijs.canvasW, pixijs.canvasH);
+      pixijs.renderer = PIXI.autoDetectRenderer(pixijs.canvasW, pixijs.canvasH,undefined,true);
       
       // create the root of the scene graph
       pixijs.stage = new PIXI.Container();
       
       //Create background from image and add it to the stage
       var background = PIXI.Texture.fromImage('img/blueprint.png');
-      var bg = new PIXI.Sprite(background);
-      bg.height = pixijs.canvasH;
-      bg.width = pixijs.canvasBlueprintW;
-      pixijs.stage.addChild(bg);
+      pixijs.bg = new PIXI.Sprite(background);
+      pixijs.bg.height = pixijs.canvasH;
+      pixijs.bg.width = pixijs.canvasBlueprintW;
+      pixijs.stage.addChild(pixijs.bg);
       pixijs.renderer.view.style.border = "3px dashed black";
       
       //Create a container for all the objects and add it to stage
@@ -69,14 +72,14 @@ var pixijs = {
    blockMenu : function(){
 	   
 	   var blockMenu = PIXI.Texture.fromImage('img/block.menu.png');
-	   menu = new PIXI.Sprite(blockMenu);
-	   menu.height = pixijs.canvasH;
-	   menu.width = pixijs.canvasBlockW;
+	   pixijs.menu = new PIXI.Sprite(blockMenu);
+	   pixijs.menu.height = pixijs.canvasH;
+	   pixijs.menu.width = pixijs.canvasBlockW;
 	      
-	   menu.position.x = pixijs.canvasBlueprintW;
-	   menu.position.y = 0;
+	   pixijs.menu.position.x = pixijs.canvasBlueprintW;
+	   pixijs.menu.position.y = 0;
 	   
-	   pixijs.stage.addChild(menu);
+	   pixijs.stage.addChild(pixijs.menu);
    },
    
    addFinished : function() {
@@ -95,10 +98,12 @@ var pixijs = {
    
    //Recursively destroy the given pixijs object
    recursiveDestroy: function(object) {
-      if(object.children.length > 0) {
-         object.children.forEach(function(child,index,array){
-            pixijs.recursiveDestroy(child);
-         })
+      if(typeof object.children != "undefined"){
+         if (object.children.length > 0) {
+            object.children.forEach(function(child,index,array){
+               pixijs.recursiveDestroy(child);
+            })
+         }
       }
     //Finally destroy the object itself
       object.destroy();
@@ -110,9 +115,9 @@ var pixijs = {
       pixijs.tempCont.children.forEach(function(child,index,array){
          pixijs.recursiveDestroy(child);
       })
-      var image = new Image();
       var texture = PIXI.Texture.fromImage(data);
-      console.log(texture);
+      pixijs.tempCont.removeChildren();
+      console.log(data);
       pixijs.tempCont.addChild(new PIXI.Sprite(texture));
       pixijs.stage.addChild(pixijs.tempCont);
    },
@@ -248,8 +253,18 @@ var pixijs = {
    //Function to call when player clicks the button to finish the build, also hide the button again
    onFinished : function() {
       this.renderable = false;
+      this.interactive = false;
+      this.buttonMode = false;
+      
+      pixijs.renderer.transparent = true;
+      pixijs.UI.renderable = false;
+      pixijs.menu.renderable = false;
+      pixijs.bg.renderable = false;
       pixijs.renderer.render(pixijs.stage);
       var texture = pixijs.renderer.view.toDataURL();
+      pixijs.UI.renderable = true;
+      pixijs.menu.renderable = true;
+      pixijs.bg.renderable = true;
       App.Player.finishConstruction(texture);
    },
    
