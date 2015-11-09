@@ -11,7 +11,6 @@ var app = express();
 var OpenTok = require('opentok');
 //Include the credentials stored in a seperate file
 var credentials = require('./credentials');
-console.log(credentials.apiKey);
 var apiKey = credentials.apiKey;
 var apiSecret = credentials.apiSecret;
 var opentok = new OpenTok(apiKey, apiSecret);

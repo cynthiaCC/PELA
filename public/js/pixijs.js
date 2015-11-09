@@ -27,11 +27,15 @@ var pixijs = {
    
    //BlockMenu is stored inside this
    menu : null,
+   //TODO: figure the Y value to use at start
+   currentMenuY : 55,
    
    //The default texture for rotator
    rotatorTexture : PIXI.Texture.fromImage('img/rotate.png'),
 
-   
+   /* ****************************
+    *    Initiating functions    *
+    ****************************** */
    init : function() {
       //Initiate the renderer
       pixijs.renderer = PIXI.autoDetectRenderer(pixijs.canvasW, pixijs.canvasH,undefined,true);
@@ -96,6 +100,11 @@ var pixijs = {
       pixijs.UI.addChild(button);
    },
    
+   /* ************************
+    *    Called functions    *
+    ************************** */
+   
+   
    //Recursively destroy the given pixijs object
    recursiveDestroy: function(object) {
       if(typeof object.children != "undefined"){
@@ -122,6 +131,125 @@ var pixijs = {
       pixijs.stage.addChild(pixijs.tempCont);
    },
    
+   //Get an image of the current objects
+   getImgOfCurrent : function() {
+      pixijs.renderer.transparent = true;
+      pixijs.UI.renderable = false;
+      pixijs.menu.renderable = false;
+      pixijs.bg.renderable = false;
+      pixijs.renderer.render(pixijs.stage);
+      var texture = pixijs.renderer.view.toDataURL();
+      pixijs.UI.renderable = true;
+      pixijs.menu.renderable = true;
+      pixijs.bg.renderable = true;
+      return texture;
+   },
+   
+   //This function adds the sprite in middle of the playable area
+   addSprite : function(texture, scale) {
+      //Create the sprite
+      var sprite = new PIXI.Sprite(texture);
+      
+      //Set it interactive
+      sprite.interactive = true;
+      
+      //Set the cursor to change into clicking mode when hovering over it
+      sprite.buttonMode = true;
+      
+      //Set the anchor in the middle of the sprite
+      sprite.anchor.set(0.5);
+      
+      //Set the scale of the sprite if defined
+      if (typeof scale != "undefined") {
+         sprite.scale = scale;
+      }
+      
+      //Add events
+      sprite
+            .on('mousedown', pixijs.onDragStart)
+            .on('touchstart', pixijs.onDragStart)
+            // events for drag end
+            .on('mouseup', pixijs.onDragEnd)
+            .on('mouseupoutside', pixijs.onDragEnd)
+            .on('touchend', pixijs.onDragEnd)
+            .on('touchendoutside', pixijs.onDragEnd)
+            // events for drag move
+            .on('mousemove', pixijs.onDragMove)
+            .on('touchmove', pixijs.onDragMove);
+      
+      sprite.position.x = pixijs.canvasBlueprintW/2;
+      sprite.position.y = pixijs.canvasH/2;
+      
+      //Make the rotator
+      var rotator = new PIXI.Sprite(pixijs.rotatorTexture);
+      rotator.interactive = true;
+      rotator.anchor.set(0.5);
+      rotator.buttonMode = true;
+      rotator.position.x = 0;
+      //This y value places the rotator above the sprite
+      rotator.position.y = -20;
+      
+      //Add events
+      rotator
+            // events for drag start
+            .on('mousedown', pixijs.onRotateStart)
+            .on('touchstart', pixijs.onRotateStart)
+            // events for drag end
+            .on('mouseup', pixijs.onRotateEnd)
+            .on('mouseupoutside', pixijs.onRotateEnd)
+            .on('touchend', pixijs.onRotateEnd)
+            .on('touchendoutside', pixijs.onRotateEnd)
+            // events for drag rotate
+            .on('mousemove', pixijs.onDragRotate)
+            .on('touchmove', pixijs.onDragRotate);
+      
+      //Add rotator to the sprite
+      sprite.addChild(rotator);
+      //Add the sprite to the objects container
+      pixijs.objects.addChild(sprite);
+   },
+   
+   //Add a sprite to the block menu and add the on functions to it
+   addToBlockMenu : function(texture, amount) {
+      //Create the sprite
+      var sprite = new PIXI.Sprite(texture);
+      
+      //Set it interactive
+      sprite.interactive = true;
+      
+      //Set the cursor to change into clicking mode when hovering over it
+      sprite.buttonMode = true;
+      
+      //Set the anchor in the middle of the sprite
+      sprite.anchor.set(0.5);
+      
+      //Set height and width
+      sprite.height = 90;
+      sprite.width = 100;
+      
+      //Set the amount of blocks
+      sprite.remaining = amount;
+      
+      //TODO: add a text showing how many are remaining
+      
+      //Set events
+      sprite
+            .on('mousedown', pixijs.onMenuClick)
+            .on('touchstart', pixijs.onMenuClick);
+      
+      //Set the position
+      sprite.position.x = pixijs.canvasBlockW/2;
+      sprite.position.y = pixijs.currentMenuY;
+      
+      //Add the height+some padding to currentMenuY
+      pixijs.currentMenuY += (sprite.height + 10);
+      pixijs.menu.addChild(sprite);
+   },
+   
+   /* *****************
+    *    Animation    *
+    ******************* */
+   
    //The animation function, set any per frame calculations and functions here
    animate : function() {
 
@@ -131,7 +259,9 @@ var pixijs = {
       pixijs.renderer.render(pixijs.stage);
    },
 
-   //On functions
+   /* ********************
+    *    On functions    *
+    ********************** */
    onDragStart : function(event)
    {
       // store a reference to the data
@@ -188,84 +318,21 @@ var pixijs = {
       }
    },
    
-   //This function adds the sprite in middle of the playable area
-   addSprite : function(texture, scale) {
-      //Create the sprite
-      var sprite = new PIXI.Sprite(texture);
-      
-      //Set it interactive
-      sprite.interactive = true;
-      
-      //Set the cursor to change into clicking mode when hovering over it
-      sprite.buttonMode = true;
-      
-      //Set the anchor in the middle of the sprite
-      sprite.anchor.set(0.5);
-      
-      //Set the scale of the sprite if defined
-      if (typeof scale != "undefined") {
-         sprite.scale = scale;
-      }
-      
-      //Add events
-      sprite
-            .on('mousedown', pixijs.onDragStart)
-            .on('touchstart', pixijs.onDragStart)
-            // events for drag end
-            .on('mouseup', pixijs.onDragEnd)
-            .on('mouseupoutside', pixijs.onDragEnd)
-            .on('touchend', pixijs.onDragEnd)
-            .on('touchendoutside', pixijs.onDragEnd)
-            // events for drag move
-            .on('mousemove', pixijs.onDragMove)
-            .on('touchmove', pixijs.onDragMove);
-      
-      sprite.position.x = pixijs.canvasBlueprintW/2;
-      sprite.position.y = pixijs.canvasH/2;
-      
-      //Make the rotator
-      var rotator = new PIXI.Sprite(pixijs.rotatorTexture);
-      rotator.interactive = true;
-      rotator.anchor.set(0.5);
-      rotator.buttonMode = true;
-      rotator.position.x = 0;
-      //This y value places the rotator above the sprite
-      rotator.position.y = -20;
-      rotator
-            // events for drag start
-            .on('mousedown', pixijs.onRotateStart)
-            .on('touchstart', pixijs.onRotateStart)
-            // events for drag end
-            .on('mouseup', pixijs.onRotateEnd)
-            .on('mouseupoutside', pixijs.onRotateEnd)
-            .on('touchend', pixijs.onRotateEnd)
-            .on('touchendoutside', pixijs.onRotateEnd)
-            // events for drag rotate
-            .on('mousemove', pixijs.onDragRotate)
-            .on('touchmove', pixijs.onDragRotate);
-      
-      //Add rotator to the sprite
-      sprite.addChild(rotator);
-      //Add the sprite to the objects container
-      pixijs.objects.addChild(sprite);
-   },
-   
    //Function to call when player clicks the button to finish the build, also hide the button again
    onFinished : function() {
       this.renderable = false;
       this.interactive = false;
       this.buttonMode = false;
-      
-      pixijs.renderer.transparent = true;
-      pixijs.UI.renderable = false;
-      pixijs.menu.renderable = false;
-      pixijs.bg.renderable = false;
-      pixijs.renderer.render(pixijs.stage);
-      var texture = pixijs.renderer.view.toDataURL();
-      pixijs.UI.renderable = true;
-      pixijs.menu.renderable = true;
-      pixijs.bg.renderable = true;
-      App.Player.finishConstruction(texture);
+      App.Player.finishConstruction(pixijs.getImgOfCurrent());
+   },
+   
+   //Function to add from blockMenu
+   onMenuClick : function() {
+      if (this.remaining > 0) {
+         this.remaining--;
+         pixijs.addSprite(this.texture);
+         //TODO: update the text child once implemented
+      }
    },
    
 };

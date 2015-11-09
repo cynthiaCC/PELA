@@ -258,6 +258,8 @@ var App = {
          //TODO: replace this
          bunnies();
          pixijs.addSprite(PIXI.Texture.fromImage('img/bunny.png'));
+         pixijs.addToBlockMenu(PIXI.Texture.fromImage('img/bunny.png'), 5);
+         pixijs.addToBlockMenu(PIXI.Texture.fromImage('img/bunny.png'), 1);
       },
       
       /**
