@@ -230,7 +230,7 @@ var pixijs = {
       //Set the amount of blocks
       sprite.remaining = amount;
       
-      //TODO: add a text showing how many are remaining
+      
       
       //Set events
       sprite
@@ -244,6 +244,22 @@ var pixijs = {
       //Add the height+some padding to currentMenuY
       pixijs.currentMenuY += (sprite.height + 10);
       pixijs.menu.addChild(sprite);
+      
+    //TODO: add a text showing how many are remaining
+      pixijs.createCounter(sprite.remaining);
+      
+   },
+   
+   createCounter : function(parts){
+	   
+	   var objectCount = new PIXI.Text("sometext" , {font: '60px Arial', align: 'center'});
+	      
+	      pixijs.objectCount.anchor.set (0.5); 
+	      pixijs.objectCount.position.x = pixijs.pixijs.canvasBlueprintW/2;;
+	      pixijs.objectCount.position.y = pixijs.canvasH/2;
+	      
+	      pixijs.UI.addChild(pixijs.objectCount);
+	   
    },
    
    /* *****************
