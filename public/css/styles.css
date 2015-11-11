@@ -143,3 +143,116 @@ smallbutton {
 #pixi-canvas {
    clear : both;
 }
+
+/* Styling for the progress bar. This is the basic styling for all browsers*/
+progress[value] {
+  /* Reset the default appearance */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+   appearance: none;
+   
+   /* Get rid of default border in Firefox. */
+  border: none;
+
+  width: 250px;
+  height: 20px;
+  
+  /* For IE10 */
+  color: green;
+}
+
+/* Styling for the container of the progress bar*/
+progress[value]::-webkit-progress-bar {
+  background-color: #eee;
+  border-radius: 2px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+}
+
+/* Styling for the value (how much is completed)*/
+progress[value]::-webkit-progress-value {
+  background-image:
+      -webkit-linear-gradient(-45deg, 
+                              transparent 33%, rgba(0, 0, 0, .1) 33%, 
+                              rgba(0,0, 0, .1) 66%, transparent 66%),
+      -webkit-linear-gradient(top, 
+                              rgba(255, 255, 255, .25), 
+                              rgba(0, 0, 0, .25)),
+      -webkit-linear-gradient(left, #f44, #149609);
+
+    border-radius: 2px; 
+    background-size: 35px 20px, 100% 100%, 100% 100%;
+    
+   
+    
+    -webkit-animation: animate-stripes 5s linear infinite;
+        animation: animate-stripes 5s linear infinite;
+}
+/* For Firefox*/
+progress[value]::-moz-progress-bar { 
+  background-image:
+    -moz-linear-gradient(135deg, 
+                        transparent 33%, 
+                        rgba(0, 0, 0, 0.1) 33%, 
+                        rgba(0, 0, 0, 0.1) 66%, 
+                        transparent 66%),
+    -moz-linear-gradient(top, 
+                        rgba(255, 255, 255, 0.25), 
+                        rgba(0, 0, 0, 0.25)),
+    -moz-linear-gradient(left, #f44, #149609 );
+
+  border-radius: 2px; 
+  background-size: 35px 20px, 100% 100%, 100% 100%; 
+}
+
+/*Animation*/
+@-webkit-keyframes animate-stripes {
+   100% { background-position: -100px 0px; }
+}
+
+@keyframes animate-stripes {
+   100% { background-position: -100px 0px; }
+}
+
+
+/*Present the actual value of the progress bar. This and ::after 
+pseudo elements don't necessarily work */
+progress[value]::-webkit-progress-value::before {
+  content: '80%';
+  position: absolute;
+  right: 0;
+  top: -125%;
+}
+
+progress[value]::-webkit-progress-value::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  position: absolute;
+  border-radius: 100%;
+  right: 7px;
+  top: 7px;
+  background-color: white;
+}
+
+/*These classes are for older browsers that don't support progress-tag*/
+.progress-bar {
+  background-color: whiteSmoke;
+  border-radius: 2px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25) inset;
+
+  width: 250px;
+  height: 20px;
+  
+  position: relative;
+  display: block;
+}
+  
+.progress-bar > span {
+  background-color: blue;
+  border-radius: 2px;
+
+  display: block;
+  text-indent: -9999px;
+}
+
+

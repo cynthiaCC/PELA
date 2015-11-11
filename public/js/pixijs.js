@@ -254,11 +254,11 @@ var pixijs = {
 	   
 	   var objectCount = new PIXI.Text("sometext" , {font: '60px Arial', align: 'center'});
 	      
-	      pixijs.objectCount.anchor.set (0.5); 
-	      pixijs.objectCount.position.x = pixijs.pixijs.canvasBlueprintW/2;;
-	      pixijs.objectCount.position.y = pixijs.canvasH/2;
+	      objectCount.anchor.set (0.5); 
+	      objectCount.position.x = pixijs.canvasBlockW/2;
+	      objectCount.position.y = pixijs.canvasH/2;
 	      
-	      pixijs.UI.addChild(pixijs.objectCount);
+	      pixijs.menu.addChild(objectCount);
 	   
    },
    
