@@ -252,15 +252,17 @@ var pixijs = {
    
    createCounter : function(parts){
 	   
-	   var objectCount = new PIXI.Text("sometext" , {font: '60px Arial', align: 'center'});
+	   var objectCount = new PIXI.Text(parts , {font: '20px Arial', align: 'center'});
 	      
 	      objectCount.anchor.set (0.5); 
 	      objectCount.position.x = pixijs.canvasBlockW/2;
-	      objectCount.position.y = pixijs.canvasH/2;
+	      objectCount.position.y = pixijs.currentMenuY;
 	      
 	      pixijs.menu.addChild(objectCount);
-	   
+	      
    },
+   
+   
    
    /* *****************
     *    Animation    *
@@ -348,7 +350,16 @@ var pixijs = {
          this.remaining--;
          pixijs.addSprite(this.texture);
          //TODO: update the text child once implemented
+         pixijs.createCounter(this.remaining);
       }
    },
+   
+   /*//TODO: should this be moved? also proper implementation needed
+   var pBar = document.getElementById('progBar');
+   onUpdateProgress = function(value){
+	   pBar.value = value;
+	   pBar.getElementByTagName('span')[0].inneHTML = Math.floor ((100/100)*value);
+	   
+   },*/
    
 };
