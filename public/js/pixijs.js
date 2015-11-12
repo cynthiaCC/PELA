@@ -27,8 +27,12 @@ var pixijs = {
    
    //BlockMenu is stored inside this
    menu : null,
-   //TODO: figure the Y value to use at start
    currentMenuY : 55,
+   
+   //Current blocks on the gamearea
+   currentBlocks : 0,
+   //Total amount of blocks for the construct
+   blockTotal : 0,
    
    //The default texture for rotator
    rotatorTexture : PIXI.Texture.fromImage('img/rotate.png'),
@@ -234,7 +238,8 @@ var pixijs = {
       
       //Set the amount of blocks
       sprite.remaining = amount;
-      
+      //Add value amount to the total blocks within construct
+      pixijs.blockTotal += amount;
       
       
       //Set events
@@ -246,7 +251,7 @@ var pixijs = {
       sprite.position.x = pixijs.canvasBlockW/2;
       sprite.position.y = pixijs.currentMenuY;
       
-    //TODO: add a text showing how many are remaining
+      //TODO: add a text showing how many are remaining
       pixijs.createCounter(sprite.remaining);
       
       //Add the height+some padding to currentMenuY
@@ -361,13 +366,13 @@ var pixijs = {
    //Function to add from blockMenu
    onMenuClick : function() {
       if (this.remaining > 0) {
+         App.blockAdded();
+         pixijs.currentBlocks++;
          this.remaining--;
          pixijs.addSprite(this.texture);
          //TODO: update the text child once implemented
          pixijs.createCounter(this.remaining);
       }
    },
-   
-   
    
 };

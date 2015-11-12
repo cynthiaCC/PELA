@@ -30,6 +30,7 @@ var IO = {
        
        IO.socket.on('audioStarted', IO.enableInstructorAudio );
        IO.socket.on('sentApiKey', IO.enableBuilderAudio);
+       IO.socket.on('blockAdded', IO.blockAdded);
        
        IO.socket.on('error', IO.error );
    },
@@ -133,7 +134,13 @@ var IO = {
   constructionFinished : function(data) {
      App.loadConstruction(data);
   },
-
+  
+  //Builder added a block, update values
+  blockAdded : function() {
+     if (App.myRole === 'Host') {
+        App[App.myRole].updateBlockAmount();
+     }
+  },
 
    /**
     * An error has occurred.
