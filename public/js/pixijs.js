@@ -32,6 +32,9 @@ var pixijs = {
    
    //The default texture for rotator
    rotatorTexture : PIXI.Texture.fromImage('img/rotate.png'),
+   
+ //The default texture for the block number background
+   fadeBalloon : PIXI.Texture.fromImage('img/fade_balloon.png'),
 
    /* ****************************
     *    Initiating functions    *
@@ -59,13 +62,15 @@ var pixijs = {
       pixijs.tempCont = new PIXI.Container();
       pixijs.stage.addChild(pixijs.tempCont);
       
+    //Create the menu
+      pixijs.blockMenu();
+      
       //Create container for UI elements
       pixijs.UI = new PIXI.Container();
       pixijs.stage.addChild(pixijs.UI);
       pixijs.addFinished();
       
-      //Create the menu
-      pixijs.blockMenu();
+      
       
       //start the animation
       requestAnimationFrame( pixijs.animate );
@@ -241,24 +246,33 @@ var pixijs = {
       sprite.position.x = pixijs.canvasBlockW/2;
       sprite.position.y = pixijs.currentMenuY;
       
+    //TODO: add a text showing how many are remaining
+      pixijs.createCounter(sprite.remaining);
+      
       //Add the height+some padding to currentMenuY
       pixijs.currentMenuY += (sprite.height + 10);
       pixijs.menu.addChild(sprite);
       
-    //TODO: add a text showing how many are remaining
-      pixijs.createCounter(sprite.remaining);
+    
       
    },
    
    createCounter : function(parts){
 	   
-	   var objectCount = new PIXI.Text(parts , {font: '20px Arial', align: 'center'});
+	   var objectCount = new PIXI.Text(parts , {font: '20px Arial', fill: 'white', align: 'center'});
 	      
-	      objectCount.anchor.set (0.5); 
-	      objectCount.position.x = pixijs.canvasBlockW/2;
-	      objectCount.position.y = pixijs.currentMenuY;
-	      
-	      pixijs.menu.addChild(objectCount);
+	   objectCount.anchor.set (0.5); 
+	   objectCount.position.x = pixijs.canvastW - pixijs.canvasBlockW/2;
+	   objectCount.position.y = pixijs.currentMenuY;
+	   
+	   var fadeBalloon = new PIXI.Sprite(pixijs.fadeBalloon);
+	   fadeBalloon.anchor.set(0.5);
+	   fadeBalloon.buttonMode = true;
+	   fadeBalloon.position.x = pixijs.canvasW - pixijs.canvasBlockW/2;
+	   fadeBalloon.position.y = pixijs.currentMenuY;
+	   
+	   pixijs.UI.addChild(fadeBalloon);
+	   pixijs.UI.addChild(objectCount);
 	      
    },
    
@@ -354,12 +368,6 @@ var pixijs = {
       }
    },
    
-   /*//TODO: should this be moved? also proper implementation needed
-   var pBar = document.getElementById('progBar');
-   onUpdateProgress = function(value){
-	   pBar.value = value;
-	   pBar.getElementByTagName('span')[0].inneHTML = Math.floor ((100/100)*value);
-	   
-   },*/
+   
    
 };
