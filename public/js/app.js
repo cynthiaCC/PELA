@@ -187,6 +187,11 @@ var App = {
          pixijs.addSprite(PIXI.Texture.fromImage('img/bunny.png'));
       },
       
+      //Add to the block amount
+      updateBlockAmount : function() {
+         pixijs.currentBlocks++;
+      },
+      
    },
    /* *****************************
     *        PLAYER CODE          *
@@ -322,6 +327,11 @@ var App = {
          session.subscribe(event.stream, "publisherContainer", { insertMode: "append" });
       });
    
+   },
+   
+   //Block has been added from the menu
+   blockAdded : function() {
+      IO.socket.emit('blockAdded', App.gameId);
    },
 
 };

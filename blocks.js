@@ -33,6 +33,7 @@ exports.initGame = function(sio, socket, ot, cred){
     //General Events
     gameSocket.on('gameStarted', startGame);
     gameSocket.on('audioStarted', audioStarted);
+    gameSocket.on('blockAdded', blockAdded);
     
     gameSocket.on('requestApiKey', requestApiKey);
     
@@ -174,3 +175,6 @@ function requestApiKey(gameId) {
    ************************* */
 
 //TODO: Implement Game Logic
+function blockAdded(gameId) {
+   io.sockets.in(gameId).emit('blockAdded');
+}
