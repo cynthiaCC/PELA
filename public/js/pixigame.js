@@ -45,10 +45,11 @@ function createBunny(x, y)
    
    //make a rotator for the bunny
    var circle = new PIXI.Sprite(pixijs.rotatorTexture);
-   circle.interactive = true;
+   circle.interactive = false;
+   circle.renderable = false;
    circle.anchor.set(0.5);
    circle.scale.set(0.4);
-   circle.buttonMode = true;
+   circle.buttonMode = false;
    circle.position.x = 0;
    circle.position.y = -20;
    circle

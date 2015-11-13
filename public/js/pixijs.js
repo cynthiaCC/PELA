@@ -13,11 +13,16 @@ var pixijs = {
    //All the draggable objects are stored here
    objects : null,
    
+   //Currently active object
+   activeObject : null,
+   
    //Container for the temporary objects when finished with construction
    tempCont : null,
    
    //Container for UI elements within gameArea
    UI : null,
+   //The button for finishing the construction
+   finishButton : null,
    
    //The background for easy access
    bg : null,
@@ -97,16 +102,15 @@ var pixijs = {
    
    addFinished : function() {
       //TODO: replace with the proper button and placement
-      var button = new PIXI.Graphics();
-      button.lineStyle(2, 0x0000FF, 1);
-      button.beginFill(0xFF700B, 1);
-      button.drawRect(50, 250, 120, 120);
+      pixijs.finishButton = new PIXI.Graphics();
+      pixijs.finishButton.lineStyle(2, 0x0000FF, 1);
+      pixijs.finishButton.beginFill(0xFF700B, 1);
+      pixijs.finishButton.drawRect(50, 250, 120, 120);
       
-      button.interactive = true;
-      button.buttonMode = true;
-      button
+      pixijs.finishButton.renderable = false;
+      pixijs.finishButton
             .on('mousedown', pixijs.onFinished);
-      pixijs.UI.addChild(button);
+      pixijs.UI.addChild(pixijs.finishButton);
    },
    
    /* ************************
@@ -142,6 +146,7 @@ var pixijs = {
    
    //Get an image of the current objects
    getImgOfCurrent : function() {
+      pixijs.setActive(null);
       pixijs.renderer.transparent = true;
       pixijs.UI.renderable = false;
       pixijs.menu.renderable = false;
@@ -191,9 +196,10 @@ var pixijs = {
       
       //Make the rotator
       var rotator = new PIXI.Sprite(pixijs.rotatorTexture);
-      rotator.interactive = true;
+      //rotator.interactive = true;
       rotator.anchor.set(0.5);
-      rotator.buttonMode = true;
+      //rotator.buttonMode = true;
+      rotator.renderable = false;
       rotator.position.x = 0;
       //This y value places the rotator above the sprite
       rotator.position.y = -20;
@@ -216,6 +222,7 @@ var pixijs = {
       sprite.addChild(rotator);
       //Add the sprite to the objects container
       pixijs.objects.addChild(sprite);
+      pixijs.setActive(sprite);
    },
    
    //Add a sprite to the block menu and add the on functions to it
@@ -252,7 +259,7 @@ var pixijs = {
       sprite.position.y = pixijs.currentMenuY;
       
 
-    //TODO: add a text showing how many are remaining
+    //Add a text showing how many are remaining
       pixijs.createCounter(sprite, sprite.remaining);
 
       
@@ -266,23 +273,31 @@ var pixijs = {
    
    //function that creates the counter for each object
    createCounter : function(spriteObj, parts){
-	   if(spriteObj.children.length > 0){
-	   for (var i = spriteObj.children.length - 1; i >= 0; i--) {
-			spriteObj.removeChild(spriteObj.children[i]);
-		}
-	   }
+	   //if(spriteObj.children.length > 0){
+	   //for (var i = spriteObj.children.length - 1; i >= 0; i--) {
+		//	spriteObj.removeChild(spriteObj.children[i]);
+		//}
+	   //}
 	   //spriteObj.removeChildren();
 	   
 	   //Create the text
 	   var objectCount = new PIXI.Text(parts , {font: '20px Arial', fill: 'white', align: 'center'});
 	      
-	   objectCount.anchor.set (0.5); 
+	   objectCount.anchor.set (0.5);
+	   objectCount.height = 100;
+	   objectCount.width = 100;
+	   objectCount.position.x = 5;
+	   objectCount.position.y = 10;
 	   /*objectCount.position.x = pixijs.canvastW - pixijs.canvasBlockW/2;
 	   objectCount.position.y = pixijs.currentMenuY;*/
 	   
 	   //Create the background for the text
 	   var fadeBalloon = new PIXI.Sprite(pixijs.fadeBalloon);
 	   fadeBalloon.anchor.set(0.5);
+	   fadeBalloon.height = 20;
+	   fadeBalloon.width = 20;
+	   fadeBalloon.position.x = 5;
+	   fadeBalloon.position.y = 10;
 	   /*fadeBalloon.buttonMode = true;
 	   fadeBalloon.position.x = pixijs.canvasW - pixijs.canvasBlockW/2;
 	   fadeBalloon.position.y = pixijs.currentMenuY;*/
@@ -293,8 +308,24 @@ var pixijs = {
 	      
    },
    
-   
-   
+   setActive : function(object){
+      if(pixijs.activeObject != null){
+         pixijs.activeObject.children.forEach(function(child,index,array){
+            child.interactive = false;
+            child.buttonMode = false;
+            child.renderable = false;
+         })
+      }
+      if(object != null) {
+         object.children.forEach(function(child,index,array){
+            child.interactive = true;
+            child.buttonMode = true;
+            child.renderable = true;
+         })
+         pixijs.objects.setChildIndex(object, pixijs.objects.children.length - 1);
+      }
+      pixijs.activeObject = object;
+   },
    
    /* *****************
     *    Animation    *
@@ -323,6 +354,7 @@ var pixijs = {
          this.dragging = true;
          this.rotating = false;
       }
+      pixijs.setActive(this);
    },
    
    onRotateStart : function(event) {
@@ -383,8 +415,20 @@ var pixijs = {
          pixijs.currentBlocks++;
          this.remaining--;
          pixijs.addSprite(this.texture);
-         //TODO: update the text child once implemented
-         pixijs.createCounter(pixijs.sprite, this.remaining);
+         var newtext = this.remaining.toString();
+         //pixijs.createCounter(pixijs.sprite, this.remaining);
+         if(typeof this.children != "undefined") {
+            this.children.forEach(function(child,index,array){
+               if(typeof child.text != "undefined"){
+                  child.text = newtext;
+               }
+            })
+         }
+         if (pixijs.currentBlocks == pixijs.blockTotal){
+            pixijs.finishButton.renderable = true;
+            pixijs.finishButton.interactive = true;
+            pixijs.finishButton.buttonMode = true;
+         }
       }
    },
    
