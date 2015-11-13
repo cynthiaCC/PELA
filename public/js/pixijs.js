@@ -247,7 +247,7 @@ var pixijs = {
       sprite.position.y = pixijs.currentMenuY;
       
     //TODO: add a text showing how many are remaining
-      pixijs.createCounter(sprite.remaining);
+      pixijs.createCounter(sprite, sprite.remaining);
       
       //Add the height+some padding to currentMenuY
       pixijs.currentMenuY += (sprite.height + 10);
@@ -257,24 +257,35 @@ var pixijs = {
       
    },
    
-   createCounter : function(parts){
+   //function that creates the counter for each object
+   createCounter : function(spriteObj, parts){
+	   if(spriteObj.children.length > 0){
+	   for (var i = spriteObj.children.length - 1; i >= 0; i--) {
+			spriteObj.removeChild(spriteObj.children[i]);
+		}
+	   }
+	   //spriteObj.removeChildren();
 	   
+	   //Create the text
 	   var objectCount = new PIXI.Text(parts , {font: '20px Arial', fill: 'white', align: 'center'});
 	      
 	   objectCount.anchor.set (0.5); 
-	   objectCount.position.x = pixijs.canvastW - pixijs.canvasBlockW/2;
-	   objectCount.position.y = pixijs.currentMenuY;
+	   /*objectCount.position.x = pixijs.canvastW - pixijs.canvasBlockW/2;
+	   objectCount.position.y = pixijs.currentMenuY;*/
 	   
+	   //Create the background for the text
 	   var fadeBalloon = new PIXI.Sprite(pixijs.fadeBalloon);
 	   fadeBalloon.anchor.set(0.5);
-	   fadeBalloon.buttonMode = true;
+	   /*fadeBalloon.buttonMode = true;
 	   fadeBalloon.position.x = pixijs.canvasW - pixijs.canvasBlockW/2;
-	   fadeBalloon.position.y = pixijs.currentMenuY;
+	   fadeBalloon.position.y = pixijs.currentMenuY;*/
 	   
-	   pixijs.UI.addChild(fadeBalloon);
-	   pixijs.UI.addChild(objectCount);
+	   //Adds the counter and the background to the parent sprite
+	   spriteObj.addChild(fadeBalloon);
+	   spriteObj.addChild(objectCount);
 	      
    },
+   
    
    
    
@@ -364,7 +375,7 @@ var pixijs = {
          this.remaining--;
          pixijs.addSprite(this.texture);
          //TODO: update the text child once implemented
-         pixijs.createCounter(this.remaining);
+         pixijs.createCounter(pixijs.sprite, this.remaining);
       }
    },
    
