@@ -324,6 +324,8 @@ var pixijs = {
 	   var pBar = new PIXI.Texture.fromImage('img/ProgressBarOutline.png');
 	   pixijs.progressBar = new PIXI.Sprite(pBar);
 	   
+	   pixijs.progressBar.anchor.set(0.0);
+	   
 	   pixijs.progressBar.width = 200;
 	   pixijs.progressBar.height = 22;
 	   
@@ -334,9 +336,10 @@ var pixijs = {
 	   
    },
    
-   updateProgress : function(pieces){
+   updateProgress : function(){
 	   
-	   var chunksNeeded = 100/pieces;
+	   var blocksLeft = pixijs.blockTotal - pixijs.currentBlocks;
+	   var chunksNeeded = 100/pixijs.blockTotal;
 	   
 	   
 	   
@@ -468,7 +471,7 @@ var pixijs = {
       if (this.remaining > 0) {
          App.blockAdded();
          pixijs.currentBlocks++;
-         pixijs.updateProgress(this.remaining);
+         pixijs.updateProgress();
          this.remaining--;
          pixijs.addSprite(this.texture);
          var newtext = this.remaining.toString();
