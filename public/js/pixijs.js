@@ -24,6 +24,9 @@ var pixijs = {
    //The button for finishing the construction
    finishButton : null,
    
+   //The progress bar for the game
+   progressBar : null,
+   
    //The background for easy access
    bg : null,
    
@@ -74,12 +77,14 @@ var pixijs = {
     //Create the menu
       pixijs.blockMenu();
       
+      
+      
       //Create container for UI elements
       pixijs.UI = new PIXI.Container();
       pixijs.stage.addChild(pixijs.UI);
       pixijs.addFinished();
       
-      
+      pixijs.createProgressBar();
       
       //start the animation
       requestAnimationFrame( pixijs.animate );
@@ -101,12 +106,18 @@ var pixijs = {
    },
    
    addFinished : function() {
-      //TODO: replace with the proper button and placement
-      pixijs.finishButton = new PIXI.Graphics();
-      pixijs.finishButton.lineStyle(2, 0x0000FF, 1);
+      //Create the button for finishing the game
+      var finButton = new PIXI.Texture.fromImage('img/Finish-button.png');
+      pixijs.finishButton = new PIXI.Sprite(finButton);
+      /*pixijs.finishButton.lineStyle(2, 0x0000FF, 1);
       pixijs.finishButton.beginFill(0xFF700B, 1);
-      pixijs.finishButton.drawRect(50, 250, 120, 120);
+      pixijs.finishButton.drawRect(50, 250, 120, 120);*/
       
+      //TODO: the placement could be changed to a better position later on
+      pixijs.finishButton.height = 81;
+      pixijs.finishButton. width = 201;
+      pixijs.finishButton.position.x = 50;
+      pixijs.finishButton.position.y = 250;
       pixijs.finishButton.renderable = false;
       pixijs.finishButton
             .on('mousedown', pixijs.onFinished);
@@ -308,6 +319,50 @@ var pixijs = {
 	      
    },
    
+   createProgressBar : function(){
+	   
+	   var pBar = new PIXI.Texture.fromImage('img/ProgressBarOutline.png');
+	   pixijs.progressBar = new PIXI.Sprite(pBar);
+	   
+	   pixijs.progressBar.width = 200;
+	   pixijs.progressBar.height = 22;
+	   
+	   pixijs.progressBar.position.x = 40;
+	   pixijs.progressBar.position.y = 580;
+	   
+	   pixijs.UI.addChild(pixijs.progressBar);
+	   
+   },
+   
+   updateProgress : function(pieces){
+	   
+	   var chunksNeeded = 100/pieces;
+	   
+	   
+	   
+	   var prog = new PIXI.Texture.fromImage('img/ProgressBarBit5Percent.png');
+	   progUpdate = new PIXI.Sprite(prog);
+	   
+	   progUpdate.width = 10;
+	   progUpdate.height = 22;
+	   
+	   var barLength = 0;
+	   for(var i = 0; i < chunksNeeded;i += 5 ){
+		  
+		   
+		   
+		   
+		   progUpdate.position.x = pixijs.progressBar.position.x + barLength;
+		   progUpdate.position.y = pixijs.progressBar.position.y;
+		   
+		   pixijs.UI.addChild(progUpdate);
+		   
+		   barLength += 10;
+	   }
+	   
+	   
+   },
+   
    setActive : function(object){
       if(pixijs.activeObject != null){
          pixijs.activeObject.children.forEach(function(child,index,array){
@@ -413,6 +468,7 @@ var pixijs = {
       if (this.remaining > 0) {
          App.blockAdded();
          pixijs.currentBlocks++;
+         pixijs.updateProgress(this.remaining);
          this.remaining--;
          pixijs.addSprite(this.texture);
          var newtext = this.remaining.toString();
