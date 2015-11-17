@@ -70,14 +70,12 @@ var pixijs = {
       pixijs.objects = new PIXI.Container();
       pixijs.stage.addChild(pixijs.objects);
       
-      //
+      //The temporary container that will have the instructions for builder and built object for instructor after finishing
       pixijs.tempCont = new PIXI.Container();
       pixijs.stage.addChild(pixijs.tempCont);
       
-    //Create the menu
+      //Create the menu
       pixijs.blockMenu();
-      
-      
       
       //Create container for UI elements
       pixijs.UI = new PIXI.Container();
@@ -93,16 +91,16 @@ var pixijs = {
    },
    
    blockMenu : function(){
-	   
-	   var blockMenu = PIXI.Texture.fromImage('img/block.menu.png');
-	   pixijs.menu = new PIXI.Sprite(blockMenu);
-	   pixijs.menu.height = pixijs.canvasH;
-	   pixijs.menu.width = pixijs.canvasBlockW;
-	      
-	   pixijs.menu.position.x = pixijs.canvasBlueprintW;
-	   pixijs.menu.position.y = 0;
-	   
-	   pixijs.stage.addChild(pixijs.menu);
+      
+      var blockMenu = PIXI.Texture.fromImage('img/block.menu.png');
+      pixijs.menu = new PIXI.Sprite(blockMenu);
+      pixijs.menu.height = pixijs.canvasH;
+      pixijs.menu.width = pixijs.canvasBlockW;
+         
+      pixijs.menu.position.x = pixijs.canvasBlueprintW;
+      pixijs.menu.position.y = 0;
+      
+      pixijs.stage.addChild(pixijs.menu);
    },
    
    addFinished : function() {
@@ -142,17 +140,30 @@ var pixijs = {
       object.destroy();
    },
    
- //Load the temporary container sent by app
-   loadTemp : function(data) {
-      //First clear the container
-      pixijs.tempCont.children.forEach(function(child,index,array){
+   //Clear the given container completely
+   clearContainer : function(container) {
+      container.children.forEach(function(child,index,array){
          pixijs.recursiveDestroy(child);
       })
+      container.removeChildren();
+   },
+   
+   //Clear all containers
+   clearAll : function() {
+      pixijs.clearContainer(pixijs.objects);
+      pixijs.clearContainer(pixijs.menu);
+      pixijs.clearContainer(pixijs.tempCont);
+      pixijs.currentMenuY = 55;
+   },
+   
+   //Load the temporary container sent by app
+   loadTemp : function(data) {
+      //First clear the container
+      pixijs.clearContainer(pixijs.tempCont);
       var texture = PIXI.Texture.fromImage(data);
-      pixijs.tempCont.removeChildren();
-      console.log(data);
-      pixijs.tempCont.addChild(new PIXI.Sprite(texture));
-      pixijs.stage.addChild(pixijs.tempCont);
+      sprite = new PIXI.Sprite(texture);
+      sprite.alpha = 0.5;
+      pixijs.tempCont.addChild(sprite);
    },
    
    //Get an image of the current objects
@@ -213,7 +224,7 @@ var pixijs = {
       rotator.renderable = false;
       rotator.position.x = 0;
       //This y value places the rotator above the sprite
-      rotator.position.y = -20;
+      rotator.position.y = - sprite.height;
       
       //Add events
       rotator
@@ -251,13 +262,13 @@ var pixijs = {
       sprite.anchor.set(0.5);
       
       //Set height and width
-      sprite.height = 90;
-      sprite.width = 100;
+      //sprite.height = 90;
+      //sprite.width = 100;
       
       //Set the amount of blocks
       sprite.remaining = amount;
       //Add value amount to the total blocks within construct
-      pixijs.blockTotal += amount;
+      pixijs.blockTotal += parseInt(amount);
       
       
       //Set events
@@ -275,116 +286,131 @@ var pixijs = {
 
       
       //Add the height+some padding to currentMenuY
-      pixijs.currentMenuY += (sprite.height + 10);
+      pixijs.currentMenuY += (90 + 10);
       pixijs.menu.addChild(sprite);
+   },
+   
+   addBlueprint : function(texture) {
+      //Create the sprite
+      var sprite = new PIXI.Sprite(texture);
       
-    
+      //Set the anchor in the middle of the sprite
+      sprite.anchor.set(0.5);
       
+      //Put in middle
+      sprite.position.x = pixijs.canvasBlueprintW/2;
+      sprite.position.y = pixijs.canvasH/2;
+
+      //Add the sprite to the objects container
+      pixijs.objects.addChild(sprite);
    },
    
    //function that creates the counter for each object
    createCounter : function(spriteObj, parts){
-	   //if(spriteObj.children.length > 0){
-	   //for (var i = spriteObj.children.length - 1; i >= 0; i--) {
-		//	spriteObj.removeChild(spriteObj.children[i]);
-		//}
-	   //}
-	   //spriteObj.removeChildren();
-	   
-	   //Create the text
-	   var objectCount = new PIXI.Text(parts , {font: '20px Arial', fill: 'white', align: 'center'});
-	      
-	   objectCount.anchor.set (0.5);
-	   objectCount.height = 100;
-	   objectCount.width = 100;
-	   objectCount.position.x = 5;
-	   objectCount.position.y = 10;
-	   /*objectCount.position.x = pixijs.canvastW - pixijs.canvasBlockW/2;
-	   objectCount.position.y = pixijs.currentMenuY;*/
-	   
-	   //Create the background for the text
-	   var fadeBalloon = new PIXI.Sprite(pixijs.fadeBalloon);
-	   fadeBalloon.anchor.set(0.5);
-	   fadeBalloon.height = 20;
-	   fadeBalloon.width = 20;
-	   fadeBalloon.position.x = 5;
-	   fadeBalloon.position.y = 10;
-	   /*fadeBalloon.buttonMode = true;
-	   fadeBalloon.position.x = pixijs.canvasW - pixijs.canvasBlockW/2;
-	   fadeBalloon.position.y = pixijs.currentMenuY;*/
-	   
-	   //Adds the counter and the background to the parent sprite
-	   spriteObj.addChild(fadeBalloon);
-	   spriteObj.addChild(objectCount);
-	      
+      //if(spriteObj.children.length > 0){
+      //for (var i = spriteObj.children.length - 1; i >= 0; i--) {
+      //   spriteObj.removeChild(spriteObj.children[i]);
+      //}
+      //}
+      //spriteObj.removeChildren();
+      
+      //Create the text
+      var objectCount = new PIXI.Text(parts , {font: '20px Arial', fill: 'white', align: 'center'});
+         
+      objectCount.anchor.set (0.5);
+      //objectCount.height = 100;
+      //objectCount.width = 100;
+      objectCount.position.x = 5;
+      objectCount.position.y = 10;
+      /*objectCount.position.x = pixijs.canvastW - pixijs.canvasBlockW/2;
+      objectCount.position.y = pixijs.currentMenuY;*/
+      
+      //Create the background for the text
+      var fadeBalloon = new PIXI.Sprite(pixijs.fadeBalloon);
+      fadeBalloon.anchor.set(0.5);
+      //fadeBalloon.height = 20;
+      //fadeBalloon.width = 20;
+      fadeBalloon.position.x = 5;
+      fadeBalloon.position.y = 10;
+      /*fadeBalloon.buttonMode = true;
+      fadeBalloon.position.x = pixijs.canvasW - pixijs.canvasBlockW/2;
+      fadeBalloon.position.y = pixijs.currentMenuY;*/
+      
+      //Adds the counter and the background to the parent sprite
+      spriteObj.addChild(fadeBalloon);
+      spriteObj.addChild(objectCount);
+         
    },
    
    createProgressBar : function(){
-	   
-	   var pBar = new PIXI.Texture.fromImage('img/ProgressBarOutline.png');
-	   pixijs.progressBar = new PIXI.Sprite(pBar);
-	   
-	   pixijs.progressBar.anchor.set(0.0);
-	   
-	   pixijs.progressBar.width = 200;
-	   pixijs.progressBar.height = 22;
-	   
-	   pixijs.progressBar.position.x = 40;
-	   pixijs.progressBar.position.y = 580;
-	   
-	   pixijs.UI.addChild(pixijs.progressBar);
-	   
+      
+      var pBar = new PIXI.Texture.fromImage('img/ProgressBarOutline.png');
+      pixijs.progressBar = new PIXI.Sprite(pBar);
+      
+      pixijs.progressBar.anchor.set(0.0);
+      
+      pixijs.progressBar.width = 200;
+      pixijs.progressBar.height = 22;
+      
+      pixijs.progressBar.position.x = 40;
+      pixijs.progressBar.position.y = 580;
+      
+      pixijs.UI.addChild(pixijs.progressBar);
+      
    },
    
    //function that updates the progress bar
    updateProgress : function(){
-	   
-	   //calculate how many blocks are still in the blockmenu
-	   var blocksLeft = pixijs.blockTotal - pixijs.currentBlocks;
-	   
-	   //Calculate how many bits of the bar need to be added when one
-	   //block is added to the playing area. For example: 5 total blocks: 1 block is 20%
-	   //1 bit is about 5 %, so 4 bits need to be added
-	   var chunksNeeded = 100/pixijs.blockTotal;
-	   
-	   var barLength;
-	   
-	   if(blocksLeft < pixijs.blockTotal -1){
-		   
-		   barLength = 10 * pixijs.currentBlocks;
-	   }
-	   else {
-		   barLength = 0;
-	   }
-	   
-	   
-	   for(var i = 0; i < chunksNeeded;i += 5 ){
-		   
-		 //Create a sprite from the image
-		   var prog = new PIXI.Texture.fromImage('img/ProgressBarBit5Percent.png');
-		   progUpdate = new PIXI.Sprite(prog);
-		   
-		   progUpdate.width = 10;
-		   progUpdate.height = 22;
-		   
-		   progUpdate.position.x = pixijs.progressBar.position.x + barLength;
-		   progUpdate.position.y = pixijs.progressBar.position.y;
-		   
-		   pixijs.UI.addChild(progUpdate);
-		   
-		   barLength += 10;
-	   }
-	   
-	   
+      
+      //calculate how many blocks are still in the blockmenu
+      var blocksLeft = pixijs.blockTotal - pixijs.currentBlocks;
+      
+      //Calculate how many bits of the bar need to be added when one
+      //block is added to the playing area. For example: 5 total blocks: 1 block is 20%
+      //1 bit is about 5 %, so 4 bits need to be added
+      var chunksNeeded = 100/pixijs.blockTotal;
+      
+      var barLength;
+      
+      if(blocksLeft < pixijs.blockTotal -1){
+         
+         barLength = 10 * pixijs.currentBlocks;
+      }
+      else {
+         barLength = 0;
+      }
+      
+      
+      for(var i = 0; i < chunksNeeded;i += 5 ){
+         
+       //Create a sprite from the image
+         var prog = new PIXI.Texture.fromImage('img/ProgressBarBit5Percent.png');
+         progUpdate = new PIXI.Sprite(prog);
+         
+         progUpdate.width = 10;
+         progUpdate.height = 22;
+         
+         progUpdate.position.x = pixijs.progressBar.position.x + barLength;
+         progUpdate.position.y = pixijs.progressBar.position.y;
+         
+         pixijs.UI.addChild(progUpdate);
+         
+         barLength += 10;
+      }
+      
+      
    },
    
+   //Sets the given object as active in the playarea
    setActive : function(object){
       if(pixijs.activeObject != null){
-         pixijs.activeObject.children.forEach(function(child,index,array){
-            child.interactive = false;
-            child.buttonMode = false;
-            child.renderable = false;
-         })
+         if (pixijs.activeObject.children != null) {
+            pixijs.activeObject.children.forEach(function(child,index,array){
+               child.interactive = false;
+               child.buttonMode = false;
+               child.renderable = false;
+            })
+         }
       }
       if(object != null) {
          object.children.forEach(function(child,index,array){

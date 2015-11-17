@@ -1,13 +1,16 @@
 var io;
 var gameSocket;
 var opentok;
-var credentials
+var credentials;
+var listOfCompilations;
 
 var gameID = '';
 var audioSessionId = '';
 var instructorToken = '';
 var builderToken = '';
 
+//File reader
+var fs = require('fs');
 /**
  * This function is called by index.js to initialize a new game instance.
  *
@@ -40,6 +43,8 @@ exports.initGame = function(sio, socket, ot, cred){
     gameSocket.on('error', function(error) {
        console.log(error);
     });
+    
+    listOfCompilations = JSON.parse(fs.readFileSync("listOfCompilations.json"));
 }
 
 /* ********************************************
@@ -78,10 +83,13 @@ function hostCreateNewGame() {
  */
 function hostPrepareGame(gameId) {
     var sock = this;
+    var compilation = randomCompilation();
     var data = {
         mySocketId : sock.id,
-        gameId : gameId
+        gameId : gameId,
+        compilation : compilation
     };
+    console.log(data);
     //console.log("All Players Present. Preparing game...");
     io.sockets.in(data.gameId).emit('beginNewGame', data);
 }
@@ -150,12 +158,14 @@ function constructionFinished(data, gameId) {
 
 function startGame(gameId, audioSettings) {
    var sock = this;
+   var compilation = randomCompilation();
    var data = {
          mySocketId : sock.id,
          gameId : gameId,
          audioSettings : audioSettings,
          audioSessionId : audioSessionId,
-         builderToken : builderToken
+         builderToken : builderToken,
+         compilation : compilation
    };
    io.sockets.in(data.gameId).emit('beginNewGame', data);
 }
@@ -166,6 +176,12 @@ function audioStarted(gameId) {
 
 function requestApiKey(gameId) {
    io.sockets.in(gameId).emit('sentApiKey', credentials.apiKey);
+}
+
+function randomCompilation() {
+   var index = Math.floor(Math.random() * listOfCompilations.length);
+   var randomComp = listOfCompilations[index];
+   return randomComp;
 }
 
 /* *************************

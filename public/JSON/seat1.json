@@ -1,0 +1,28 @@
+{
+   "compilationName" : "seat1",
+   "displayName" : "Chair",
+   "compilationImg" : "seat1.png",
+   "parts" :
+      [
+         {
+            "partName" : "Beam",
+            "quantity" : "2",
+            "partImg" : "seat1piece1.png"
+         },
+         {
+            "partName" : "Bar",
+            "quantity" : "6",
+            "partImg" : "seat1piece2.png"
+         },
+         {
+            "partName" : "Parallelogram",
+            "quantity" : "1",
+            "partImg" : "seat1piece3.png"
+         },
+         {
+           "partName" : "Block",
+           "quantity" : "3",
+           "partImg" : "seat1piece4.png"
+         }
+      ]
+}

@@ -84,7 +84,16 @@ var App = {
       $('#pb-intro-screen-template').hide();
       App[App.myRole].createGameScreen();
    },
-
+   
+   beginRound : function(compilation) {
+      pixijs.clearAll();
+      var filename = "JSON/" + compilation + ".json";
+      var compilationJSON;
+      $.getJSON(filename, function(data) {
+         compilationJSON = data;
+         App[App.myRole].begin(compilationJSON);
+      });
+   },
 
    /* *******************************
     *         HOST CODE           *
@@ -172,8 +181,8 @@ var App = {
       },
       
       endGame : function(data){
-    	  App.showInitScreen();
-    	  
+         App.showInitScreen();
+        
       },
 
     //TODO: Implementing gamelogic ralated host code
@@ -182,9 +191,16 @@ var App = {
          //TODO: Create the pixi.js canvas and the first object to create, maybe different file for pixi.js logic
          pixijs.init();
          $('#pixi-canvas').append(pixijs.renderer.view);
-         //TODO: replace this
-         bunnies();
-         pixijs.addSprite(PIXI.Texture.fromImage('img/bunny.png'));
+      },
+      
+      //begin the round for instructor
+      begin : function(compilation) {
+         pixijs.addBlueprint(PIXI.Texture.fromImage('img/' + compilation.compilationImg));
+         var blocks = 0;
+         $.each(compilation.parts, function(index, value) {
+            blocks += value.quantity;
+         });
+         pixijs.blockTotal = blocks;
       },
       
       //Add to the block amount
@@ -260,11 +276,6 @@ var App = {
          //TODO: Create the pixi.js canvas and the first building blocks to create, maybe different file for pixi.js logic
          pixijs.init();
          $('#pixi-canvas').append(pixijs.renderer.view);
-         //TODO: replace this
-         bunnies();
-         pixijs.addSprite(PIXI.Texture.fromImage('img/bunny.png'));
-         pixijs.addToBlockMenu(PIXI.Texture.fromImage('img/bunny.png'), 5);
-         pixijs.addToBlockMenu(PIXI.Texture.fromImage('img/bunny.png'), 1);
       },
       
       /**
@@ -273,6 +284,13 @@ var App = {
        */
       finishConstruction : function(data){
          IO.socket.emit('constructionFinished', data, App.gameId);
+      },
+      
+      //Begin the round for builder
+      begin : function(compilation) {
+         $.each(compilation.parts, function(index, value) {
+            pixijs.addToBlockMenu(PIXI.Texture.fromImage('img/' + value.partImg), value.quantity);
+         });
       },
       
       

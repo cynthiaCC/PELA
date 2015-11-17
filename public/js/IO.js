@@ -78,7 +78,9 @@ var IO = {
          App.audioTokenBuilder = data.builderToken;
       }
       App.beginNewGame();
+      App.beginRound(data.compilation);
    },
+   
    
    /**
     * An error occured while trying to join a room
