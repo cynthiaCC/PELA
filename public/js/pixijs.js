@@ -336,24 +336,36 @@ var pixijs = {
 	   
    },
    
+   //function that updates the progress bar
    updateProgress : function(){
 	   
+	   //calculate how many blocks are still in the blockmenu
 	   var blocksLeft = pixijs.blockTotal - pixijs.currentBlocks;
+	   
+	   //Calculate how many bits of the bar need to be added when one
+	   //block is added to the playing area. For example: 5 total blocks: 1 block is 20%
+	   //1 bit is about 5 %, so 4 bits need to be added
 	   var chunksNeeded = 100/pixijs.blockTotal;
 	   
+	   var barLength;
+	   
+	   if(blocksLeft < pixijs.blockTotal -1){
+		   
+		   barLength = 10 * pixijs.currentBlocks;
+	   }
+	   else {
+		   barLength = 0;
+	   }
 	   
 	   
-	   var prog = new PIXI.Texture.fromImage('img/ProgressBarBit5Percent.png');
-	   progUpdate = new PIXI.Sprite(prog);
-	   
-	   progUpdate.width = 10;
-	   progUpdate.height = 22;
-	   
-	   var barLength = 0;
 	   for(var i = 0; i < chunksNeeded;i += 5 ){
-		  
 		   
+		 //Create a sprite from the image
+		   var prog = new PIXI.Texture.fromImage('img/ProgressBarBit5Percent.png');
+		   progUpdate = new PIXI.Sprite(prog);
 		   
+		   progUpdate.width = 10;
+		   progUpdate.height = 22;
 		   
 		   progUpdate.position.x = pixijs.progressBar.position.x + barLength;
 		   progUpdate.position.y = pixijs.progressBar.position.y;
@@ -471,9 +483,9 @@ var pixijs = {
       if (this.remaining > 0) {
          App.blockAdded();
          pixijs.currentBlocks++;
-         pixijs.updateProgress();
          this.remaining--;
          pixijs.addSprite(this.texture);
+         pixijs.updateProgress();
          var newtext = this.remaining.toString();
          //pixijs.createCounter(pixijs.sprite, this.remaining);
          if(typeof this.children != "undefined") {
