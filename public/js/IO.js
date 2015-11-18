@@ -116,7 +116,7 @@ var IO = {
    
    /**
     * Enable audio BUTTON for builder and audio for instructor
-    * @param data
+    * @param apiKey contains the apikey sent by server
     */
    enableInstructorAudio : function(apiKey) {
        if(App.originalRole === 'Player') {
@@ -127,12 +127,14 @@ var IO = {
        }
    },
    
+   //Enable the audio for the player who was originally the builder
    enableBuilderAudio : function(apiKey) {
       if(App.originalRole === 'Player') {
          App.initAudio(App.audioSettings, apiKey);
       }
   },
   
+  //Player finished constructing, tell App to load the sent construction and show it to instructor and load the blueprint for builder to look at
   constructionFinished : function(data) {
      App.loadConstruction(data);
   },

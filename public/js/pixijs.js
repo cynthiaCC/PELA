@@ -439,6 +439,7 @@ var pixijs = {
    /* ********************
     *    On functions    *
     ********************** */
+   //Player starts dragging the object from somewhere else besides the rotator
    onDragStart : function(event)
    {
       // store a reference to the data
@@ -453,6 +454,7 @@ var pixijs = {
       pixijs.setActive(this);
    },
    
+   //Begin the rotation towards the mouse
    onRotateStart : function(event) {
       if (typeof this.parent.dragging == "undefined" || this.parent.dragging == false){
          this.data = event.data;
@@ -461,6 +463,7 @@ var pixijs = {
       }
    },
 
+   //Stop the movement of the object
    onDragEnd : function()
    {
       this.alpha = 1;
@@ -471,11 +474,13 @@ var pixijs = {
       this.data = null;
    },
    
+   //Rotating of the object has ended
    onRotateEnd : function() {
       this.parent.rotating = false;
       this.data = null;
    },
-
+   
+   //Moves the object within the playarea
    onDragMove : function()
    {
       if (this.dragging)

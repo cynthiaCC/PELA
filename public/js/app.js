@@ -173,6 +173,7 @@ var App = {
 
       },
       
+      //Host started the game after player joined
       onStartClick : function() {
          IO.socket.emit('gameStarted', App.gameId, App.audioSettings);
       },
@@ -314,8 +315,10 @@ var App = {
       if (App.myRole == 'Host') {
          pixijs.loadTemp(data);
       }
+      //TODO: load the blueprint for builder
    },
    
+   //Initiate the voice communication
    initAudio: function (settings, apiKey) {
       // init session and publisher
       var pubSettings = '';
