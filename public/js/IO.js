@@ -119,7 +119,7 @@ var IO = {
     * @param data
     */
    enableInstructorAudio : function(apiKey) {
-       if(App.myRole === 'Player') {
+       if(App.originalRole === 'Player') {
            $('#audio-button').show();
        }
        else {
@@ -128,7 +128,7 @@ var IO = {
    },
    
    enableBuilderAudio : function(apiKey) {
-      if(App.myRole === 'Player') {
+      if(App.originalRole === 'Player') {
          App.initAudio(App.audioSettings, apiKey);
       }
   },

@@ -6,7 +6,7 @@ $(document).ready(function() {
    });
 
    $(document.body).on('click', '#audio-button', function() {
-      if(App.myRole == 'Host') {
+      if(App.originalRole == 'Host') {
          console.log(App.audioSettings);
          if(App.audioSettings !== 'mute-audio-video') {
             console.log('Launched, audio settings: ' + App.audioSettings);

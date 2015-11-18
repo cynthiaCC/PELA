@@ -11,6 +11,7 @@ var App = {
     * This is used to differentiate between 'Host' and 'Player' browsers.
     */
    myRole: '',   // 'Player' or 'Host'
+   originalRole: '', //Tells what the original role was when starting in case audio is started after first round and not on 3rd, 5th etc. when current role isnt the same
 
    /**
     * The Socket.IO socket object identifier. This is unique for
@@ -23,6 +24,9 @@ var App = {
    audioSessionId : '',
    audioTokenInstructor : '',
    audioTokenBuilder : '',
+   
+   //Audio stream
+   audio : null,
 
 
    /* *************************************
@@ -135,6 +139,7 @@ var App = {
          App.audioSessionId = data.audioSessionId;
          App.audioTokenInstructor = data.instructorToken;
          App.myRole = 'Host';
+         App.originalRole = 'Host';
          App.Host.numPlayersInRoom = 0;
          App.Host.displayNewGameScreen();
          // console.log("Game started with ID: " + App.gameId + ' by host: ' + App.mySocketId);
@@ -185,10 +190,9 @@ var App = {
         
       },
 
-    //TODO: Implementing gamelogic ralated host code
+      //TODO: Implementing gamelogic ralated host code
       //Create game screen for host with pixi.js
       createGameScreen : function() {
-         //TODO: Create the pixi.js canvas and the first object to create, maybe different file for pixi.js logic
          pixijs.init();
          $('#pixi-canvas').append(pixijs.renderer.view);
       },
@@ -251,6 +255,7 @@ var App = {
 
          // Set the appropriate properties for the current player.
          App.myRole = 'Player';
+         App.originalRole = 'Player';
          App.Player.myName = data.playerName;
       },
 
@@ -261,6 +266,7 @@ var App = {
       updateWaitingScreen : function(data) {
          if(IO.socket.io.engine.id === data.mySocketId){
             App.myRole = 'Player';
+            App.originalRole = 'Player';
             App.gameId = data.gameId;
 
             //TODO: Localization
@@ -273,7 +279,6 @@ var App = {
       createGameScreen : function() {
          //Hide audio button
          $('#audio-button').hide();
-         //TODO: Create the pixi.js canvas and the first building blocks to create, maybe different file for pixi.js logic
          pixijs.init();
          $('#pixi-canvas').append(pixijs.renderer.view);
       },
@@ -326,7 +331,7 @@ var App = {
       
       // assign token for instructor and builder
       var token = '';
-      if(App.myRole == 'Host') {
+      if(App.originalRole == 'Host') {
          token = App.audioTokenInstructor;
       } else {
          token = App.audioTokenBuilder;
@@ -338,13 +343,20 @@ var App = {
          //alert(err.message || err);
       }
          session.publish(publisher);
-      });            
+      });
       // detect new streams and connect them to the app  
       session.on('streamCreated', function(event) {
          console.log("New stream in the session: " + event.stream.streamId);
-         session.subscribe(event.stream, "publisherContainer", { insertMode: "append" });
+         App.audio = session.subscribe(event.stream, "publisherContainer", { insertMode: "append" });
       });
    
+   },
+   
+   //Set the volume of the audio
+   setVolume : function(newVolume) {
+      if (App.audio != null) {
+         App.audio.setAudioVolume(newVolume);
+      }
    },
    
    //Block has been added from the menu
