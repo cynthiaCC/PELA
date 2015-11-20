@@ -24,6 +24,10 @@ var pixijs = {
    //The button for finishing the construction
    finishButton : null,
    
+   //UI elements for sound adjustement
+   voiceSliderLocation : {x : 20, y : 50, padding: 20},
+   voiceSlider : null,
+   
    //The progress bar for the game
    progressBar : null,
    
@@ -82,6 +86,8 @@ var pixijs = {
       pixijs.stage.addChild(pixijs.UI);
       pixijs.addFinished();
       
+      pixijs.createVoiceSlider();
+      
       pixijs.createProgressBar();
       
       //start the animation
@@ -90,6 +96,7 @@ var pixijs = {
       
    },
    
+   //Create menu to the right side of the canvas for blocks
    blockMenu : function(){
       
       var blockMenu = PIXI.Texture.fromImage('img/block.menu.png');
@@ -120,6 +127,53 @@ var pixijs = {
       pixijs.finishButton
             .on('mousedown', pixijs.onFinished);
       pixijs.UI.addChild(pixijs.finishButton);
+   },
+   
+   createProgressBar : function(){
+      
+      var pBar = new PIXI.Texture.fromImage('img/ProgressBarOutline.png');
+      pixijs.progressBar = new PIXI.Sprite(pBar);
+      
+      pixijs.progressBar.anchor.set(0.0);
+      
+      pixijs.progressBar.width = 200;
+      pixijs.progressBar.height = 22;
+      
+      pixijs.progressBar.position.x = 40;
+      pixijs.progressBar.position.y = 580;
+      
+      pixijs.UI.addChild(pixijs.progressBar);
+      
+   },
+   
+   //Create the voice slider for adjusting voice communication volume
+   createVoiceSlider : function() {
+      var texture = new PIXI.Texture.fromImage('img/temp.png');
+      pixijs.voiceSlider = new PIXI.Sprite(texture);
+      
+      //Set the slider interactive
+      pixijs.voiceSlider.buttonMode = true;
+      pixijs.voiceSlider.interactive = true;
+      
+      //Set anchor to middle, adjust into position
+      pixijs.voiceSlider.anchor.set(0.5);
+      pixijs.voiceSlider.position.x = pixijs.voiceSliderLocation.x;
+      pixijs.voiceSlider.position.y = pixijs.canvasH - pixijs.voiceSliderLocation.y - pixijs.voiceSliderLocation.padding;
+      
+      //Set the events
+      pixijs.voiceSlider
+                        .on('mousedown', pixijs.onSliderDragStart)
+                        .on('touchstart', pixijs.onSliderDragStart)
+                        //events for drag end
+                        .on('mouseup', pixijs.onSliderDragEnd)
+                        .on('mouseupoutside', pixijs.onSliderDragEnd)
+                        .on('touchend', pixijs.onSliderDragEnd)
+                        .on('touchendoutside', pixijs.onSliderDragEnd)
+                        // events for drag move
+                        .on('mousemove', pixijs.onSliderDragMove)
+                        .on('touchmove', pixijs.onSliderDragMove);
+      
+      pixijs.UI.addChild(pixijs.voiceSlider);
    },
    
    /* ************************
@@ -290,6 +344,7 @@ var pixijs = {
       pixijs.menu.addChild(sprite);
    },
    
+   //Add a blueprint to the playarea for instructor to describe
    addBlueprint : function(texture) {
       //Create the sprite
       var sprite = new PIXI.Sprite(texture);
@@ -340,23 +395,6 @@ var pixijs = {
       spriteObj.addChild(fadeBalloon);
       spriteObj.addChild(objectCount);
          
-   },
-   
-   createProgressBar : function(){
-      
-      var pBar = new PIXI.Texture.fromImage('img/ProgressBarOutline.png');
-      pixijs.progressBar = new PIXI.Sprite(pBar);
-      
-      pixijs.progressBar.anchor.set(0.0);
-      
-      pixijs.progressBar.width = 200;
-      pixijs.progressBar.height = 22;
-      
-      pixijs.progressBar.position.x = 40;
-      pixijs.progressBar.position.y = 580;
-      
-      pixijs.UI.addChild(pixijs.progressBar);
-      
    },
    
    //function that updates the progress bar
@@ -534,4 +572,28 @@ var pixijs = {
       }
    },
    
+   //Events for voice slider
+   onSliderDragStart : function(event) {
+      this.data = event.data;
+      this.alpha = 0.5;
+      this.dragging = true;
+   },
+   
+   onSliderDragEnd : function() {
+      this.alpha = 1;
+
+      this.dragging = false;
+
+      // set the interaction data to null
+      this.data = null;
+      App.setVolume((pixijs.canvasH - this.position.y-pixijs.voiceSliderLocation.padding)/50*100);
+   },
+   
+   onSliderDragMove : function() {
+      if (this.dragging)
+      {
+         var newPosition = this.data.getLocalPosition(this.parent);
+         this.position.y = Math.max(pixijs.canvasH - pixijs.voiceSliderLocation.y - pixijs.voiceSliderLocation.padding, Math.min(newPosition.y, pixijs.canvasH - pixijs.voiceSliderLocation.padding));
+      }
+   }
 };
