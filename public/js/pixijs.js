@@ -120,7 +120,7 @@ var pixijs = {
       
       //TODO: the placement could be changed to a better position later on
       pixijs.finishButton.height = 81;
-      pixijs.finishButton. width = 201;
+      pixijs.finishButton.width = 201;
       pixijs.finishButton.position.x = 50;
       pixijs.finishButton.position.y = 250;
       pixijs.finishButton.renderable = false;
@@ -217,6 +217,7 @@ var pixijs = {
       var texture = PIXI.Texture.fromImage(data);
       sprite = new PIXI.Sprite(texture);
       sprite.alpha = 0.5;
+      sprite.tint = 0x9999FF;
       pixijs.tempCont.addChild(sprite);
    },
    
@@ -234,6 +235,7 @@ var pixijs = {
       pixijs.bg.renderable = true;
       return texture;
    },
+   
    
    //This function adds the sprite in middle of the playable area
    addSprite : function(texture, scale) {
@@ -357,7 +359,12 @@ var pixijs = {
       sprite.position.y = pixijs.canvasH/2;
 
       //Add the sprite to the objects container
-      pixijs.objects.addChild(sprite);
+      if(App.myRole == "Host") {
+         pixijs.objects.addChild(sprite);
+      }
+      else {
+         pixijs.tempCont.addChild(sprite);
+      }
    },
    
    //function that creates the counter for each object
@@ -550,7 +557,7 @@ var pixijs = {
    //Function to add from blockMenu
    onMenuClick : function() {
       if (this.remaining > 0) {
-         App.blockAdded();
+         App.Player.blockAdded();
          pixijs.currentBlocks++;
          this.remaining--;
          pixijs.addSprite(this.texture);

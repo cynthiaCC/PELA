@@ -1,8 +1,9 @@
 {
-   "name": "PELABlocks",
-   "dependencies": {
-      "express": "4.13.3",
-      "socket.io": "1.3.7",
-      "opentok": "2.2.4"
-   }
+  "name": "PELABlocks",
+  "dependencies": {
+    "express": "4.13.3",
+    "opentok": "2.2.4",
+    "resemblejs": "^2.0.1",
+    "socket.io": "1.3.7"
+  }
 }

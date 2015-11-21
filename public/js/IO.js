@@ -27,6 +27,7 @@ var IO = {
        IO.socket.on('builderFinished', IO.gameOver);
        IO.socket.on('gameOver', IO.gameOver);
        IO.socket.on('constructionFinished', IO.constructionFinished);
+       IO.socket.on('loadBlueprint', IO.loadBlueprint);
        
        IO.socket.on('audioStarted', IO.enableInstructorAudio );
        IO.socket.on('sentApiKey', IO.enableBuilderAudio);
@@ -136,7 +137,7 @@ var IO = {
   
   //Player finished constructing, tell App to load the sent construction and show it to instructor and load the blueprint for builder to look at
   constructionFinished : function(data) {
-     App.loadConstruction(data);
+     App.Host.loadConstruction(data);
   },
   
   //Builder added a block, update values
@@ -144,6 +145,10 @@ var IO = {
      if (App.myRole === 'Host') {
         App[App.myRole].updateBlockAmount();
      }
+  },
+  
+  loadBlueprint : function(blueprint) {
+    App.Player.loadBlueprint(blueprint); 
   },
 
    /**

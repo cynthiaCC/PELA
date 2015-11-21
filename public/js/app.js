@@ -6,6 +6,9 @@ var App = {
     *
     */
    gameId: 0,
+   
+   //Current compilation in progress
+   currentCompilation : null,
 
    /**
     * This is used to differentiate between 'Host' and 'Player' browsers.
@@ -91,10 +94,12 @@ var App = {
    
    beginRound : function(compilation) {
       pixijs.clearAll();
+      
       var filename = "JSON/" + compilation + ".json";
       var compilationJSON;
       $.getJSON(filename, function(data) {
          compilationJSON = data;
+         App.currentCompilation = compilationJSON;
          App[App.myRole].begin(compilationJSON);
       });
    },
@@ -211,6 +216,21 @@ var App = {
       //Add to the block amount
       updateBlockAmount : function() {
          pixijs.currentBlocks++;
+         pixijs.updateProgress();
+      },
+      
+      /**
+       * Load the instructions for the builder and built construct for instructor after construction is finished
+       * @param data holds the pixijs container to load for instructor
+       */
+      loadConstruction : function(data) {
+         if (App.myRole == 'Host') {
+            var blueprint;
+            pixijs.loadTemp(data);
+            blueprint = pixijs.getImgOfCurrent();
+            resemble(App.dataURItoBlob(blueprint)).compareTo(App.dataURItoBlob(data)).onComplete(App.showMisMatchPercentage);
+            IO.socket.emit('loadBlueprint', blueprint ,App.gameId)
+         }
       },
       
    },
@@ -299,24 +319,25 @@ var App = {
          });
       },
       
-      
-
+    //Block has been added from the menu
+    blockAdded : function() {
+       IO.socket.emit('blockAdded', App.gameId);
+    },
+    
+    loadBlueprint : function(blueprint) {
+       if (App.myRole == 'Player') {
+          pixijs.loadTemp(blueprint);
+          var construct = pixijs.getImgOfCurrent();
+          resemble(App.dataURItoBlob(blueprint)).compareTo(App.dataURItoBlob(construct)).onComplete(App.showMisMatchPercentage);
+       }
+    },
+    
    },
-   
    /* *************** 
     *    GENERAL    *
     ***************** */
    
-   /**
-    * Load the instructions for the builder and built construct for instructor after construction is finished
-    * @param data holds the pixijs container to load for instructor
-    */
-   loadConstruction : function(data) {
-      if (App.myRole == 'Host') {
-         pixijs.loadTemp(data);
-      }
-      //TODO: load the blueprint for builder
-   },
+   
    
    //Initiate the voice communication
    initAudio: function (settings, apiKey) {
@@ -362,10 +383,30 @@ var App = {
       }
    },
    
-   //Block has been added from the menu
-   blockAdded : function() {
-      IO.socket.emit('blockAdded', App.gameId);
+   showMisMatchPercentage : function(data) {
+      $('#mismatch').html(data.misMatchPercentage + "% is different");
    },
+   
+   //Transform dataURI to a blob form that can be used for comparison from http://stackoverflow.com/questions/4998908/convert-data-uri-to-file-then-append-to-formdata
+   dataURItoBlob : function(dataURI) {
+      // convert base64/URLEncoded data component to raw binary data held in a string
+      var byteString;
+      if (dataURI.split(',')[0].indexOf('base64') >= 0)
+          byteString = atob(dataURI.split(',')[1]);
+      else
+          byteString = unescape(dataURI.split(',')[1]);
+
+      // separate out the mime component
+      var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+      // write the bytes of the string to a typed array
+      var ia = new Uint8Array(byteString.length);
+      for (var i = 0; i < byteString.length; i++) {
+          ia[i] = byteString.charCodeAt(i);
+      }
+
+      return new Blob([ia], {type:mimeString});
+  }
 
 };
 

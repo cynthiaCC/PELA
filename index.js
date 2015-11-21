@@ -25,6 +25,7 @@ var blocks = require('./blocks');
 
 // Serve static html, js, css, and image files from the 'public' directory
 app.use(express.static(path.join(__dirname,'public')));
+app.use('/resemble', express.static(__dirname + '/node_modules/resemblejs'));
 
 //Create a Node.js based http server on port 8080
 var server = require('http').createServer(app).listen(8080);
