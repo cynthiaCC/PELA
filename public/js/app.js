@@ -384,7 +384,12 @@ var App = {
    },
    
    showMisMatchPercentage : function(data) {
-      $('#mismatch').html(data.misMatchPercentage + "% is different");
+      var blueprintImage = new Image()
+      blueprintImage.src = 'img/' + App.currentCompilation.compilationImg
+      blueprintImage.onload = function() {
+         var possibleChangePercentage = ((2*blueprintImage.height*blueprintImage.width)/(pixijs.canvasH*pixijs.canvasW))*100;
+         $('#mismatch').html(Math.floor((data.misMatchPercentage/possibleChangePercentage)*100) + "% is different");
+      }
    },
    
    //Transform dataURI to a blob form that can be used for comparison from http://stackoverflow.com/questions/4998908/convert-data-uri-to-file-then-append-to-formdata

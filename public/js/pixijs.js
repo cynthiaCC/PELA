@@ -208,6 +208,10 @@ var pixijs = {
       pixijs.clearContainer(pixijs.menu);
       pixijs.clearContainer(pixijs.tempCont);
       pixijs.currentMenuY = 55;
+      pixijs.currentBlocks = 0;
+      pixijs.blockTotal = 0;
+      pixijs.objects.position.x = 0;
+      pixijs.objects.position.y = 0;
    },
    
    //Load the temporary container sent by app
@@ -234,6 +238,29 @@ var pixijs = {
       pixijs.menu.renderable = true;
       pixijs.bg.renderable = true;
       return texture;
+   },
+   
+   //Center the built construction
+   centerObjects : function() {
+      if (pixijs.blockTotal > 0){
+         if(pixijs.objects.children != null) {
+            //Calculate the average X and Y values
+            var averageY = 0;
+            var averageX = 0;
+            pixijs.objects.children.forEach(function(child,index,array){
+               averageY += child.position.y;
+               averageX += child.position.x;
+            })
+            averageY = averageY/pixijs.blockTotal;
+            averageX = averageX/pixijs.blockTotal;
+            //Figure the distance from middle
+            var yFromMiddle = averageY - (pixijs.canvasH/2);
+            var xFromMiddle = averageX - (pixijs.canvasBlueprintW/2);
+            //Move the container of objects
+            pixijs.objects.position.y = -yFromMiddle;
+            pixijs.objects.position.x = -xFromMiddle;
+         }
+      }
    },
    
    
@@ -551,6 +578,7 @@ var pixijs = {
       this.renderable = false;
       this.interactive = false;
       this.buttonMode = false;
+      pixijs.centerObjects();
       App.Player.finishConstruction(pixijs.getImgOfCurrent());
    },
    
