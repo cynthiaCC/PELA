@@ -209,25 +209,27 @@ var pixijs = {
 	   
 	   
 	   //create the variables for the text
-	   var infoText1 = new PIXI.Text('Open menu to see the vocabulary.' , {font: '20px Arial', fill: 'white', align: 'center'});
-	   var infoText2 = new PIXI.Text('Drag blocks to the blue area to build.' , {font: '20px Arial', fill: 'white', align: 'center'});
-	   var infoText3 = new PIXI.Text('Click to mute the microphone.' , {font: '20px Arial', fill: 'white', align: 'center'});
+	   var infoText1 = new PIXI.Text('Open menu to see the vocabulary.' , {font: '10px Arial', fill: 'white', align: 'center'});
+	   var infoText2 = new PIXI.Text('Drag blocks to the blue area to build.' , {font: '10px Arial', fill: 'white', align: 'center'});
+	   var infoText3 = new PIXI.Text('Click to mute the microphone.' , {font: '10px Arial', fill: 'white', align: 'center'});
 	   
 	   infoText1.renderable = false;
 	   infoText2.renderable = false;
 	   infoText3.renderable = false;
 	   
 	   //Position the texts
-	   infoText1.position.x = 0;
-	   infoText1.position.y = 40;
+	   infoText1.position.x = -300;
+	   infoText1.position.y = 20;
 	   
-	   infoText2.position.x = 0;
-	   infoText2.position.y = 10;
+	   infoText2.position.x = -150;
+	   infoText2.position.y = 100;
 	   
-	   infoText3.position.x = 0;
-	   infoText3.position.y = 20;
+	   infoText3.position.x = -250;
+	   infoText3.position.y = 200;
 	   
-	   pixijs.infoButton.on();
+	   pixijs.infoButton
+	                    .on('mousedown', pixijs.onTutorialStart)
+	                    .on('mouseup', pixijs.onTutorialEnd);
 	   
 	   //Add them to the UI container
 	   pixijs.infoButton.addChild(infoText1);
@@ -548,8 +550,8 @@ var pixijs = {
          progUpdate.width = 10;
          progUpdate.height = 22;
          
-         progUpdate.position.x = pixijs.progressBar.position.x + barLength;
-         progUpdate.position.y = pixijs.progressBar.position.y;
+         progUpdate.position.x = barLength;
+         
          
          pixijs.progressBar.addChild(progUpdate);
          
@@ -720,5 +722,22 @@ var pixijs = {
          var newPosition = this.data.getLocalPosition(this.parent);
          this.position.y = Math.max(pixijs.canvasH - pixijs.voiceSliderLocation.y - pixijs.voiceSliderLocation.padding, Math.min(newPosition.y, pixijs.canvasH - pixijs.voiceSliderLocation.padding));
       }
+   },
+   
+   onTutorialStart : function(event){
+	   this.data = event.data;
+	   
+	   this.children.forEach(function(child,index,array){
+           child.renderable = true;
+        })
+	   
+   },
+   
+   onTutorialEnd : function(){
+	   this.data = null;
+	   
+	   this.children.forEach(function(child,index,array){
+           child.renderable = false;
+        })
    }
 };
