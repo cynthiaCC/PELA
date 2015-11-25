@@ -24,6 +24,12 @@ var pixijs = {
    //The button for finishing the construction
    finishButton : null,
    
+   //The button for the vocabulary menu
+   menuButton : null,
+   
+   //The button for the info text
+   infoButton : null,
+
    //UI elements for sound adjustement
    voiceSliderLocation : {x : 20, y : 50, padding: 20},
    voiceSlider : null,
@@ -86,9 +92,18 @@ var pixijs = {
       pixijs.stage.addChild(pixijs.UI);
       pixijs.addFinished();
       
+    //Create the menu button
+      pixijs.addMenuButton();
+      
+      //Create the info button
+      pixijs.createTutorial();
+      
       pixijs.createVoiceSlider();
       
+      //Create the progress bar
       pixijs.createProgressBar();
+      
+      
       
       //start the animation
       requestAnimationFrame( pixijs.animate );
@@ -128,22 +143,100 @@ var pixijs = {
             .on('mousedown', pixijs.onFinished);
       pixijs.UI.addChild(pixijs.finishButton);
    },
-   
+   //Function that creates the progress bar
    createProgressBar : function(){
       
+	   //Create a sprite from the image
       var pBar = new PIXI.Texture.fromImage('img/ProgressBarOutline.png');
       pixijs.progressBar = new PIXI.Sprite(pBar);
       
+      //Set it to the default anchor
       pixijs.progressBar.anchor.set(0.0);
       
+      //Bar width and height
       pixijs.progressBar.width = 200;
       pixijs.progressBar.height = 22;
       
+      //position the bar
       pixijs.progressBar.position.x = 40;
       pixijs.progressBar.position.y = 580;
       
+      //Add the bar to the UI container
       pixijs.UI.addChild(pixijs.progressBar);
       
+   },
+   //Function for the vocabulary menu button
+   addMenuButton : function(){
+	   
+	   var menu = new PIXI.Texture.fromImage('img/temp.png');
+	   pixijs.menuButton = new PIXI.Sprite(menu);
+
+	   
+	   pixijs.menuButton.buttonMode = true;
+	   pixijs.menuButton.interactive = true;
+	   
+	   pixijs.menuButton.anchor.set(0.5);
+
+	   pixijs.menuButton.position.x = 40; 
+	   pixijs.menuButton.position.y = 20;
+	   
+	  
+	   pixijs.menuButton.width = 100;
+	   pixijs.menuButton.height = 50;
+	   
+	   
+	   
+	   pixijs.UI.addChild(pixijs.menuButton);
+   },
+   
+   createTutorial : function(){
+	 
+	   var tutorial = new PIXI.Texture.fromImage('img/temp.png');
+	   pixijs.infoButton = new PIXI.Sprite(tutorial);
+	   
+	   pixijs.infoButton.buttonMode = true;
+	   pixijs.infoButton.interactive = true;
+	   
+	   pixijs.infoButton.anchor.set(0.5);
+
+	   pixijs.infoButton.position.x = 750; 
+	   pixijs.infoButton.position.y = 30;
+	   
+	  
+	   pixijs.infoButton.width = 50;
+	   pixijs.infoButton.height = 50;
+	   
+	   
+	   
+	   //create the variables for the text
+	   var infoText1 = new PIXI.Text('Open menu to see the vocabulary.' , {font: '20px Arial', fill: 'white', align: 'center'});
+	   var infoText2 = new PIXI.Text('Drag blocks to the blue area to build.' , {font: '20px Arial', fill: 'white', align: 'center'});
+	   var infoText3 = new PIXI.Text('Click to mute the microphone.' , {font: '20px Arial', fill: 'white', align: 'center'});
+	   
+	   infoText1.renderable = false;
+	   infoText2.renderable = false;
+	   infoText3.renderable = false;
+	   
+	   //Position the texts
+	   infoText1.position.x = 0;
+	   infoText1.position.y = 40;
+	   
+	   infoText2.position.x = 0;
+	   infoText2.position.y = 10;
+	   
+	   infoText3.position.x = 0;
+	   infoText3.position.y = 20;
+	   
+	   pixijs.infoButton.on();
+	   
+	   //Add them to the UI container
+	   pixijs.infoButton.addChild(infoText1);
+	   pixijs.infoButton.addChild(infoText2);
+	   pixijs.infoButton.addChild(infoText3);
+	   
+	   
+	   
+	   pixijs.UI.addChild(pixijs.infoButton);
    },
    
    //Create the voice slider for adjusting voice communication volume
@@ -437,27 +530,20 @@ var pixijs = {
       //calculate how many blocks are still in the blockmenu
       var blocksLeft = pixijs.blockTotal - pixijs.currentBlocks;
       
-      //Calculate how many bits of the bar need to be added when one
-      //block is added to the playing area. For example: 5 total blocks: 1 block is 20%
-      //1 bit is about 5 %, so 4 bits need to be added
-      var chunksNeeded = 100/pixijs.blockTotal;
       
-      var barLength;
+      var progressSoFar = pixijs.currentBlocks/pixijs.blockTotal;
       
-      if(blocksLeft < pixijs.blockTotal -1){
-         
-         barLength = 10 * pixijs.currentBlocks;
-      }
-      else {
-         barLength = 0;
-      }
+      var chunksNeeded = Math.floor(progressSoFar/5);
       
+    
       
-      for(var i = 0; i < chunksNeeded;i += 5 ){
+      var barLength = pixijs.progressBar.children.length * chunksNeeded;
+      for(var i = 0; i <= chunksNeeded;i += 1 ){
          
        //Create a sprite from the image
          var prog = new PIXI.Texture.fromImage('img/ProgressBarBit5Percent.png');
          progUpdate = new PIXI.Sprite(prog);
+         
          
          progUpdate.width = 10;
          progUpdate.height = 22;
@@ -465,13 +551,15 @@ var pixijs = {
          progUpdate.position.x = pixijs.progressBar.position.x + barLength;
          progUpdate.position.y = pixijs.progressBar.position.y;
          
-         pixijs.UI.addChild(progUpdate);
+         pixijs.progressBar.addChild(progUpdate);
          
-         barLength += 10;
+         barLength += 5;
       }
       
       
    },
+   
+   
    
    //Sets the given object as active in the playarea
    setActive : function(object){
@@ -572,6 +660,8 @@ var pixijs = {
          this.parent.rotation = Math.atan2(pointerPosition.y - this.parent.position.y, pointerPosition.x - this.parent.position.x) + (PIXI.DEG_TO_RAD * 90);
       }
    },
+   
+   
    
    //Function to call when player clicks the button to finish the build, also hide the button again
    onFinished : function() {
