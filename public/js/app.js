@@ -314,9 +314,16 @@ var App = {
       
       //Begin the round for builder
       begin : function(compilation) {
+         var loader = PIXI.loader;
          $.each(compilation.parts, function(index, value) {
-            pixijs.addToBlockMenu(PIXI.Texture.fromImage('img/' + value.partImg), value.quantity);
+            var path = 'img/' + value.partImg
+            var name = "part" + index;
+            loader.add(name, path);
+            loader.load(function(loader, resources){
+               pixijs.addToBlockMenu(resources[name].texture, value.quantity);
+            });
          });
+         pixijs.totalPages = Math.ceil(compilation.parts.length/6);
       },
       
     //Block has been added from the menu

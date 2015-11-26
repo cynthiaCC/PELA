@@ -50,6 +50,8 @@ var pixijs = {
    //BlockMenu is stored inside this
    menu : null,
    currentMenuY : 55,
+   menuPage : 1,
+   totalPages : 1,
    
    //Current blocks on the gamearea
    currentBlocks : 0,
@@ -173,17 +175,40 @@ var pixijs = {
    
    
    //Create menu to the right side of the canvas for blocks
+   //Create menu to the right side of the canvas for blocks
    blockMenu : function(){
-      
-      var blockMenu = PIXI.Texture.fromImage('img/block.menu.png');
-      pixijs.menu = new PIXI.Sprite(blockMenu);
-      pixijs.menu.height = pixijs.canvasH;
-      pixijs.menu.width = pixijs.canvasBlockW;
+      //Add the image of the menu
+      var blockMenu = new PIXI.Sprite(PIXI.Texture.fromImage('img/block.menu.png'));
+      blockMenu.height = pixijs.canvasH;
+      blockMenu.width = pixijs.canvasBlockW;
          
-      pixijs.menu.position.x = pixijs.canvasBlueprintW;
-      pixijs.menu.position.y = 0;
+      blockMenu.position.x = pixijs.canvasBlueprintW;
+      blockMenu.position.y = 0;
       
-      pixijs.stage.addChild(pixijs.menu);
+      //TODO replace with the proper texture
+      var arrowUp = new PIXI.Sprite(PIXI.Texture.fromImage('img/temp.png'));
+      arrowUp.position.y = 10;
+      arrowUp.position.x = pixijs.canvasBlockW - 20;
+      arrowUp.interactive = true;
+      arrowUp.buttonMode = true;
+      arrowUp
+               .on('mousedown', pixijs.onArrowUp)
+               .on('touchstart', pixijs.onArrowUp);
+      var arrowDown = new PIXI.Sprite(PIXI.Texture.fromImage('img/temp.png'));
+      arrowDown.position.y = pixijs.canvasH - 30;
+      arrowDown.position.x = pixijs.canvasBlockW - 20;
+      arrowDown.interactive = true;
+      arrowDown.buttonMode = true;
+      arrowDown
+               .on('mousedown', pixijs.onArrowDown)
+               .on('touchstart', pixijs.onArrowDown);
+      blockMenu.addChild(arrowUp);
+      blockMenu.addChild(arrowDown);
+      
+      pixijs.menu = new PIXI.Container();
+      blockMenu.addChild(pixijs.menu);
+      
+      pixijs.stage.addChild(blockMenu);
    },
    
    addFinished : function() {
@@ -804,5 +829,19 @@ var pixijs = {
 	   this.data = null;
 	   //hide the info texts
 	   pixijs.text.renderable = false;
-   }
+   },
+   
+   onArrowDown : function(){
+      if(pixijs.menuPage < pixijs.totalPages) {
+         pixijs.menu.position.y -= pixijs.canvasH;
+         pixijs.menuPage++;
+      }
+   },
+   
+   onArrowUp : function(){
+      if (pixijs.menuPage > 1) {
+         pixijs.menu.position.y += pixijs.canvasH;
+         pixijs.menuPage--;
+      }
+   },
 };
