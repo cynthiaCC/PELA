@@ -7,8 +7,7 @@ var pixijs = {
    canvasBlockW : 200,
    
    //Scaling variables
-   scaleWidth : null,
-   scaleHeight : null,
+   scale : 1,
    
    //The renderer and the stage
    renderer : null,
@@ -53,7 +52,8 @@ var pixijs = {
    
    //BlockMenu is stored inside this
    menu : null,
-   currentMenuY : 55,
+   menuBG : null,
+   currentMenuY : (624/12),
    menuPage : 1,
    totalPages : 1,
    
@@ -124,6 +124,7 @@ var pixijs = {
       requestAnimationFrame( pixijs.animate );
       
       pixijs.resize();
+      pixijs.rendererResize();
    },
    
    /**
@@ -135,68 +136,48 @@ var pixijs = {
    },
    
    rendererResize : function() {
-	   
-	   var width = window.innerWidth,
-       height = window.innerHeight;
-	   
-	   /*//Determine which screen dimension is most constrained
-	   ratio = Math.min(window.innerWidth/pixijs.canvasW,
-	                    window.innerHeight/pixijs.canvasH);
-	  
-	   // Scale the view appropriately to fill that dimension
-	   pixijs.stage.scale.x = ratio;
-	   pixijs.stage.scale.y = ratio;
-	  
-	   // Update the renderer dimensions
-	   pixijs.renderer.resize(Math.ceil(pixijs.canvasW * ratio),
-	                   Math.ceil(pixijs.canvasH * ratio));*/
-	   
-	   /**
-	     * Set the canvas size and display size
-	     * 
-	     */
-	  
-		 
-         
-		 
-	   
-	     
+      var width = window.innerWidth,
+      height = window.innerHeight;
+      
+      
+      /**
+        * Scale the canvas horizontally and vertically keeping in mind the screen estate we have
+        * at our disposal. This keeps the relative game dimensions in place.
+        */
+      var scaleWidth = width /pixijs.canvasW;
+      var scaleHeight = height / pixijs.canvasH;
+       
+      /**
+        * Set the canvas size and display size
+        * 
+        */
+      if (scaleHeight < scaleWidth) {
+         pixijs.scale = scaleHeight;
+         pixijs.renderer.view.height = Math.min(pixijs.canvasH, height * window.devicePixelRatio);
+         pixijs.renderer.view.style.height = Math.min(pixijs.canvasH, height) + 'px';
+         pixijs.renderer.view.width = pixijs.canvasW * Math.min(1,pixijs.scale);
+         pixijs.renderer.view.style.width = pixijs.canvasW * Math.min(1,pixijs.scale) + 'px';
+         pixijs.stage.scale.x = pixijs.stage.scale.y = Math.min(1,pixijs.scale);
+      } else {
+         pixijs.scale = scaleWidth;
+         pixijs.renderer.view.width = Math.min(pixijs.canvasW, width * window.devicePixelRatio);
+         pixijs.renderer.view.style.width = Math.min(pixijs.canvasW, width) + 'px';
+         pixijs.renderer.view.height = pixijs.canvasH * Math.min(1,pixijs.scale);
+         pixijs.renderer.view.style.height = pixijs.canvasH * Math.min(1,pixijs.scale) + 'px';
+         pixijs.stage.scale.x = pixijs.stage.scale.y = Math.min(1, pixijs.scale);
+      }
+      /**
+        * Resize the PIXI renderer
+        * Let PIXI know that we changed the size of the viewport
+        */
+          pixijs.renderer.resize(pixijs.renderer.view.width, pixijs.renderer.view.height);
 
-	    
-	   
-	   /**
-	     * Scale the canvas horizontally and vertically keeping in mind the screen estate we have
-	     * at our disposal. This keeps the relative game dimensions in place.
-	     */
-	    pixijs.scaleWidth = width /pixijs.canvasW;
-	    pixijs.scaleHeight = height / pixijs.canvasH;
-	    
-	    
-	     if (height / pixijs.canvasH < width / pixijs.canvasW) {
-	        pixijs.renderer.view.height = Math.min(pixijs.canvasH, height * window.devicePixelRatio);
-	        pixijs.renderer.view.style.height = Math.min(pixijs.canvasH, height) + 'px';
-	        pixijs.renderer.view.width = pixijs.canvasW * Math.min(1,pixijs.scaleHeight);
-	        pixijs.renderer.view.style.width = pixijs.canvasW * Math.min(1,pixijs.scaleHeight) + 'px';
-	        pixijs.stage.scale.x = pixijs.stage.scale.y = Math.min(1,pixijs.scaleHeight);
-	     } else {
-	         pixijs.renderer.view.width = Math.min(pixijs.canvasW, width * window.devicePixelRatio);
-	         pixijs.renderer.view.style.width = Math.min(pixijs.canvasW, width) + 'px';
-	         pixijs.renderer.view.height = pixijs.canvasH * Math.min(1,pixijs.scaleWidth);
-	         pixijs.renderer.view.style.height = pixijs.canvasH * Math.min(1,pixijs.scaleWidth) + 'px';
-	         pixijs.stage.scale.x = pixijs.stage.scale.y = Math.min(1, pixijs.scaleWidth);
-	     }
-	     /**
-	        * Resize the PIXI renderer
-	        * Let PIXI know that we changed the size of the viewport
-	        */
-	       pixijs.renderer.resize(pixijs.renderer.view.width, pixijs.renderer.view.height);
-
-	    /**
-	     * iOS likes to scroll when rotating - fix that 
-	     */
-	    window.scrollTo(0, 0);
-	   
-	 },
+      /**
+        * iOS likes to scroll when rotating - fix that 
+        */
+      window.scrollTo(0, 0);
+      
+    },
    
    
    //Create menu to the right side of the canvas for blocks
@@ -233,6 +214,7 @@ var pixijs = {
       pixijs.menu = new PIXI.Container();
       blockMenu.addChild(pixijs.menu);
       
+      pixijs.menuBg = blockMenu;
       pixijs.stage.addChild(blockMenu);
    },
    
@@ -257,7 +239,7 @@ var pixijs = {
    //Function that creates the progress bar
    createProgressBar : function(){
       
-	   //Create a sprite from the image
+      //Create a sprite from the image
       var pBar = new PIXI.Texture.fromImage('img/ProgressBarOutline.png');
       pixijs.progressBar = new PIXI.Sprite(pBar);
       
@@ -278,83 +260,83 @@ var pixijs = {
    },
    //Function for the vocabulary menu button
    addMenuButton : function(){
-	   
-	   var menu = new PIXI.Texture.fromImage('img/temp.png');
-	   pixijs.menuButton = new PIXI.Sprite(menu);
+      
+      var menu = new PIXI.Texture.fromImage('img/temp.png');
+      pixijs.menuButton = new PIXI.Sprite(menu);
 
-	   
-	   pixijs.menuButton.buttonMode = true;
-	   pixijs.menuButton.interactive = true;
-	   
-	   pixijs.menuButton.anchor.set(0.5);
+      
+      pixijs.menuButton.buttonMode = true;
+      pixijs.menuButton.interactive = true;
+      
+      pixijs.menuButton.anchor.set(0.5);
 
-	   pixijs.menuButton.position.x = 40; 
-	   pixijs.menuButton.position.y = 20;
-	   
-	  
-	   pixijs.menuButton.width = 100;
-	   pixijs.menuButton.height = 50;
-	   
-	   
-	   
-	   pixijs.UI.addChild(pixijs.menuButton);
+      pixijs.menuButton.position.x = 40; 
+      pixijs.menuButton.position.y = 20;
+      
+     
+      pixijs.menuButton.width = 100;
+      pixijs.menuButton.height = 50;
+      
+      
+      
+      pixijs.UI.addChild(pixijs.menuButton);
    },
    
    //Function that creates the tutorial texts in the play area
    createTutorial : function(){
-	   
-	   //Create the button
-	   var tutorial = new PIXI.Texture.fromImage('img/temp.png');
-	   pixijs.infoButton = new PIXI.Sprite(tutorial);
-	   
-	   //Make it interactive, position it etc.
-	   pixijs.infoButton.buttonMode = true;
-	   pixijs.infoButton.interactive = true;
-	   
-	   pixijs.infoButton.anchor.set(0.5);
+      
+      //Create the button
+      var tutorial = new PIXI.Texture.fromImage('img/temp.png');
+      pixijs.infoButton = new PIXI.Sprite(tutorial);
+      
+      //Make it interactive, position it etc.
+      pixijs.infoButton.buttonMode = true;
+      pixijs.infoButton.interactive = true;
+      
+      pixijs.infoButton.anchor.set(0.5);
 
-	   pixijs.infoButton.position.x = 750; 
-	   pixijs.infoButton.position.y = 30;
-	   
-	  
-	   pixijs.infoButton.width = 50;
-	   pixijs.infoButton.height = 50;
-	   
-	   
-	   
-	   //create the variables for the text
-	   var infoText1 = new PIXI.Text('Open menu to see the vocabulary.' , {font: '20px Arial', fill: 'white', align: 'center'});
-	   var infoText2 = new PIXI.Text('Drag blocks to the blue area to build.' , {font: '20px Arial', fill: 'white', align: 'center'});
-	   var infoText3 = new PIXI.Text('Click to mute the microphone.' , {font: '20px Arial', fill: 'white', align: 'center'});
-	  
-	   
-	   //Position the texts
-	   infoText1.position.x = 50;
-	   infoText1.position.y = 50;
-	   
-	   infoText2.position.x = 500;
-	   infoText2.position.y = 100;
-	   
-	   infoText3.position.x = 100;
-	   infoText3.position.y = 510;
-	   
-	   //Events for the text
-	   pixijs.infoButton
-	                    .on('mousedown', pixijs.onTutorialStart)
-	                    .on('mouseup', pixijs.onTutorialEnd)
-	                    .on('touchstart', pixijs.onTutorialStart)
+      pixijs.infoButton.position.x = 750; 
+      pixijs.infoButton.position.y = 30;
+      
+     
+      pixijs.infoButton.width = 50;
+      pixijs.infoButton.height = 50;
+      
+      
+      
+      //create the variables for the text
+      var infoText1 = new PIXI.Text('Open menu to see the vocabulary.' , {font: '20px Arial', fill: 'white', align: 'center'});
+      var infoText2 = new PIXI.Text('Drag blocks to the blue area to build.' , {font: '20px Arial', fill: 'white', align: 'center'});
+      var infoText3 = new PIXI.Text('Click to mute the microphone.' , {font: '20px Arial', fill: 'white', align: 'center'});
+     
+      
+      //Position the texts
+      infoText1.position.x = 50;
+      infoText1.position.y = 50;
+      
+      infoText2.position.x = 500;
+      infoText2.position.y = 100;
+      
+      infoText3.position.x = 100;
+      infoText3.position.y = 510;
+      
+      //Events for the text
+      pixijs.infoButton
+                       .on('mousedown', pixijs.onTutorialStart)
+                       .on('mouseup', pixijs.onTutorialEnd)
+                       .on('touchstart', pixijs.onTutorialStart)
                         .on('mouseupoutside', pixijs.onTutorialEnd)
                         .on('touchend', pixijs.onTutorialEnd)
                         .on('touchendoutside', pixijs.onTutorialEnd);
-	   
-	   //Add them to the text container
-	   pixijs.text.addChild(infoText1);
-	   pixijs.text.addChild(infoText2);
-	   pixijs.text.addChild(infoText3);
-	   
-	   
-	   //Add the button to the UI container
-	   pixijs.UI.addChild(pixijs.infoButton);
+      
+      //Add them to the text container
+      pixijs.text.addChild(infoText1);
+      pixijs.text.addChild(infoText2);
+      pixijs.text.addChild(infoText3);
+      
+      
+      //Add the button to the UI container
+      pixijs.UI.addChild(pixijs.infoButton);
    },
    
    //Create the voice slider for adjusting voice communication volume
@@ -405,6 +387,8 @@ var pixijs = {
       object.destroy();
    },
    
+   
+   
    //Clear the given container completely
    clearContainer : function(container) {
       container.children.forEach(function(child,index,array){
@@ -418,7 +402,7 @@ var pixijs = {
       pixijs.clearContainer(pixijs.objects);
       pixijs.clearContainer(pixijs.menu);
       pixijs.clearContainer(pixijs.tempCont);
-      pixijs.currentMenuY = 55;
+      pixijs.currentMenuY = 624/12;
       pixijs.currentBlocks = 0;
       pixijs.blockTotal = 0;
       pixijs.objects.position.x = 0;
@@ -431,24 +415,58 @@ var pixijs = {
       pixijs.clearContainer(pixijs.tempCont);
       var texture = PIXI.Texture.fromImage(data);
       sprite = new PIXI.Sprite(texture);
-      sprite.alpha = 0.5;
-      sprite.tint = 0x9999FF;
+      sprite.height = pixijs.canvasH;
+      sprite.width = pixijs.canvasW;
+      //sprite.alpha = 0.5;
+      //sprite.tint = 0x9999FF;
       pixijs.tempCont.addChild(sprite);
    },
    
+   //Set back to original resolution
+   resetResolution : function() {
+      pixijs.renderer.resize(pixijs.canvasW, pixijs.canvasH);
+      pixijs.renderer.view.height = pixijs.canvasH;
+      pixijs.renderer.view.style.height = pixijs.canvasH + 'px';
+      pixijs.renderer.view.width = pixijs.canvasW;
+      pixijs.renderer.view.style.width = pixijs.canvasW + 'px';
+      pixijs.stage.scale.x = pixijs.stage.scale.y = 1;
+   },
    //Get an image of the current objects
    getImgOfCurrent : function() {
+      pixijs.resetResolution();
       pixijs.setActive(null);
       pixijs.renderer.transparent = true;
       pixijs.UI.renderable = false;
-      pixijs.menu.renderable = false;
+      pixijs.menuBg.renderable = false;
       pixijs.text.renderable = false;
       pixijs.bg.renderable = false;
+      pixijs.tempCont.renderable = false;
       pixijs.renderer.render(pixijs.stage);
       var texture = pixijs.renderer.view.toDataURL();
       pixijs.UI.renderable = true;
-      pixijs.menu.renderable = true;
+      pixijs.menuBg.renderable = true;
       pixijs.bg.renderable = true;
+      pixijs.tempCont.renderable = true;
+      pixijs.rendererResize();
+      return texture;
+   },
+   
+ //Get an image of the current temp
+   getImgOfTemp : function() {
+      pixijs.resetResolution();
+      pixijs.renderer.transparent = true;
+      pixijs.UI.renderable = false;
+      pixijs.menuBg.renderable = false;
+      pixijs.text.renderable = false;
+      pixijs.bg.renderable = false;
+      pixijs.objects.renderable = false;
+      pixijs.renderer.render(pixijs.stage);
+      var texture = pixijs.renderer.view.toDataURL();
+      pixijs.UI.renderable = true;
+      pixijs.menuBg.renderable = true;
+      pixijs.bg.renderable = true;
+      pixijs.objects.renderable = true;
+      pixijs.rendererResize();
       return texture;
    },
    
@@ -466,8 +484,8 @@ var pixijs = {
             averageY = averageY/pixijs.blockTotal;
             averageX = averageX/pixijs.blockTotal;
             //Figure the distance from middle
-            var yFromMiddle = averageY - (pixijs.canvasH/2);
-            var xFromMiddle = averageX - (pixijs.canvasBlueprintW/2);
+            var yFromMiddle = averageY - ((pixijs.canvasH)/2);
+            var xFromMiddle = averageX - ((pixijs.canvasBlueprintW)/2);
             //Move the container of objects
             pixijs.objects.position.y = -yFromMiddle;
             pixijs.objects.position.x = -xFromMiddle;
@@ -556,9 +574,20 @@ var pixijs = {
       //Set the anchor in the middle of the sprite
       sprite.anchor.set(0.5);
       
-      //Set height and width
-      //sprite.height = 90;
-      //sprite.width = 100;
+      //Set scale
+      var scale = 1;
+      if (sprite.width > pixijs.canvasBlockW - 20) {
+         scale = (pixijs.canvasBlockW - 20)/sprite.width;
+      }
+      if (sprite.height > (pixijs.canvasH/6) - 20) {
+         if (scale > ((pixijs.canvasH/6) - 20)/sprite.height){
+            scale = ((pixijs.canvasH/6) - 20)/sprite.height;
+         }
+      }
+      
+      console.log(pixijs.currentMenuY);
+      
+      sprite.scale.set(scale, scale);
       
       //Set the amount of blocks
       sprite.remaining = amount;
@@ -572,7 +601,7 @@ var pixijs = {
             .on('touchstart', pixijs.onMenuClick);
       
       //Set the position
-      sprite.position.x = pixijs.canvasBlockW/2;
+      sprite.position.x = (pixijs.canvasBlockW)/2;
       sprite.position.y = pixijs.currentMenuY;
       
 
@@ -581,7 +610,7 @@ var pixijs = {
 
       
       //Add the height+some padding to currentMenuY
-      pixijs.currentMenuY += (90 + 10);
+      pixijs.currentMenuY += pixijs.canvasH/6;
       pixijs.menu.addChild(sprite);
    },
    
@@ -674,11 +703,7 @@ var pixijs = {
          
          barLength += 5;
       }
-      
-      
    },
-   
-   
    
    //Sets the given object as active in the playarea
    setActive : function(object){
@@ -843,17 +868,17 @@ var pixijs = {
    
    //function to make the text viewable
    onTutorialStart : function(event){
-	   this.data = event.data;
-	  
-	   //Show the text if the button is pressed
-	  pixijs.text.renderable = true;
-	   
+      this.data = event.data;
+     
+      //Show the text if the button is pressed
+     pixijs.text.renderable = true;
+      
    },
    //Function the hide the text
    onTutorialEnd : function(){
-	   this.data = null;
-	   //hide the info texts
-	   pixijs.text.renderable = false;
+      this.data = null;
+      //hide the info texts
+      pixijs.text.renderable = false;
    },
    
    onArrowDown : function(){
