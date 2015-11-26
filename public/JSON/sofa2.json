@@ -1,0 +1,63 @@
+{
+   "compilationName" : "sofa2",
+   "displayName" : "Sofa",
+   "compilationImg" : "sofa2.png",
+   "parts" :
+      [
+         {
+            "partName" : "Centre_rest",
+            "quantity" : "1",
+            "partImg" : "sofa2_centrerest.png"
+         },
+         {
+            "partName" : "Centre_left_rest",
+            "quantity" : "1",
+            "partImg" : "sofa2centre_leftrest.png"
+         },
+         {
+            "partName" : "Centre_right_rest",
+            "quantity" : "1",
+            "partImg" : "sofa2centre_rightrest.png"
+         },
+         {
+            "partName" : "Last_left_rest",
+            "quantity" : "1",
+            "partImg" : "sofa2last_leftrest.png"
+         },
+         {
+            "partName" : "Last_right_rest",
+            "quantity" : "1",
+            "partImg" : "sofa2last_rightrest.png"
+         },
+         {
+            "partName" : "Left_leg",
+            "quantity" : "1",
+            "partImg" : "sofa2leftleg.png"
+         },
+         {
+            "partName" : "Middle_left_rest",
+            "quantity" : "1",
+            "partImg" : "sofa2middle_leftrest.png"
+         },
+         {
+            "partName" : "Middle_right_rest",
+            "quantity" : "1",
+            "partImg" : "sofa2middle_rightrest.png"
+         },
+         {
+            "partName" : "Right_leg",
+            "quantity" : "1",
+            "partImg" : "sofa2rightleg.png"
+         },
+         {
+            "partName" : "Sofa_seat1n2",
+            "quantity" : "2",
+            "partImg" : "sofa2seat1n2.png"
+         },
+         {
+            "partName" : "Sofa_seat3",
+            "quantity" : "1",
+            "partImg" : "sofa2seat3.png"
+         }
+      ]
+}

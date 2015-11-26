@@ -1,0 +1,33 @@
+{
+   "compilationName" : "sofa1",
+   "displayName" : "Sofa",
+   "compilationImg" : "sofa1.png",
+   "parts" :
+      [
+         {
+            "partName" : "Armrest",
+            "quantity" : "2",
+            "partImg" : "sofa1armrest.png"
+         },
+         {
+            "partName" : "Backleg",
+            "quantity" : "2",
+            "partImg" : "sofa1backleg.png"
+         },
+         {
+            "partName" : "Backrest",
+            "quantity" : "1",
+            "partImg" : "sofa1backrest.png"
+         },
+         {
+            "partName" : "Frontleg",
+            "quantity" : "2",
+            "partImg" : "sofa1frontleg.png"
+         },
+         {
+            "partName" : "Seat",
+            "quantity" : "1",
+            "partImg" : "sofa1seat.png"
+         }
+      ]
+}
