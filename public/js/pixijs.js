@@ -6,6 +6,10 @@ var pixijs = {
    canvasBlueprintW : 824,
    canvasBlockW : 200,
    
+   //Scaling variables
+   scaleWidth : null,
+   scaleHeight : null,
+   
    //The renderer and the stage
    renderer : null,
    stage : null,
@@ -149,12 +153,15 @@ var pixijs = {
 	   
 	   /**
 	     * Set the canvas size and display size
-	     * This way we can support retina graphics and make our game really crisp
+	     * 
 	     */
-	   pixijs.renderer.view.width = width * window.devicePixelRatio;
-	   pixijs.renderer.view.height = height * window.devicePixelRatio;
-	   pixijs.renderer.view.style.width = width + 'px';
-	   pixijs.renderer.view.style.height = height + 'px';
+	  
+		 pixijs.renderer.view.width = Math.min(pixijs.canvasW, width * window.devicePixelRatio);
+		 pixijs.renderer.view.style.width = Math.min(pixijs.canvasW, width + 'px');
+         pixijs.renderer.view.height = Math.min(pixijs.canvasH, height * window.devicePixelRatio);
+		 pixijs.renderer.view.style.height = Math.min(pixijs.canvasH, height + 'px');
+	   
+	     
 
 	    /**
 	     * Resize the PIXI renderer
@@ -166,19 +173,16 @@ var pixijs = {
 	     * Scale the canvas horizontally and vertically keeping in mind the screen estate we have
 	     * at our disposal. This keeps the relative game dimensions in place.
 	     */
+	    pixijs.scaleWidth = width /pixijs.canvasW;
+	    pixijs.scaleHeight = height / pixijs.canvasH;
+	    
+	    
 	     if (height / pixijs.canvasH < width / pixijs.canvasW) {
-	         pixijs.stage.scale.x = pixijs.stage.scale.y = height / pixijs.canvasH;
+	         pixijs.stage.scale.x = pixijs.stage.scale.y = Math.min(1,pixijs.scaleHeight);
 	     } else {
-	         pixijs.stage.scale.x = pixijs.stage.scale.y = width /pixijs.canvasW;
+	         pixijs.stage.scale.x = pixijs.stage.scale.y = Math.min(1, pixijs.scaleWidth);
 	     }
-
-	    /**
-	     * Some sugar
-	     * Set the x horizontal center point of the canvas after resizing.
-	     * This should be used for engines which calculate object position from anchor 0.5/0.5
-	     *
-	     pixijs.stage.pivot.y = -(width * (1 / pixijs.stage.scale.y) / 2) * window.devicePixelRatio;
-	     pixijs.stage.pivot.x = -(width * (1 / pixijs.stage.scale.x) / 2) * window.devicePixelRatio;*/
+	    
 
 	    /**
 	     * iOS likes to scroll when rotating - fix that 
