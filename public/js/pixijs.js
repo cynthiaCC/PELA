@@ -21,6 +21,10 @@ var pixijs = {
    
    //Container for UI elements within gameArea
    UI : null,
+   
+   //Container for the text within gameArea
+   text : null,
+   
    //The button for finishing the construction
    finishButton : null,
    
@@ -86,6 +90,11 @@ var pixijs = {
       
       //Create the menu
       pixijs.blockMenu();
+      
+      //Create the text container
+      pixijs.text = new PIXI.Container();
+      pixijs.stage.addChild(pixijs.text);
+      pixijs.text.renderable = false;
       
       //Create container for UI elements
       pixijs.UI = new PIXI.Container();
@@ -209,32 +218,33 @@ var pixijs = {
 	   
 	   
 	   //create the variables for the text
-	   var infoText1 = new PIXI.Text('Open menu to see the vocabulary.' , {font: '10px Arial', fill: 'white', align: 'center'});
-	   var infoText2 = new PIXI.Text('Drag blocks to the blue area to build.' , {font: '10px Arial', fill: 'white', align: 'center'});
-	   var infoText3 = new PIXI.Text('Click to mute the microphone.' , {font: '10px Arial', fill: 'white', align: 'center'});
-	   
-	   infoText1.renderable = false;
-	   infoText2.renderable = false;
-	   infoText3.renderable = false;
+	   var infoText1 = new PIXI.Text('Open menu to see the vocabulary.' , {font: '20px Arial', fill: 'white', align: 'center'});
+	   var infoText2 = new PIXI.Text('Drag blocks to the blue area to build.' , {font: '20px Arial', fill: 'white', align: 'center'});
+	   var infoText3 = new PIXI.Text('Click to mute the microphone.' , {font: '20px Arial', fill: 'white', align: 'center'});
+	  
 	   
 	   //Position the texts
-	   infoText1.position.x = -300;
-	   infoText1.position.y = 20;
+	   infoText1.position.x = 50;
+	   infoText1.position.y = 50;
 	   
-	   infoText2.position.x = -150;
+	   infoText2.position.x = 500;
 	   infoText2.position.y = 100;
 	   
-	   infoText3.position.x = -250;
-	   infoText3.position.y = 200;
+	   infoText3.position.x = 100;
+	   infoText3.position.y = 510;
 	   
 	   pixijs.infoButton
 	                    .on('mousedown', pixijs.onTutorialStart)
-	                    .on('mouseup', pixijs.onTutorialEnd);
+	                    .on('mouseup', pixijs.onTutorialEnd)
+	                    .on('touchstart', pixijs.onTutorialStart)
+                        .on('mouseupoutside', pixijs.onTutorialEnd)
+                        .on('touchend', pixijs.onTutorialEnd)
+                        .on('touchendoutside', pixijs.onTutorialEnd);
 	   
 	   //Add them to the UI container
-	   pixijs.infoButton.addChild(infoText1);
-	   pixijs.infoButton.addChild(infoText2);
-	   pixijs.infoButton.addChild(infoText3);
+	   pixijs.text.addChild(infoText1);
+	   pixijs.text.addChild(infoText2);
+	   pixijs.text.addChild(infoText3);
 	   
 	   
 	   
@@ -326,6 +336,7 @@ var pixijs = {
       pixijs.renderer.transparent = true;
       pixijs.UI.renderable = false;
       pixijs.menu.renderable = false;
+      pixijs.text.renderable = false;
       pixijs.bg.renderable = false;
       pixijs.renderer.render(pixijs.stage);
       var texture = pixijs.renderer.view.toDataURL();
@@ -727,17 +738,13 @@ var pixijs = {
    onTutorialStart : function(event){
 	   this.data = event.data;
 	   
-	   this.children.forEach(function(child,index,array){
-           child.renderable = true;
-        })
+	  pixijs.text.renderable = true;
 	   
    },
    
    onTutorialEnd : function(){
 	   this.data = null;
 	   
-	   this.children.forEach(function(child,index,array){
-           child.renderable = false;
-        })
+	   pixijs.text.renderable = false;
    }
 };
