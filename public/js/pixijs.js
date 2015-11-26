@@ -156,18 +156,13 @@ var pixijs = {
 	     * 
 	     */
 	  
-		 pixijs.renderer.view.width = Math.min(pixijs.canvasW, width * window.devicePixelRatio);
-		 pixijs.renderer.view.style.width = Math.min(pixijs.canvasW, width + 'px');
-         pixijs.renderer.view.height = Math.min(pixijs.canvasH, height * window.devicePixelRatio);
-		 pixijs.renderer.view.style.height = Math.min(pixijs.canvasH, height + 'px');
+		 
+         
+		 
 	   
 	     
 
-	    /**
-	     * Resize the PIXI renderer
-	     * Let PIXI know that we changed the size of the viewport
-	     */
-	    pixijs.renderer.resize(pixijs.renderer.view.width, pixijs.renderer.view.height);
+	    
 	   
 	   /**
 	     * Scale the canvas horizontally and vertically keeping in mind the screen estate we have
@@ -178,11 +173,23 @@ var pixijs = {
 	    
 	    
 	     if (height / pixijs.canvasH < width / pixijs.canvasW) {
-	         pixijs.stage.scale.x = pixijs.stage.scale.y = Math.min(1,pixijs.scaleHeight);
+	        pixijs.renderer.view.height = Math.min(pixijs.canvasH, height * window.devicePixelRatio);
+	        pixijs.renderer.view.style.height = Math.min(pixijs.canvasH, height) + 'px';
+	        pixijs.renderer.view.width = pixijs.canvasW * Math.min(1,pixijs.scaleHeight);
+	        pixijs.renderer.view.style.width = pixijs.canvasW * Math.min(1,pixijs.scaleHeight) + 'px';
+	        pixijs.stage.scale.x = pixijs.stage.scale.y = Math.min(1,pixijs.scaleHeight);
 	     } else {
+	         pixijs.renderer.view.width = Math.min(pixijs.canvasW, width * window.devicePixelRatio);
+	         pixijs.renderer.view.style.width = Math.min(pixijs.canvasW, width) + 'px';
+	         pixijs.renderer.view.height = pixijs.canvasH * Math.min(1,pixijs.scaleWidth);
+	         pixijs.renderer.view.style.height = pixijs.canvasH * Math.min(1,pixijs.scaleWidth) + 'px';
 	         pixijs.stage.scale.x = pixijs.stage.scale.y = Math.min(1, pixijs.scaleWidth);
 	     }
-	    
+	     /**
+	        * Resize the PIXI renderer
+	        * Let PIXI know that we changed the size of the viewport
+	        */
+	       pixijs.renderer.resize(pixijs.renderer.view.width, pixijs.renderer.view.height);
 
 	    /**
 	     * iOS likes to scroll when rotating - fix that 
