@@ -112,13 +112,65 @@ var pixijs = {
       //Create the progress bar
       pixijs.createProgressBar();
       
-      
+   
       
       //start the animation
       requestAnimationFrame( pixijs.animate );
       
-      
+      pixijs.resize();
    },
+   
+   /**
+    * Add listeners for canvas scaling with window resizing and device rotation
+    */
+   resize : function () {
+           window.addEventListener('resize', pixijs.rendererResize);
+           window.addEventListener('deviceOrientation', pixijs.rendererResize);
+   },
+   
+   rendererResize : function() {
+	   
+	   var width = window.innerWidth,
+       height = window.innerHeight;
+	   
+	   /* Determine which screen dimension is most constrained
+	   ratio = Math.min(window.innerWidth/pixijs.canvasW,
+	                    window.innerHeight/pixijs.canvasH);
+	  
+	   // Scale the view appropriately to fill that dimension
+	   pixijs.stage.scale.x = ratio;
+	   pixijs.stage.scale.y = ratio;
+	  
+	   // Update the renderer dimensions
+	   pixijs.renderer.resize(Math.ceil(pixijs.canvasW * ratio),
+	                   Math.ceil(pixijs.canvasH * ratio));*/
+	   
+	   //pixijs.renderer.resize();
+	   /**
+	     * Scale the canvas horizontally and vertically keeping in mind the screen estate we have
+	     * at our disposal. This keeps the relative game dimensions in place.
+	     */
+	     if (height / pixijs.canvasH < width / pixijs.canvasW) {
+	         pixijs.stage.scale.x = pixijs.stage.scale.y = height / pixijs.canvasH;
+	     } else {
+	         pixijs.stage.scale.x = pixijs.stage.scale.y = width /pixijs.canvasW;
+	     }
+
+	    /**
+	     * Some sugar
+	     * Set the x horizontal center point of the canvas after resizing.
+	     * This should be used for engines which calculate object position from anchor 0.5/0.5
+	     *
+	     pixijs.stage.pivot.y = -(width * (1 / pixijs.stage.scale.y) / 2) * window.devicePixelRatio;
+	     pixijs.stage.pivot.x = -(width * (1 / pixijs.stage.scale.x) / 2) * window.devicePixelRatio;*/
+
+	    /**
+	     * iOS likes to scroll when rotating - fix that 
+	     */
+	    window.scrollTo(0, 0);
+	   
+	 },
+   
    
    //Create menu to the right side of the canvas for blocks
    blockMenu : function(){
@@ -198,11 +250,14 @@ var pixijs = {
 	   pixijs.UI.addChild(pixijs.menuButton);
    },
    
+   //Function that creates the tutorial texts in the play area
    createTutorial : function(){
-	 
+	   
+	   //Create the button
 	   var tutorial = new PIXI.Texture.fromImage('img/temp.png');
 	   pixijs.infoButton = new PIXI.Sprite(tutorial);
 	   
+	   //Make it interactive, position it etc.
 	   pixijs.infoButton.buttonMode = true;
 	   pixijs.infoButton.interactive = true;
 	   
@@ -233,6 +288,7 @@ var pixijs = {
 	   infoText3.position.x = 100;
 	   infoText3.position.y = 510;
 	   
+	   //Events for the text
 	   pixijs.infoButton
 	                    .on('mousedown', pixijs.onTutorialStart)
 	                    .on('mouseup', pixijs.onTutorialEnd)
@@ -241,13 +297,13 @@ var pixijs = {
                         .on('touchend', pixijs.onTutorialEnd)
                         .on('touchendoutside', pixijs.onTutorialEnd);
 	   
-	   //Add them to the UI container
+	   //Add them to the text container
 	   pixijs.text.addChild(infoText1);
 	   pixijs.text.addChild(infoText2);
 	   pixijs.text.addChild(infoText3);
 	   
 	   
-	   
+	   //Add the button to the UI container
 	   pixijs.UI.addChild(pixijs.infoButton);
    },
    
@@ -735,16 +791,18 @@ var pixijs = {
       }
    },
    
+   //function to make the text viewable
    onTutorialStart : function(event){
 	   this.data = event.data;
-	   
+	  
+	   //Show the text if the button is pressed
 	  pixijs.text.renderable = true;
 	   
    },
-   
+   //Function the hide the text
    onTutorialEnd : function(){
 	   this.data = null;
-	   
+	   //hide the info texts
 	   pixijs.text.renderable = false;
    }
 };
