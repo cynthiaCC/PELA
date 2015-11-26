@@ -135,7 +135,7 @@ var pixijs = {
 	   var width = window.innerWidth,
        height = window.innerHeight;
 	   
-	   /* Determine which screen dimension is most constrained
+	   /*//Determine which screen dimension is most constrained
 	   ratio = Math.min(window.innerWidth/pixijs.canvasW,
 	                    window.innerHeight/pixijs.canvasH);
 	  
@@ -147,7 +147,21 @@ var pixijs = {
 	   pixijs.renderer.resize(Math.ceil(pixijs.canvasW * ratio),
 	                   Math.ceil(pixijs.canvasH * ratio));*/
 	   
-	   //pixijs.renderer.resize();
+	   /**
+	     * Set the canvas size and display size
+	     * This way we can support retina graphics and make our game really crisp
+	     */
+	   pixijs.renderer.view.width = width * window.devicePixelRatio;
+	   pixijs.renderer.view.height = height * window.devicePixelRatio;
+	   pixijs.renderer.view.style.width = width + 'px';
+	   pixijs.renderer.view.style.height = height + 'px';
+
+	    /**
+	     * Resize the PIXI renderer
+	     * Let PIXI know that we changed the size of the viewport
+	     */
+	    pixijs.renderer.resize(pixijs.renderer.view.width, pixijs.renderer.view.height);
+	   
 	   /**
 	     * Scale the canvas horizontally and vertically keeping in mind the screen estate we have
 	     * at our disposal. This keeps the relative game dimensions in place.
