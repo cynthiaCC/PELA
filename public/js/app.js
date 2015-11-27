@@ -208,7 +208,7 @@ var App = {
          pixijs.addBlueprint(PIXI.Texture.fromImage('img/' + compilation.compilationImg));
          var blocks = 0;
          $.each(compilation.parts, function(index, value) {
-            blocks += value.quantity;
+            blocks += parseInt(value.quantity);
          });
          pixijs.blockTotal = blocks;
       },

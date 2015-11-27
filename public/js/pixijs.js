@@ -28,6 +28,8 @@ var pixijs = {
    //Container for the text within gameArea
    text : null,
    
+   progress : null,
+   
    //The button for finishing the construction
    finishButton : null,
    
@@ -594,6 +596,9 @@ var pixijs = {
       //Add value amount to the total blocks within construct
       pixijs.blockTotal += parseInt(amount);
       
+      var percentage = (1/pixijs.blockTotal)*100;
+      
+      pixijs.progress = Math.floor(percentage/5);
       
       //Set events
       sprite
@@ -675,18 +680,10 @@ var pixijs = {
    //function that updates the progress bar
    updateProgress : function(){
       
-      //calculate how many blocks are still in the blockmenu
-      var blocksLeft = pixijs.blockTotal - pixijs.currentBlocks;
-      
-      
-      var progressSoFar = pixijs.currentBlocks/pixijs.blockTotal;
-      
-      var chunksNeeded = Math.floor(progressSoFar/5);
-      
-    
-      
-      var barLength = pixijs.progressBar.children.length * chunksNeeded;
-      for(var i = 0; i <= chunksNeeded;i += 1 ){
+      var barLength = pixijs.progressBar.children.length * 9; 
+      console.log(pixijs.blockTotal);
+      console.log(pixijs.currentBlocks);
+      for(var i = 0; i <= pixijs.progress;i += 1 ){
          
        //Create a sprite from the image
          var prog = new PIXI.Texture.fromImage('img/ProgressBarBit5Percent.png');
@@ -701,7 +698,7 @@ var pixijs = {
          
          pixijs.progressBar.addChild(progUpdate);
          
-         barLength += 5;
+         barLength += 9;
       }
    },
    
