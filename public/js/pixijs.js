@@ -28,8 +28,6 @@ var pixijs = {
    //Container for the text within gameArea
    text : null,
    
-   progress : null,
-   
    //The button for finishing the construction
    finishButton : null,
    
@@ -249,12 +247,14 @@ var pixijs = {
       pixijs.progressBar.anchor.set(0.0);
       
       //Bar width and height
-      pixijs.progressBar.width = 200;
-      pixijs.progressBar.height = 22;
+      //pixijs.progressBar.width = 200;
+      //pixijs.progressBar.height = 20;
       
       //position the bar
       pixijs.progressBar.position.x = 40;
       pixijs.progressBar.position.y = 580;
+      
+      pixijs.progressBar.children = [];
       
       //Add the bar to the UI container
       pixijs.UI.addChild(pixijs.progressBar);
@@ -263,13 +263,15 @@ var pixijs = {
    //Function for the vocabulary menu button
    addMenuButton : function(){
       
+	   //Create the icon from the image
       var menu = new PIXI.Texture.fromImage('img/temp.png');
       pixijs.menuButton = new PIXI.Sprite(menu);
 
-      
+      //Set it to be interactive
       pixijs.menuButton.buttonMode = true;
       pixijs.menuButton.interactive = true;
       
+      //Anchor and position it
       pixijs.menuButton.anchor.set(0.5);
 
       pixijs.menuButton.position.x = 40; 
@@ -280,7 +282,7 @@ var pixijs = {
       pixijs.menuButton.height = 50;
       
       
-      
+      //Add it to the UI container
       pixijs.UI.addChild(pixijs.menuButton);
    },
    
@@ -596,9 +598,6 @@ var pixijs = {
       //Add value amount to the total blocks within construct
       pixijs.blockTotal += parseInt(amount);
       
-      var percentage = (1/pixijs.blockTotal)*100;
-      
-      pixijs.progress = Math.floor(percentage/5);
       
       //Set events
       sprite
@@ -680,25 +679,34 @@ var pixijs = {
    //function that updates the progress bar
    updateProgress : function(){
       
-      var barLength = pixijs.progressBar.children.length * 9; 
-      console.log(pixijs.blockTotal);
-      console.log(pixijs.currentBlocks);
-      for(var i = 0; i <= pixijs.progress;i += 1 ){
-         
-       //Create a sprite from the image
+      //Calculate how many pieces of the bar are needed
+      var progress = Math.floor(((pixijs.currentBlocks/pixijs.blockTotal)*100)/5);
+	   
+      //Loop that adds the pieces to the progress bar. Runs as long as there are fewer
+      //bar children than there should be
+      while(progress > pixijs.progressBar.children.length){
+    	  
+        //Create a sprite from the image
          var prog = new PIXI.Texture.fromImage('img/ProgressBarBit5Percent.png');
          progUpdate = new PIXI.Sprite(prog);
          
          
-         progUpdate.width = 10;
-         progUpdate.height = 22;
+         //If there are no children(bar is empty) then the first piece goes to the beginning
+         if(pixijs.progressBar.children.length == 0){
+        	 
+        	 progUpdate.position.x = 1;
+             progUpdate.position.y = 1;
+         }
+         //If there are children , then place the new piece after the ones that are already there
+         else{
+             progUpdate.position.x = pixijs.progressBar.getChildAt(pixijs.progressBar.children.length - 1).position.x + 10;
+             progUpdate.position.y = 1;
+         }
          
-         progUpdate.position.x = barLength;
-         
-         
+         //Add the bits of bar to the progress bar
          pixijs.progressBar.addChild(progUpdate);
          
-         barLength += 9;
+        
       }
    },
    
