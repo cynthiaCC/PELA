@@ -228,7 +228,7 @@ var App = {
             var blueprint;
             pixijs.loadTemp(data);
             blueprint = pixijs.getImgOfCurrent();
-            resemble(App.dataURItoBlob(blueprint)).compareTo(App.dataURItoBlob(data)).onComplete(App.showMisMatchPercentage);
+            resemble(App.dataURItoBlob(blueprint)).compareTo(App.dataURItoBlob(data)).onComplete(pixijs.showComparison);
             IO.socket.emit('loadBlueprint', blueprint ,App.gameId)
          }
       },
@@ -335,7 +335,7 @@ var App = {
        if (App.myRole == 'Player') {
           pixijs.loadTemp(blueprint);
           var construct = pixijs.getImgOfCurrent();
-          resemble(App.dataURItoBlob(blueprint)).compareTo(App.dataURItoBlob(construct)).onComplete(App.showMisMatchPercentage);
+          resemble(App.dataURItoBlob(blueprint)).compareTo(App.dataURItoBlob(construct)).onComplete(pixijs.showComparison);
        }
     },
     
@@ -387,15 +387,6 @@ var App = {
    setVolume : function(newVolume) {
       if (App.audio != null) {
          App.audio.setAudioVolume(newVolume);
-      }
-   },
-   
-   showMisMatchPercentage : function(data) {
-      var blueprintImage = new Image()
-      blueprintImage.src = 'img/' + App.currentCompilation.compilationImg
-      blueprintImage.onload = function() {
-         var possibleChangePercentage = ((2*blueprintImage.height*blueprintImage.width)/(pixijs.canvasH*pixijs.canvasW))*100;
-         $('#mismatch').html(Math.floor((data.misMatchPercentage/possibleChangePercentage)*100) + "% is different");
       }
    },
    

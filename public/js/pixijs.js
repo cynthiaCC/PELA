@@ -36,6 +36,9 @@ var pixijs = {
    
    //The button for the info text
    infoButton : null,
+   
+   //Text for comparison
+   comparisonText : null,
 
    //UI elements for sound adjustement
    voiceSliderLocation : {x : 20, y : 50, padding: 20},
@@ -112,7 +115,7 @@ var pixijs = {
       
       //Create the info button
       pixijs.createTutorial();
-      
+      pixijs.createComparison();
       pixijs.createVoiceSlider();
       
       //Create the progress bar
@@ -135,51 +138,14 @@ var pixijs = {
            window.addEventListener('deviceOrientation', pixijs.rendererResize);
    },
    
-   rendererResize : function() {
-      var width = window.innerWidth,
-      height = window.innerHeight;
-      
-      
-      /**
-        * Scale the canvas horizontally and vertically keeping in mind the screen estate we have
-        * at our disposal. This keeps the relative game dimensions in place.
-        */
-      var scaleWidth = width /pixijs.canvasW;
-      var scaleHeight = height / pixijs.canvasH;
-       
-      /**
-        * Set the canvas size and display size
-        * 
-        */
-      if (scaleHeight < scaleWidth) {
-         pixijs.scale = scaleHeight;
-         pixijs.renderer.view.height = Math.min(pixijs.canvasH, height * window.devicePixelRatio);
-         pixijs.renderer.view.style.height = Math.min(pixijs.canvasH, height) + 'px';
-         pixijs.renderer.view.width = pixijs.canvasW * Math.min(1,pixijs.scale);
-         pixijs.renderer.view.style.width = pixijs.canvasW * Math.min(1,pixijs.scale) + 'px';
-         pixijs.stage.scale.x = pixijs.stage.scale.y = Math.min(1,pixijs.scale);
-      } else {
-         pixijs.scale = scaleWidth;
-         pixijs.renderer.view.width = Math.min(pixijs.canvasW, width * window.devicePixelRatio);
-         pixijs.renderer.view.style.width = Math.min(pixijs.canvasW, width) + 'px';
-         pixijs.renderer.view.height = pixijs.canvasH * Math.min(1,pixijs.scale);
-         pixijs.renderer.view.style.height = pixijs.canvasH * Math.min(1,pixijs.scale) + 'px';
-         pixijs.stage.scale.x = pixijs.stage.scale.y = Math.min(1, pixijs.scale);
-      }
-      /**
-        * Resize the PIXI renderer
-        * Let PIXI know that we changed the size of the viewport
-        */
-          pixijs.renderer.resize(pixijs.renderer.view.width, pixijs.renderer.view.height);
-
-      /**
-        * iOS likes to scroll when rotating - fix that 
-        */
-      window.scrollTo(0, 0);
-      
-    },
-   
-   
+   createComparison : function() {
+      pixijs.comparisonText = new PIXI.Text('Test', {font: '40px Arial', fill: 'white', align: 'center'});
+      pixijs.comparisonText.position.x = pixijs.canvasBlueprintW/2;
+      pixijs.comparisonText.position.y = pixijs.canvasH - 100;
+      pixijs.comparisonText.anchor.set(0.5);
+      pixijs.comparisonText.renderable = false;
+      pixijs.UI.addChild(pixijs.comparisonText);
+   },
    //Create menu to the right side of the canvas for blocks
    //Create menu to the right side of the canvas for blocks
    blockMenu : function(){
@@ -411,6 +377,7 @@ var pixijs = {
       pixijs.blockTotal = 0;
       pixijs.objects.position.x = 0;
       pixijs.objects.position.y = 0;
+      pixijs.comparisonText.renderable = false;
    },
    
    //Load the temporary container sent by app
@@ -421,8 +388,8 @@ var pixijs = {
       sprite = new PIXI.Sprite(texture);
       sprite.height = pixijs.canvasH;
       sprite.width = pixijs.canvasW;
-      //sprite.alpha = 0.5;
-      //sprite.tint = 0x9999FF;
+      sprite.alpha = 0.5;
+      sprite.tint = 0x9999FF;
       pixijs.tempCont.addChild(sprite);
    },
    
@@ -455,7 +422,7 @@ var pixijs = {
       return texture;
    },
    
- //Get an image of the current temp
+ /*/Get an image of the current temp
    getImgOfTemp : function() {
       pixijs.resetResolution();
       pixijs.renderer.transparent = true;
@@ -472,7 +439,7 @@ var pixijs = {
       pixijs.objects.renderable = true;
       pixijs.rendererResize();
       return texture;
-   },
+   },*/
    
    //Center the built construction
    centerObjects : function() {
@@ -589,7 +556,6 @@ var pixijs = {
          }
       }
       
-      console.log(pixijs.currentMenuY);
       
       sprite.scale.set(scale, scale);
       
@@ -731,6 +697,62 @@ var pixijs = {
       }
       pixijs.activeObject = object;
    },
+   
+   showComparison : function(data) {
+      console.log("Test");
+      var blueprintImage = new Image();
+      blueprintImage.src = 'img/' + App.currentCompilation.compilationImg;
+      blueprintImage.onload = function() {
+         console.log(pixijs.comparisonText);
+         var possibleChangePercentage = ((2*blueprintImage.height*blueprintImage.width)/(pixijs.canvasH*pixijs.canvasW))*100;
+         pixijs.comparisonText.renderable = true;
+         pixijs.comparisonText.text = Math.floor((data.misMatchPercentage/possibleChangePercentage)*100) + "% is different";
+      }
+   },
+   
+   rendererResize : function() {
+      var width = window.innerWidth,
+      height = window.innerHeight;
+      
+      
+      /**
+        * Scale the canvas horizontally and vertically keeping in mind the screen estate we have
+        * at our disposal. This keeps the relative game dimensions in place.
+        */
+      var scaleWidth = width /pixijs.canvasW;
+      var scaleHeight = height / pixijs.canvasH;
+       
+      /**
+        * Set the canvas size and display size
+        * 
+        */
+      if (scaleHeight < scaleWidth) {
+         pixijs.scale = scaleHeight;
+         pixijs.renderer.view.height = Math.min(pixijs.canvasH, height * window.devicePixelRatio);
+         pixijs.renderer.view.style.height = Math.min(pixijs.canvasH, height) + 'px';
+         pixijs.renderer.view.width = pixijs.canvasW * Math.min(1,pixijs.scale);
+         pixijs.renderer.view.style.width = pixijs.canvasW * Math.min(1,pixijs.scale) + 'px';
+         pixijs.stage.scale.x = pixijs.stage.scale.y = Math.min(1,pixijs.scale);
+      } else {
+         pixijs.scale = scaleWidth;
+         pixijs.renderer.view.width = Math.min(pixijs.canvasW, width * window.devicePixelRatio);
+         pixijs.renderer.view.style.width = Math.min(pixijs.canvasW, width) + 'px';
+         pixijs.renderer.view.height = pixijs.canvasH * Math.min(1,pixijs.scale);
+         pixijs.renderer.view.style.height = pixijs.canvasH * Math.min(1,pixijs.scale) + 'px';
+         pixijs.stage.scale.x = pixijs.stage.scale.y = Math.min(1, pixijs.scale);
+      }
+      /**
+        * Resize the PIXI renderer
+        * Let PIXI know that we changed the size of the viewport
+        */
+          pixijs.renderer.resize(pixijs.renderer.view.width, pixijs.renderer.view.height);
+
+      /**
+        * iOS likes to scroll when rotating - fix that 
+        */
+      window.scrollTo(0, 0);
+      
+    },
    
    /* *****************
     *    Animation    *
