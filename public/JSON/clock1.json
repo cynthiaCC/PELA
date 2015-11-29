@@ -1,0 +1,53 @@
+{
+    "compilationName" : "clock1",
+    "displayName" : "Clock",
+    "compilationImg" : "clock1.png",
+    "parts" :
+    [
+        {
+            "partName" : "Bell_left",
+            "quantity" : "1",
+            "partImg" : "clock1_bell_left.png"
+        },
+        {
+            "partName" : "Bell_right",
+            "quantity" : "1",
+            "partImg" : "clock1_bell_right.png"
+        },
+        {
+            "partName" : "Face",
+            "quantity" : "1",
+            "partImg" : "clock1_face.png"
+        },
+        {
+            "partName" : "Hammer_top",
+            "quantity" : "1",
+            "partImg" : "clock1_hammer_top.png"
+        },
+        {
+            "partName" : "Hour_hand",
+            "quantity" : "1",
+            "partImg" : "clock1_hour_hand.png"
+        },
+        {
+            "partName" : "Clock_time_n_hammerleg",
+            "quantity" : "5",
+            "partImg" : "clock1_leg_n_time.png"
+        },
+        {
+            "partName" : "Leg_upward_left",
+            "quantity" : "2",
+            "partImg" : "clock1_leg_upward_left.png"
+        },
+        {
+            "partName" : "Leg_upward_right",
+            "quantity" : "2",
+            "partImg" : "clock1_leg_upward_right.png"
+        },
+         {
+            "partName" : "Minute_hand",
+            "quantity" : "1",
+            "partImg" : "clock1_minute_hand.png"
+        }
+    ]
+}

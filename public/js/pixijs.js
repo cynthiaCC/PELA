@@ -613,13 +613,15 @@ var pixijs = {
       //}
       //}
       //spriteObj.removeChildren();
-      
+      var scale = 1/spriteObj.scale.x;
+      console.log(scale);
       //Create the text
       var objectCount = new PIXI.Text(parts , {font: '20px Arial', fill: 'white', align: 'center'});
          
       objectCount.anchor.set (0.5);
       //objectCount.height = 100;
       //objectCount.width = 100;
+      objectCount.scale.set(scale, scale);
       objectCount.position.x = 5;
       objectCount.position.y = 10;
       /*objectCount.position.x = pixijs.canvastW - pixijs.canvasBlockW/2;
@@ -628,6 +630,7 @@ var pixijs = {
       //Create the background for the text
       var fadeBalloon = new PIXI.Sprite(pixijs.fadeBalloon);
       fadeBalloon.anchor.set(0.5);
+      fadeBalloon.scale.set(scale, scale);
       //fadeBalloon.height = 20;
       //fadeBalloon.width = 20;
       fadeBalloon.position.x = 5;
@@ -699,11 +702,9 @@ var pixijs = {
    },
    
    showComparison : function(data) {
-      console.log("Test");
       var blueprintImage = new Image();
       blueprintImage.src = 'img/' + App.currentCompilation.compilationImg;
       blueprintImage.onload = function() {
-         console.log(pixijs.comparisonText);
          var possibleChangePercentage = ((2*blueprintImage.height*blueprintImage.width)/(pixijs.canvasH*pixijs.canvasW))*100;
          pixijs.comparisonText.renderable = true;
          pixijs.comparisonText.text = Math.floor((data.misMatchPercentage/possibleChangePercentage)*100) + "% is different";

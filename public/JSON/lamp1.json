@@ -1,0 +1,38 @@
+{
+    "compilationName" : "lamp1",
+    "displayName" : "Lamp",
+    "compilationImg" : "lamp1.png",
+    "parts" :
+    [
+        {
+            "partName" : "Left_shade",
+            "quantity" : "1",
+            "partImg" : "lamp1_left.png"
+        },
+        {
+            "partName" : "Leg",
+            "quantity" : "1",
+            "partImg" : "lamp1_leg.png"
+        },
+        {
+            "partName" : "Middle_left_shade",
+            "quantity" : "1",
+            "partImg" : "lamp1_middleleft.png"
+        },
+        {
+            "partName" : "Middle_right_shade",
+            "quantity" : "1",
+            "partImg" : "lamp1_middleright.png"
+        },
+        {
+            "partName" : "Right_shade",
+            "quantity" : "1",
+            "partImg" : "lamp1_right.png"
+        },
+        {
+            "partName" : "Stand",
+            "quantity" : "1",
+            "partImg" : "lamp1_stand.png"
+        }
+    ]
+}

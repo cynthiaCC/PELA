@@ -1,0 +1,48 @@
+{
+    "compilationName" : "bookshelf1",
+    "displayName" : "Bookshelf",
+    "compilationImg" : "bookshelf1.png",
+    "parts" :
+    [
+        {
+            "partName" : "2nd_shelf",
+            "quantity" : "1",
+            "partImg" : "bookshelf1_2nd_shelf.png"
+        },
+        {
+            "partName" : "3rd_shelf",
+            "quantity" : "1",
+            "partImg" : "bookshelf1_3rd_shelf.png"
+        },
+        {
+            "partName" : "4th_shelf",
+            "quantity" : "1",
+            "partImg" : "bookshelf1_4th_shelf.png"
+        },
+        {
+            "partName" : "Bottom_shelf",
+            "quantity" : "1",
+            "partImg" : "bookshelf1_bottom_shelf.png"
+        },
+        {
+            "partName" : "Left_back_leg",
+            "quantity" : "1",
+            "partImg" : "bookshelf1_left_back_leg.png"
+        },
+        {
+            "partName" : "Right_back_leg",
+            "quantity" : "1",
+            "partImg" : "bookshelf1_right_back_leg.png"
+        },
+        {
+            "partName" : "Right_front_leg",
+            "quantity" : "1",
+            "partImg" : "bookshelf1_right_front_leg.png"
+        },
+        {
+            "partName" : "Top_shelf",
+            "quantity" : "1",
+            "partImg" : "bookshelf1_top_shelf.png"
+        }
+    ]
+}
