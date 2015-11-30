@@ -28,6 +28,7 @@ var IO = {
        IO.socket.on('gameOver', IO.gameOver);
        IO.socket.on('constructionFinished', IO.constructionFinished);
        IO.socket.on('loadBlueprint', IO.loadBlueprint);
+       IO.socket.on('beginNewRound', IO.beginNewRound);
        
        IO.socket.on('audioStarted', IO.enableInstructorAudio );
        IO.socket.on('sentApiKey', IO.enableBuilderAudio);
@@ -149,6 +150,16 @@ var IO = {
   
   loadBlueprint : function(blueprint) {
     App.Player.loadBlueprint(blueprint); 
+  },
+  
+  beginNewRound : function(compilation) {
+     if(App.myRole === 'Host') {
+        App.myRole = 'Player';
+     }
+     else {
+        App.myRole = 'Host';
+     }
+     App.beginRound(compilation);
   },
 
    /**

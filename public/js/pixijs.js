@@ -138,12 +138,22 @@ var pixijs = {
            window.addEventListener('deviceOrientation', pixijs.rendererResize);
    },
    
+   //Create the text for comparison and a button to restart with swapped roles
    createComparison : function() {
       pixijs.comparisonText = new PIXI.Text('Test', {font: '40px Arial', fill: 'white', align: 'center'});
       pixijs.comparisonText.position.x = pixijs.canvasBlueprintW/2;
       pixijs.comparisonText.position.y = pixijs.canvasH - 100;
       pixijs.comparisonText.anchor.set(0.5);
       pixijs.comparisonText.renderable = false;
+      
+      var button = new PIXI.Sprite(PIXI.Texture.fromImage('img/temp.png'));
+      button.anchor.set(0.5);
+      button
+            .on('mousedown', pixijs.onNewRound)
+            .on('touchstart', pixijs.onNewRound);
+      button.position.y = 40;
+      pixijs.comparisonText.addChild(button);
+      
       pixijs.UI.addChild(pixijs.comparisonText);
    },
    //Create menu to the right side of the canvas for blocks
@@ -379,6 +389,12 @@ var pixijs = {
       pixijs.objects.position.x = 0;
       pixijs.objects.position.y = 0;
       pixijs.comparisonText.renderable = false;
+      pixijs.comparisonText.getChildAt(0).interactive = false;
+      pixijs.comparisonText.getChildAt(0).buttonMode = false;
+      pixijs.menu.position.x = 0;
+      pixijs.menu.position.y = 0;
+      pixijs.menuPage = 1;
+      pixijs.totalPages = 1;
    },
    
    //Load the temporary container sent by app
@@ -615,7 +631,6 @@ var pixijs = {
       //}
       //spriteObj.removeChildren();
       var scale = 1/spriteObj.scale.x;
-      console.log(scale);
       //Create the text
       var objectCount = new PIXI.Text(parts , {font: '20px Arial', fill: 'white', align: 'center'});
          
@@ -709,6 +724,8 @@ var pixijs = {
          var possibleChangePercentage = ((2*blueprintImage.height*blueprintImage.width)/(pixijs.canvasH*pixijs.canvasW))*100;
          pixijs.comparisonText.renderable = true;
          pixijs.comparisonText.text = Math.floor((data.misMatchPercentage/possibleChangePercentage)*100) + "% is different";
+         pixijs.comparisonText.getChildAt(0).interactive = true;
+         pixijs.comparisonText.getChildAt(0).buttonMode = true;
       }
    },
    
@@ -922,5 +939,9 @@ var pixijs = {
          pixijs.menu.position.y += pixijs.canvasH;
          pixijs.menuPage--;
       }
+   },
+   
+   onNewRound : function() {
+      App.startNewRound();
    },
 };

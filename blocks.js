@@ -38,6 +38,7 @@ exports.initGame = function(sio, socket, ot, cred){
     gameSocket.on('audioStarted', audioStarted);
     gameSocket.on('blockAdded', blockAdded);
     gameSocket.on('loadBlueprint', loadBlueprint);
+    gameSocket.on('startNewRound', startNewRound);
     
     gameSocket.on('requestApiKey', requestApiKey);
     
@@ -191,11 +192,14 @@ function randomCompilation() {
    *                       *
    ************************* */
 
-//TODO: Implement Game Logic
 function blockAdded(gameId) {
    io.sockets.in(gameId).emit('blockAdded');
 }
 
 function loadBlueprint(blueprint, gameId) {
    io.sockets.in(gameId).emit('loadBlueprint', blueprint);
+}
+
+function startNewRound(gameId) {
+   io.sockets.in(gameId).emit('beginNewRound', randomCompilation());
 }

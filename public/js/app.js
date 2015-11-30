@@ -94,7 +94,7 @@ var App = {
    
    beginRound : function(compilation) {
       pixijs.clearAll();
-      
+      PIXI.loader.reset();
       var filename = "JSON/" + compilation + ".json";
       var compilationJSON;
       $.getJSON(filename, function(data) {
@@ -102,6 +102,10 @@ var App = {
          App.currentCompilation = compilationJSON;
          App[App.myRole].begin(compilationJSON);
       });
+   },
+   
+   startNewRound : function() {
+      IO.socket.emit('startNewRound', App.gameId);
    },
 
    /* *******************************
