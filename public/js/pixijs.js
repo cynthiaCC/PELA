@@ -199,7 +199,8 @@ var pixijs = {
       pixijs.finishButton.position.y = 250;
       pixijs.finishButton.renderable = false;
       pixijs.finishButton
-            .on('mousedown', pixijs.onFinished);
+            .on('mousedown', pixijs.onFinished)
+            .on('touchstart', pixijs.onFinished);
       pixijs.UI.addChild(pixijs.finishButton);
    },
    //Function that creates the progress bar
