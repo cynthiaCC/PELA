@@ -50,15 +50,15 @@ var pixijs = {
    //The background for easy access
    bg : null,
    
-   //Store all the rotators in this, this makes them easier to remove when finished with building.
-   rotators : [],
-   
    //BlockMenu is stored inside this
    menu : null,
    menuBG : null,
-   currentMenuY : (624/12),
+   blocksPerPage : 6,
+   currentMenuY : (this.canvasH/(this.blocksPerPage*2)),
    menuPage : 1,
    totalPages : 1,
+   arrowUp : null,
+   arrowDown : null,
    
    //Current blocks on the gamearea
    currentBlocks : 0,
@@ -140,7 +140,7 @@ var pixijs = {
    
    //Create the text for comparison and a button to restart with swapped roles
    createComparison : function() {
-      pixijs.comparisonText = new PIXI.Text('Test', {font: '40px Arial', fill: 'white', align: 'center'});
+      pixijs.comparisonText = new PIXI.Text('Test', {font: '40px Arial', fill: 'white', align: 'center', stroke:'black', strokeThickness : 1});
       pixijs.comparisonText.position.x = pixijs.canvasBlueprintW/2;
       pixijs.comparisonText.position.y = pixijs.canvasH - 100;
       pixijs.comparisonText.anchor.set(0.5);
@@ -168,24 +168,22 @@ var pixijs = {
       blockMenu.position.y = 0;
       
       //TODO replace with the proper texture
-      var arrowUp = new PIXI.Sprite(PIXI.Texture.fromImage('img/temp.png'));
-      arrowUp.position.y = 10;
-      arrowUp.position.x = pixijs.canvasBlockW - 20;
-      arrowUp.interactive = true;
-      arrowUp.buttonMode = true;
-      arrowUp
+      pixijs.arrowUp = new PIXI.Sprite(PIXI.Texture.fromImage('img/temp.png'));
+      pixijs.arrowUp.position.y = 10;
+      pixijs.arrowUp.position.x = pixijs.canvasBlockW - 20;
+      pixijs.arrowUp.renderable = false;
+      pixijs.arrowUp
                .on('mousedown', pixijs.onArrowUp)
                .on('touchstart', pixijs.onArrowUp);
-      var arrowDown = new PIXI.Sprite(PIXI.Texture.fromImage('img/temp.png'));
-      arrowDown.position.y = pixijs.canvasH - 30;
-      arrowDown.position.x = pixijs.canvasBlockW - 20;
-      arrowDown.interactive = true;
-      arrowDown.buttonMode = true;
-      arrowDown
+      pixijs.arrowDown = new PIXI.Sprite(PIXI.Texture.fromImage('img/temp.png'));
+      pixijs.arrowDown.position.y = pixijs.canvasH - 30;
+      pixijs.arrowDown.position.x = pixijs.canvasBlockW - 20;
+      pixijs.arrowDown.renderable = false;
+      pixijs.arrowDown
                .on('mousedown', pixijs.onArrowDown)
                .on('touchstart', pixijs.onArrowDown);
-      blockMenu.addChild(arrowUp);
-      blockMenu.addChild(arrowDown);
+      blockMenu.addChild(pixijs.arrowUp);
+      blockMenu.addChild(pixijs.arrowDown);
       
       pixijs.menu = new PIXI.Container();
       blockMenu.addChild(pixijs.menu);
@@ -198,9 +196,6 @@ var pixijs = {
       //Create the button for finishing the game
       var finButton = new PIXI.Texture.fromImage('img/Finish-button.png');
       pixijs.finishButton = new PIXI.Sprite(finButton);
-      /*pixijs.finishButton.lineStyle(2, 0x0000FF, 1);
-      pixijs.finishButton.beginFill(0xFF700B, 1);
-      pixijs.finishButton.drawRect(50, 250, 120, 120);*/
       
       //TODO: the placement could be changed to a better position later on
       pixijs.finishButton.height = 81;
@@ -383,7 +378,7 @@ var pixijs = {
       pixijs.clearContainer(pixijs.objects);
       pixijs.clearContainer(pixijs.menu);
       pixijs.clearContainer(pixijs.tempCont);
-      pixijs.currentMenuY = 624/12;
+      pixijs.currentMenuY = pixijs.canvasH/(pixijs.blocksPerPage*2);
       pixijs.currentBlocks = 0;
       pixijs.blockTotal = 0;
       pixijs.objects.position.x = 0;
@@ -395,6 +390,12 @@ var pixijs = {
       pixijs.menu.position.y = 0;
       pixijs.menuPage = 1;
       pixijs.totalPages = 1;
+      pixijs.arrowUp.renderable = false;
+      pixijs.arrowUp.interactive = false;
+      pixijs.arrowUp.buttonMode = false;
+      pixijs.arrowDown.renderable = false;
+      pixijs.arrowDown.interactive = false;
+      pixijs.arrowDown.buttonMode = false;
    },
    
    //Load the temporary container sent by app
@@ -514,8 +515,8 @@ var pixijs = {
             .on('mousemove', pixijs.onDragMove)
             .on('touchmove', pixijs.onDragMove);
       
-      sprite.position.x = pixijs.canvasBlueprintW/2;
-      sprite.position.y = pixijs.canvasH/2;
+      sprite.position.x = Math.floor(Math.random() * (pixijs.canvasBlueprintW+1));
+      sprite.position.y = Math.floor(Math.random() * (pixijs.canvasH+1));
       
       //Make the rotator
       var rotator = new PIXI.Sprite(pixijs.rotatorTexture);
@@ -525,7 +526,7 @@ var pixijs = {
       rotator.renderable = false;
       rotator.position.x = 0;
       //This y value places the rotator above the sprite
-      rotator.position.y = - sprite.height;
+      rotator.position.y = - (sprite.height/2 + 10);
       
       //Add events
       rotator
@@ -564,15 +565,20 @@ var pixijs = {
       
       //Set scale
       var scale = 1;
+      
+      if (sprite.width < 10) {
+         scale = 10/sprite.width;
+      }
       if (sprite.width > pixijs.canvasBlockW - 20) {
          scale = (pixijs.canvasBlockW - 20)/sprite.width;
       }
-      if (sprite.height > (pixijs.canvasH/6) - 20) {
-         if (scale > ((pixijs.canvasH/6) - 20)/sprite.height){
-            scale = ((pixijs.canvasH/6) - 20)/sprite.height;
+      if (sprite.height > (pixijs.canvasH/pixijs.blocksPerPage) - 20) {
+         if (scale > ((pixijs.canvasH/pixijs.blocksPerPage) - 20)/sprite.height){
+            scale = ((pixijs.canvasH/pixijs.blocksPerPage) - 20)/sprite.height;
          }
       }
       
+      console.log(scale);
       
       sprite.scale.set(scale, scale);
       
@@ -597,7 +603,7 @@ var pixijs = {
 
       
       //Add the height+some padding to currentMenuY
-      pixijs.currentMenuY += pixijs.canvasH/6;
+      pixijs.currentMenuY += pixijs.canvasH/pixijs.blocksPerPage;
       pixijs.menu.addChild(sprite);
    },
    
@@ -931,6 +937,16 @@ var pixijs = {
       if(pixijs.menuPage < pixijs.totalPages) {
          pixijs.menu.position.y -= pixijs.canvasH;
          pixijs.menuPage++;
+         if (pixijs.menuPage === pixijs.totalPages) {
+            this.renderable = false;
+            this.interactive = false;
+            this.buttonMode = false;
+         }
+         if(pixijs.menuPage > 1) {
+            pixijs.arrowUp.renderable = true;
+            pixijs.arrowUp.interactive = true;
+            pixijs.arrowUp.buttonMode = true;
+         }
       }
    },
    
@@ -938,6 +954,16 @@ var pixijs = {
       if (pixijs.menuPage > 1) {
          pixijs.menu.position.y += pixijs.canvasH;
          pixijs.menuPage--;
+         if (pixijs.menuPage === 1) {
+            this.renderable = false;
+            this.interactive = false;
+            this.buttonMode = false;
+         }
+         if (pixijs.menuPage < pixijs.totalPages) {
+            pixijs.arrowDown.renderable = true;
+            pixijs.arrowDown.interactive = true;
+            pixijs.arrowDown.buttonMode = true;
+         }
       }
    },
    

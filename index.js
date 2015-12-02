@@ -1,3 +1,5 @@
+console.log("Starting the server");
+
 // Import the Express module
 var express = require('express');
 
@@ -37,6 +39,8 @@ var io = require('socket.io').listen(server);
 //io.set('log level',1);
 
 // Listen for Socket.IO Connections. Once connected, start the game logic.
-io.sockets.on('connection', function (socket) {    
-    blocks.initGame(io, socket, opentok, credentials);
+io.sockets.on('connection', function (socket) {
+   blocks.initGame(io, socket, opentok, credentials);
 });
+
+console.log("Server started");

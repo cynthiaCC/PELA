@@ -328,6 +328,11 @@ var App = {
             });
          });
          pixijs.totalPages = Math.ceil(compilation.parts.length/6);
+         if (pixijs.totalPages > 1) {
+            pixijs.arrowDown.renderable = true;
+            pixijs.arrowDown.interactive = true;
+            pixijs.arrowDown.buttonMode = true;
+         }
       },
       
     //Block has been added from the menu
