@@ -4,6 +4,7 @@ var opentok;
 var credentials;
 var listOfCompilations;
 
+
 var gameID = '';
 var audioSessionId = '';
 var instructorToken = '';
@@ -47,6 +48,8 @@ exports.initGame = function(sio, socket, ot, cred){
     });
     
     listOfCompilations = JSON.parse(fs.readFileSync("listOfCompilations.json"));
+    
+    
 }
 
 /* ********************************************

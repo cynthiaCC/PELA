@@ -122,7 +122,9 @@ var IO = {
     */
    enableInstructorAudio : function(apiKey) {
        if(App.originalRole === 'Player') {
-           $('#audio-button').show();
+    	   pixijs.communicationButton.renderable = true;
+	  	   pixijs.communicationButton.interactive = true;
+	  	   pixijs.communicationButton.buttonMode = true;
        }
        else {
           App.initAudio(App.audioSettings, apiKey);

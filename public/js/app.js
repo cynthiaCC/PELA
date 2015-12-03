@@ -9,6 +9,7 @@ var App = {
    
    //Current compilation in progress
    currentCompilation : null,
+   
 
    /**
     * This is used to differentiate between 'Host' and 'Player' browsers.
@@ -102,6 +103,7 @@ var App = {
          App.currentCompilation = compilationJSON;
          App[App.myRole].begin(compilationJSON);
       });
+     
    },
    
    startNewRound : function() {

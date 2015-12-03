@@ -34,6 +34,9 @@ var pixijs = {
    //The button for the vocabulary menu
    menuButton : null,
    
+   //Button for the voice enabling
+   communicationButton : null,
+   
    //The button for the info text
    infoButton : null,
    
@@ -112,6 +115,8 @@ var pixijs = {
       
     //Create the menu button
       pixijs.addMenuButton();
+      
+      pixijs.addCommunicationButton();
       
       //Create the info button
       pixijs.createTutorial();
@@ -258,6 +263,45 @@ var pixijs = {
       pixijs.UI.addChild(pixijs.menuButton);
    },
    
+   //Function for the communication button
+   addCommunicationButton : function(){
+      
+	   //Create the icon from the image
+      var voice = new PIXI.Texture.fromImage('img/temp.png');
+      pixijs.communicationButton = new PIXI.Sprite(voice);
+      
+      
+      if(App.originalRole == 'Player'){
+    	  pixijs.communicationButton.renderable = false;
+	  	   pixijs.communicationButton.interactive = false;
+	  	   pixijs.communicationButton.buttonMode = false;
+      }
+      else{
+    	  
+    	//Set it to be interactive
+    	  pixijs.communicationButton.renderable = true;
+	  	   pixijs.communicationButton.interactive = true;
+	  	   pixijs.communicationButton.buttonMode = true;
+      }
+      
+      
+      //Anchor and position it
+      pixijs.communicationButton.anchor.set(0.5);
+
+      pixijs.communicationButton.position.x = 300; 
+      pixijs.communicationButton.position.y = 20;
+      
+     
+      pixijs.communicationButton.width = 100;
+      pixijs.communicationButton.height = 50;
+      
+      pixijs.communicationButton.on('mousedown', pixijs.onCommunicationStart)
+                                .on('touchstart', pixijs.onCommunicationStart);
+      
+      //Add it to the UI container
+      pixijs.UI.addChild(pixijs.communicationButton);
+   },
+   
    //Function that creates the tutorial texts in the play area
    createTutorial : function(){
       
@@ -282,8 +326,8 @@ var pixijs = {
       
       //create the variables for the text
       var infoText1 = new PIXI.Text('Open menu to see the vocabulary.' , {font: '20px Arial', fill: 'white', align: 'center'});
-      var infoText2 = new PIXI.Text('Drag blocks to the blue area to build.' , {font: '20px Arial', fill: 'white', align: 'center'});
-      var infoText3 = new PIXI.Text('Click to mute the microphone.' , {font: '20px Arial', fill: 'white', align: 'center'});
+      var infoText2 = new PIXI.Text('Click or tap blocks on the grey area to build.' , {font: '20px Arial', fill: 'white', align: 'center'});
+      var infoText3 = new PIXI.Text('Slide the slider up and down to change voice volume.' , {font: '20px Arial', fill: 'white', align: 'center'});
      
       
       //Position the texts
@@ -702,6 +746,17 @@ var pixijs = {
       }
    },
    
+   vocabularyMenu : function(){
+	 
+	   var menuFile = "JSON/menu.json";
+	   var menuJSON;
+	   $.getJSON(menuFile, function(data){
+	    	  menuJSON = data;
+	      });
+	   
+	   
+   },
+   
    //Sets the given object as active in the playarea
    setActive : function(object){
       if(pixijs.activeObject != null){
@@ -971,4 +1026,38 @@ var pixijs = {
    onNewRound : function() {
       App.startNewRound();
    },
+   
+   onCommunicationStart : function(){
+	   
+	   if(App.originalRole == 'Host') {
+		   
+	         console.log(App.audioSettings);
+	         if(App.audioSettings !== 'mute-audio-video') {
+	            console.log('Launched, audio settings: ' + App.audioSettings);
+	            if (App.sessionID !== 'undefined') {
+	               IO.socket.emit('audioStarted', App.gameId);
+	            } else {
+	               IO.socket.emit('audioStarted', App.gameId);
+	            }
+	            pixijs.communicationButton.renderable = false;
+	     	   pixijs.communicationButton.interactive = false;
+	     	   pixijs.communicationButton.buttonMode = false;
+	         }
+	         else {
+	        	 pixijs.communicationButton.renderable = false;
+		     	   pixijs.communicationButton.interactive = false;
+		     	   pixijs.communicationButton.buttonMode = false;
+	         }
+	      } else {
+	         console.log('Launched, audio settings: ' + App.audioSettings);
+	         IO.socket.emit('requestApiKey', App.gameId);
+	         pixijs.communicationButton.renderable = false;
+	  	   pixijs.communicationButton.interactive = false;
+	  	   pixijs.communicationButton.buttonMode = false;
+	      }
+	   
+	   
+	   
+   },
+   
 };
