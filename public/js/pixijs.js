@@ -378,6 +378,7 @@ var pixijs = {
       pixijs.clearContainer(pixijs.objects);
       pixijs.clearContainer(pixijs.menu);
       pixijs.clearContainer(pixijs.tempCont);
+      pixijs.clearContainer(pixijs.progressBar);
       pixijs.currentMenuY = pixijs.canvasH/(pixijs.blocksPerPage*2);
       pixijs.currentBlocks = 0;
       pixijs.blockTotal = 0;
