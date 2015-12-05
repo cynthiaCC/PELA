@@ -764,8 +764,15 @@ var pixijs = {
       menuJSON = data;
           });
 	   
-      var source=[];
-      var items = [];
+      var loader = PIXI.loader;
+      $.each(menuJSON.parts, function(index, value) {
+         var path = 'img' + value.thumbnailImg;
+         var name = "part" + index;
+         loader.add(name, path);
+         loader.load(function(loader, resources){
+            pixijs.onVocMenuClick(resources[name].texture);
+         });
+      });
       
 	   
    },
@@ -1039,6 +1046,11 @@ var pixijs = {
             pixijs.arrowDown.buttonMode = true;
          }
       }
+   },
+   
+   onVocMenuClick : function(){
+     
+      
    },
    
    onNewRound : function() {
