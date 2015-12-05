@@ -309,9 +309,19 @@ var pixijs = {
       var tutorial = new PIXI.Texture.fromImage('img/temp.png');
       pixijs.infoButton = new PIXI.Sprite(tutorial);
       
-      //Make it interactive, position it etc.
-      pixijs.infoButton.buttonMode = true;
-      pixijs.infoButton.interactive = true;
+      //Hide it from the instructor because the info is for the builder
+      if(App.originalRole == 'Host'){
+         pixijs.infoButton.buttonMode = false;
+         pixijs.infoButton.interactive = false;
+         pixijs.infoButton.renderable = false;
+      }
+      else{
+         //Make it interactive, position it etc.
+         pixijs.infoButton.buttonMode = true;
+         pixijs.infoButton.interactive = true;
+         pixijs.infoButton.renderable = true;
+      }
+     
       
       pixijs.infoButton.anchor.set(0.5);
 
@@ -747,13 +757,16 @@ var pixijs = {
    },
    
    vocabularyMenu : function(){
-	 
-	   var menuFile = "JSON/menu.json";
-	   var menuJSON;
-	   $.getJSON(menuFile, function(data){
-	    	  menuJSON = data;
-	      });
+    
+      var menuFile = "JSON/menu.json";
+      var menuJSON;
+      $.getJSON(menuFile, function(data){
+      menuJSON = data;
+          });
 	   
+      var source=[];
+      var items = [];
+      
 	   
    },
    
@@ -978,8 +991,13 @@ var pixijs = {
    onTutorialStart : function(event){
       this.data = event.data;
      
-      //Show the text if the button is pressed
-     pixijs.text.renderable = true;
+      //Show the text if the button is pressed if you are the builder
+      if(App.originalRole == 'Host'){
+         pixijs.text.renderable = false;
+      }
+      else{
+         pixijs.text.renderable = true;
+      }    
       
    },
    //Function the hide the text
@@ -1030,7 +1048,7 @@ var pixijs = {
    onCommunicationStart : function(){
 	   
 	   if(App.originalRole == 'Host') {
-		   
+	   
 	         console.log(App.audioSettings);
 	         if(App.audioSettings !== 'mute-audio-video') {
 	            console.log('Launched, audio settings: ' + App.audioSettings);
@@ -1040,20 +1058,20 @@ var pixijs = {
 	               IO.socket.emit('audioStarted', App.gameId);
 	            }
 	            pixijs.communicationButton.renderable = false;
-	     	   pixijs.communicationButton.interactive = false;
-	     	   pixijs.communicationButton.buttonMode = false;
+	         pixijs.communicationButton.interactive = false;
+	         pixijs.communicationButton.buttonMode = false;
 	         }
 	         else {
-	        	 pixijs.communicationButton.renderable = false;
-		     	   pixijs.communicationButton.interactive = false;
-		     	   pixijs.communicationButton.buttonMode = false;
+	          pixijs.communicationButton.renderable = false;
+             pixijs.communicationButton.interactive = false;
+             pixijs.communicationButton.buttonMode = false;
 	         }
 	      } else {
 	         console.log('Launched, audio settings: ' + App.audioSettings);
 	         IO.socket.emit('requestApiKey', App.gameId);
 	         pixijs.communicationButton.renderable = false;
-	  	   pixijs.communicationButton.interactive = false;
-	  	   pixijs.communicationButton.buttonMode = false;
+	      pixijs.communicationButton.interactive = false;
+	      pixijs.communicationButton.buttonMode = false;
 	      }
 	   
 	   
