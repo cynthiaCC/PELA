@@ -46,6 +46,7 @@ var pixijs = {
    //UI elements for sound adjustement
    voiceSliderLocation : {x : 20, y : 50, padding: 20},
    voiceSlider : null,
+   sliderBar : null,
    
    //The progress bar for the game
    progressBar : null,
@@ -62,6 +63,9 @@ var pixijs = {
    totalPages : 1,
    arrowUp : null,
    arrowDown : null,
+   
+   //height of one vocabulary menu element is 28 px
+   currentVocMenuY : 28,
    
    //Current blocks on the gamearea
    currentBlocks : 0,
@@ -151,12 +155,12 @@ var pixijs = {
       pixijs.comparisonText.anchor.set(0.5);
       pixijs.comparisonText.renderable = false;
       
-      var button = new PIXI.Sprite(PIXI.Texture.fromImage('img/temp.png'));
+      var button = new PIXI.Sprite(PIXI.Texture.fromImage('img/new-game.png'));
       button.anchor.set(0.5);
       button
             .on('mousedown', pixijs.onNewRound)
             .on('touchstart', pixijs.onNewRound);
-      button.position.y = 40;
+      button.position.y = 60;
       pixijs.comparisonText.addChild(button);
       
       pixijs.UI.addChild(pixijs.comparisonText);
@@ -241,7 +245,7 @@ var pixijs = {
    addMenuButton : function(){
       
 	   //Create the icon from the image
-      var menu = new PIXI.Texture.fromImage('img/temp.png');
+      var menu = new PIXI.Texture.fromImage('img/Vocabulary-menu.png');
       pixijs.menuButton = new PIXI.Sprite(menu);
 
       //Set it to be interactive
@@ -251,12 +255,14 @@ var pixijs = {
       //Anchor and position it
       pixijs.menuButton.anchor.set(0.5);
 
-      pixijs.menuButton.position.x = 40; 
+      pixijs.menuButton.position.x = 70; 
       pixijs.menuButton.position.y = 20;
       
      
-      pixijs.menuButton.width = 100;
-      pixijs.menuButton.height = 50;
+      //pixijs.menuButton.width = 100;
+      //pixijs.menuButton.height = 50;
+      
+      pixijs.menuButton.on('mousedown', pixijs.vocabularyMenu);
       
       
       //Add it to the UI container
@@ -267,7 +273,7 @@ var pixijs = {
    addCommunicationButton : function(){
       
 	   //Create the icon from the image
-      var voice = new PIXI.Texture.fromImage('img/temp.png');
+      var voice = new PIXI.Texture.fromImage('img/Mike.png');
       pixijs.communicationButton = new PIXI.Sprite(voice);
       
       
@@ -288,12 +294,12 @@ var pixijs = {
       //Anchor and position it
       pixijs.communicationButton.anchor.set(0.5);
 
-      pixijs.communicationButton.position.x = 300; 
-      pixijs.communicationButton.position.y = 20;
+      pixijs.communicationButton.position.x = 150; 
+      pixijs.communicationButton.position.y = 550;
       
      
-      pixijs.communicationButton.width = 100;
-      pixijs.communicationButton.height = 50;
+      //pixijs.communicationButton.width = 100;
+      //pixijs.communicationButton.height = 50;
       
       pixijs.communicationButton.on('mousedown', pixijs.onCommunicationStart)
                                 .on('touchstart', pixijs.onCommunicationStart);
@@ -306,7 +312,7 @@ var pixijs = {
    createTutorial : function(){
       
       //Create the button
-      var tutorial = new PIXI.Texture.fromImage('img/temp.png');
+      var tutorial = new PIXI.Texture.fromImage('img/info-button.png');
       pixijs.infoButton = new PIXI.Sprite(tutorial);
       
       //Hide it from the instructor because the info is for the builder
@@ -329,8 +335,8 @@ var pixijs = {
       pixijs.infoButton.position.y = 30;
       
      
-      pixijs.infoButton.width = 50;
-      pixijs.infoButton.height = 50;
+      //pixijs.infoButton.width = 50;
+      //pixijs.infoButton.height = 50;
       
       
       
@@ -344,7 +350,7 @@ var pixijs = {
       infoText1.position.x = 50;
       infoText1.position.y = 50;
       
-      infoText2.position.x = 500;
+      infoText2.position.x = 400;
       infoText2.position.y = 100;
       
       infoText3.position.x = 100;
@@ -371,8 +377,12 @@ var pixijs = {
    
    //Create the voice slider for adjusting voice communication volume
    createVoiceSlider : function() {
-      var texture = new PIXI.Texture.fromImage('img/temp.png');
+      var texture = new PIXI.Texture.fromImage('img/Volume-slider-button.png');
       pixijs.voiceSlider = new PIXI.Sprite(texture);
+      
+      //Create the texture for the background bar
+      var backgroundTexture = new PIXI.Texture.fromImage('img/Volume-slider-bar.png');
+      pixijs.sliderBar = new PIXI.Sprite(backgroundTexture);
       
       //Set the slider interactive
       pixijs.voiceSlider.buttonMode = true;
@@ -382,6 +392,12 @@ var pixijs = {
       pixijs.voiceSlider.anchor.set(0.5);
       pixijs.voiceSlider.position.x = pixijs.voiceSliderLocation.x;
       pixijs.voiceSlider.position.y = pixijs.canvasH - pixijs.voiceSliderLocation.y - pixijs.voiceSliderLocation.padding;
+      
+      pixijs.sliderBar.height = 50;
+      
+      pixijs.sliderBar.anchor.set(0.5);
+      pixijs.sliderBar.position.x = pixijs.voiceSliderLocation.x;
+      pixijs.sliderBar.position.y = 580;
       
       //Set the events
       pixijs.voiceSlider
@@ -396,7 +412,9 @@ var pixijs = {
                         .on('mousemove', pixijs.onSliderDragMove)
                         .on('touchmove', pixijs.onSliderDragMove);
       
+      pixijs.UI.addChild(pixijs.sliderBar);
       pixijs.UI.addChild(pixijs.voiceSlider);
+      
    },
    
    /* ************************
@@ -765,9 +783,9 @@ var pixijs = {
           });
 	   
       var loader = PIXI.loader;
-      $.each(menuJSON.parts, function(index, value) {
+      $.each(menuJSON.subItems, function(index, value) {
          var path = 'img' + value.thumbnailImg;
-         var name = "part" + index;
+         var name = "item" + index;
          loader.add(name, path);
          loader.load(function(loader, resources){
             pixijs.onVocMenuClick(resources[name].texture);
@@ -810,7 +828,7 @@ var pixijs = {
          pixijs.comparisonText.getChildAt(0).buttonMode = true;
       }
    },
-   
+   //Function for scaling the game to accommodate to device size
    rendererResize : function() {
       var width = window.innerWidth,
       height = window.innerHeight;
@@ -1048,8 +1066,21 @@ var pixijs = {
       }
    },
    
-   onVocMenuClick : function(){
-     
+   onVocMenuClick : function(texture){
+    //Create the sprite
+      var sprite = new PIXI.Sprite(texture);
+      
+      //Set it interactive
+      sprite.interactive = true;
+      
+      //Set the cursor to change into clicking mode when hovering over it
+      sprite.buttonMode = true;
+      
+      //Set the anchor in the middle of the sprite
+      sprite.anchor.set(0.5);
+      
+      
+      pixijs.menuButton.addChild(sprite);
       
    },
    
