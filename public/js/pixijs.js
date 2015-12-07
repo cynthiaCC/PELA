@@ -28,6 +28,9 @@ var pixijs = {
    //Container for the text within gameArea
    text : null,
    
+   //Container for the vocabulary menu
+   vocabularyMenu : null,
+   
    //The button for finishing the construction
    finishButton : null,
    
@@ -67,6 +70,8 @@ var pixijs = {
    //height of one vocabulary menu element is 28 px
    currentVocMenuY : 28,
    
+   menuJSON : null,
+   
    //Current blocks on the gamearea
    currentBlocks : 0,
    //Total amount of blocks for the construct
@@ -77,6 +82,11 @@ var pixijs = {
    
  //The default texture for the block number background
    fadeBalloon : PIXI.Texture.fromImage('img/fade_balloon.png'),
+   
+   vocMenuBackground : PIXI.Texture.fromImage('img/menuItemBackground.png'),
+   
+   itemSpacer : PIXI.Texture.fromImage('img/menuItemSpacer.png'),
+
 
    /* ****************************
     *    Initiating functions    *
@@ -112,13 +122,23 @@ var pixijs = {
       pixijs.stage.addChild(pixijs.text);
       pixijs.text.renderable = false;
       
+      
+      
       //Create container for UI elements
       pixijs.UI = new PIXI.Container();
       pixijs.stage.addChild(pixijs.UI);
       pixijs.addFinished();
       
-    //Create the menu button
+      
+      //Create the menu button
       pixijs.addMenuButton();
+      
+      //Create the text container
+      pixijs.vocabularyMenu = new PIXI.Container();
+      pixijs.menuButton.addChild(pixijs.vocabularyMenu);
+      pixijs.vocabularyMenu.renderable = false;
+      
+      pixijs.createVocabularyMenu();
       
       pixijs.addCommunicationButton();
       
@@ -262,7 +282,8 @@ var pixijs = {
       //pixijs.menuButton.width = 100;
       //pixijs.menuButton.height = 50;
       
-      pixijs.menuButton.on('mousedown', pixijs.vocabularyMenu);
+      pixijs.menuButton.on('mousedown', pixijs.onVocMenuClick)
+                       .on('touchstart', pixijs.onVocMenuClick);
       
       
       //Add it to the UI container
@@ -774,25 +795,76 @@ var pixijs = {
       }
    },
    
-   vocabularyMenu : function(){
+   createVocabularyMenu : function(){
     
-      var menuFile = "JSON/menu.json";
-      var menuJSON;
-      $.getJSON(menuFile, function(data){
-      menuJSON = data;
-          });
-	   
-      var loader = PIXI.loader;
-      $.each(menuJSON.subItems, function(index, value) {
-         var path = 'img' + value.thumbnailImg;
-         var name = "item" + index;
-         loader.add(name, path);
-         loader.load(function(loader, resources){
-            pixijs.onVocMenuClick(resources[name].texture);
-         });
+      var menuFile = "JSON/Menu.json";
+      //var menuJSON;
+     $.getJSON(menuFile, function(data){
+      pixijs.menuJSON = data;
+      
+      //console.log(menuJSON);
+      
+      
+      pixijs.vocMenu(pixijs.menuJSON, pixijs.vocabularyMenu)
+
       });
       
 	   
+   },
+   
+   vocMenu : function(data, parent){
+     
+      
+      $.each(data, function(index, value){
+         
+         var path = value.thumbnailImg;
+         var name = value.itemName;
+         
+         var vocMenuItem = new PIXI.Sprite(pixijs.vocMenuBackground);
+         
+         
+         var spacer = new PIXI.Sprite(pixijs.itemSpacer);
+         
+         if(parent === pixijs.vocabularyMenu){
+            vocMenuItem.position.x = 10;
+            
+         }
+         else {
+            vocMenuItem.position.x = 81;
+            vocMenuItem.renderable = false;
+            spacer.renderable = false;
+         }
+         
+         if(typeof parent.children === 'undefined' || parent.children.length === 0){
+            
+            vocMenuItem.position.y = 0;
+         }
+         else{
+            vocMenuItem.position.y = parent.getChildAt(parent.children.length - 1).position.y + 2;
+            
+         }
+         
+         
+         
+         vocMenuItem.on('mousedown', pixijs.onVocMenuItemClick)
+                     .on('touchstart', pixijs.onVocMenuItemClick);
+         
+         
+         spacer.position.x = vocMenuItem.position.x;
+         spacer.position.y = vocMenuItem.position.y + 28;
+         
+         parent.addChild(vocMenuItem);
+         parent.addChild(spacer);
+         
+         if(typeof value.subItems != 'undefined'){
+            
+            
+            pixijs.vocMenu(value.subItems, vocMenuItem );
+            
+         }
+         
+      });
+      
    },
    
    //Sets the given object as active in the playarea
@@ -1066,22 +1138,29 @@ var pixijs = {
       }
    },
    
-   onVocMenuClick : function(texture){
-    //Create the sprite
-      var sprite = new PIXI.Sprite(texture);
-      
-      //Set it interactive
-      sprite.interactive = true;
-      
-      //Set the cursor to change into clicking mode when hovering over it
-      sprite.buttonMode = true;
-      
-      //Set the anchor in the middle of the sprite
-      sprite.anchor.set(0.5);
-      
-      
-      pixijs.menuButton.addChild(sprite);
-      
+
+   
+   onVocMenuClick : function(){
+     
+     var boolean =  !pixijs.vocabularyMenu.renderable;
+     pixijs.vocabularyMenu.renderable = boolean; 
+     pixijs.vocabularyMenu.interactive = boolean;
+     
+     if(typeof pixijs.vocabularyMenu.children != 'undefined'){
+        $.each(pixijs.vocabularyMenu.children,function(index, value){
+           
+           value.renderable = boolean;
+           value.interactive = boolean;
+           value.buttonMode = boolean;
+        });
+
+        
+     }
+     
+   },
+   
+   onVocMenuEnd : function(){
+      pixijs.vocabularyMenu.renderable = false; 
    },
    
    onNewRound : function() {
@@ -1119,6 +1198,48 @@ var pixijs = {
 	   
 	   
 	   
+   },
+   
+   onVocMenuItemClick : function(){
+     
+      
+      var par = this.parent;
+      
+      $.each(par.children, function(index, value){
+
+         pixijs.onVocMenuSubItemClick(value);
+         
+      });
+      if(typeof this.children != 'undefined'){
+         $.each(this.children, function(index, value){
+            
+            value.renderable = true;
+            value.interactive = true;
+            value.buttonMode = true;
+         });
+      }
+     
+   },
+   
+   onVocMenuSubItemClick : function(notVisible){
+     
+      //console.log(visible === notVisible);
+      
+         //console.log(9);
+         if(typeof notVisible.children != 'undefined'){
+            $.each(notVisible.children, function(index, value){
+               
+               value.renderable = false;
+               value.interactive = false;
+               value.buttonMode = false;
+               
+               pixijs.onVocMenuSubItemClick( value);
+            });
+         }
+         
+         
+      
+      
    },
    
 };
