@@ -67,8 +67,6 @@ var pixijs = {
    arrowUp : null,
    arrowDown : null,
    
-   //height of one vocabulary menu element is 28 px
-   currentVocMenuY : 28,
    
    menuJSON : null,
    
@@ -86,6 +84,7 @@ var pixijs = {
    vocMenuBackground : PIXI.Texture.fromImage('img/menuItemBackground.png'),
    
    itemSpacer : PIXI.Texture.fromImage('img/menuItemSpacer.png'),
+   
 
 
    /* ****************************
@@ -197,16 +196,18 @@ var pixijs = {
       blockMenu.position.y = 0;
       
       //TODO replace with the proper texture
-      pixijs.arrowUp = new PIXI.Sprite(PIXI.Texture.fromImage('img/temp.png'));
+      pixijs.arrowUp = new PIXI.Sprite(PIXI.Texture.fromImage('img/arrow-up.png'));
+      pixijs.arrowUp.anchor.set(0.5);
       pixijs.arrowUp.position.y = 10;
-      pixijs.arrowUp.position.x = pixijs.canvasBlockW - 20;
+      pixijs.arrowUp.position.x = pixijs.canvasBlockW/2;
       pixijs.arrowUp.renderable = false;
       pixijs.arrowUp
                .on('mousedown', pixijs.onArrowUp)
                .on('touchstart', pixijs.onArrowUp);
-      pixijs.arrowDown = new PIXI.Sprite(PIXI.Texture.fromImage('img/temp.png'));
+      pixijs.arrowDown = new PIXI.Sprite(PIXI.Texture.fromImage('img/arrow-down.png'));
+      pixijs.arrowDown.anchor.set(0.5);
       pixijs.arrowDown.position.y = pixijs.canvasH - 30;
-      pixijs.arrowDown.position.x = pixijs.canvasBlockW - 20;
+      pixijs.arrowDown.position.x = pixijs.canvasBlockW/2;
       pixijs.arrowDown.renderable = false;
       pixijs.arrowDown
                .on('mousedown', pixijs.onArrowDown)
@@ -273,10 +274,10 @@ var pixijs = {
       pixijs.menuButton.interactive = true;
       
       //Anchor and position it
-      pixijs.menuButton.anchor.set(0.5);
+      pixijs.menuButton.anchor.set(1,0);
 
-      pixijs.menuButton.position.x = 70; 
-      pixijs.menuButton.position.y = 20;
+      pixijs.menuButton.position.x = 170; 
+      pixijs.menuButton.position.y = 15;
       
      
       //pixijs.menuButton.width = 100;
@@ -336,19 +337,12 @@ var pixijs = {
       var tutorial = new PIXI.Texture.fromImage('img/info-button.png');
       pixijs.infoButton = new PIXI.Sprite(tutorial);
       
-      //Hide it from the instructor because the info is for the builder
-      if(App.originalRole == 'Host'){
-         pixijs.infoButton.buttonMode = false;
-         pixijs.infoButton.interactive = false;
-         pixijs.infoButton.renderable = false;
-      }
-      else{
-         //Make it interactive, position it etc.
-         pixijs.infoButton.buttonMode = true;
-         pixijs.infoButton.interactive = true;
-         pixijs.infoButton.renderable = true;
-      }
-     
+    //Make it interactive, position it etc.
+      pixijs.infoButton.buttonMode = true;
+      pixijs.infoButton.interactive = true;
+      pixijs.infoButton.renderable = true;
+      
+      
       
       pixijs.infoButton.anchor.set(0.5);
 
@@ -360,12 +354,21 @@ var pixijs = {
       //pixijs.infoButton.height = 50;
       
       
-      
-      //create the variables for the text
-      var infoText1 = new PIXI.Text('Open menu to see the vocabulary.' , {font: '20px Arial', fill: 'white', align: 'center'});
-      var infoText2 = new PIXI.Text('Click or tap blocks on the grey area to build.' , {font: '20px Arial', fill: 'white', align: 'center'});
-      var infoText3 = new PIXI.Text('Slide the slider up and down to change voice volume.' , {font: '20px Arial', fill: 'white', align: 'center'});
-     
+    //Show appropriate info depending on the role
+      if(App.originalRole == 'Host'){
+         //create the variables for the text
+         var infoText1 = new PIXI.Text('Open menu to see the vocabulary.' , {font: '20px Arial', fill: 'white', align: 'center'});
+         var infoText2 = new PIXI.Text('Describe the center image to the builder.' , {font: '20px Arial', fill: 'white', align: 'center'});
+         var infoText3 = new PIXI.Text('Slide the slider up and down to change voice volume.' , {font: '20px Arial', fill: 'white', align: 'center'});
+         
+      }
+      else{
+       //create the variables for the text
+         var infoText1 = new PIXI.Text('Open menu to see the vocabulary.' , {font: '20px Arial', fill: 'white', align: 'center'});
+         var infoText2 = new PIXI.Text('Click or tap blocks on the grey area to build.' , {font: '20px Arial', fill: 'white', align: 'center'});
+         var infoText3 = new PIXI.Text('Slide the slider up and down to change voice volume.' , {font: '20px Arial', fill: 'white', align: 'center'});
+      }
+          
       
       //Position the texts
       infoText1.position.x = 50;
@@ -794,71 +797,87 @@ var pixijs = {
         
       }
    },
-   
+   //Function that initiates the creating of voc menu
    createVocabularyMenu : function(){
-    
+      
+      //Store the JSON-file
       var menuFile = "JSON/Menu.json";
-      //var menuJSON;
-     $.getJSON(menuFile, function(data){
-      pixijs.menuJSON = data;
+     
+       //get the file
+      $.getJSON(menuFile, function(data){
+         pixijs.menuJSON = data;
       
-      //console.log(menuJSON);
-      
-      
-      pixijs.vocMenu(pixijs.menuJSON, pixijs.vocabularyMenu)
+         //Call the builder function
+         pixijs.vocMenu(pixijs.menuJSON, pixijs.vocabularyMenu)
 
       });
       
 	   
    },
-   
+   //Function that builds the vocabulary menu
    vocMenu : function(data, parent){
      
-      
+      //Go through the file
       $.each(data, function(index, value){
          
+         //Save the image and item name
          var path = value.thumbnailImg;
          var name = value.itemName;
          
+         //Create sprites from the background image and spacer
          var vocMenuItem = new PIXI.Sprite(pixijs.vocMenuBackground);
-         
-         
          var spacer = new PIXI.Sprite(pixijs.itemSpacer);
          
+         var itemText = new PIXI.Text(name, {font: '10px Arial', fill: 'white', align: 'center', stroke:'black', strokeThickness : 1});
+         //if the menu item is in the main tab then position it accordingly
          if(parent === pixijs.vocabularyMenu){
-            vocMenuItem.position.x = 10;
+            vocMenuItem.position.x = 0;
+            
             
          }
+         //Position the sub items correctly
          else {
             vocMenuItem.position.x = 81;
             vocMenuItem.renderable = false;
             spacer.renderable = false;
+            itemText.renderable = false;
          }
          
+         //Same for y-dimension
          if(typeof parent.children === 'undefined' || parent.children.length === 0){
             
             vocMenuItem.position.y = 0;
+           
+
          }
          else{
             vocMenuItem.position.y = parent.getChildAt(parent.children.length - 1).position.y + 2;
+           
             
          }
+        
          
-         
-         
+         //Events for the clicking and touching the menu
          vocMenuItem.on('mousedown', pixijs.onVocMenuItemClick)
                      .on('touchstart', pixijs.onVocMenuItemClick);
          
-         
+         //Position the spacer
          spacer.position.x = vocMenuItem.position.x;
          spacer.position.y = vocMenuItem.position.y + 28;
          
+         itemText.position.x = vocMenuItem.position.x;
+         itemText.position.y = vocMenuItem.position.y;
+         
+         //Add them to the parent container
+         
          parent.addChild(vocMenuItem);
+         parent.addChild(itemText);
          parent.addChild(spacer);
          
+         
+       
          if(typeof value.subItems != 'undefined'){
-            
-            
+                
             pixijs.vocMenu(value.subItems, vocMenuItem );
             
          }
@@ -1088,13 +1107,8 @@ var pixijs = {
    onTutorialStart : function(event){
       this.data = event.data;
      
-      //Show the text if the button is pressed if you are the builder
-      if(App.originalRole == 'Host'){
-         pixijs.text.renderable = false;
-      }
-      else{
-         pixijs.text.renderable = true;
-      }    
+      pixijs.text.renderable = true;
+   
       
    },
    //Function the hide the text
@@ -1139,7 +1153,7 @@ var pixijs = {
    },
    
 
-   
+   //Hides and shows the main menu when clicked or touched
    onVocMenuClick : function(){
      
      var boolean =  !pixijs.vocabularyMenu.renderable;
@@ -1159,14 +1173,11 @@ var pixijs = {
      
    },
    
-   onVocMenuEnd : function(){
-      pixijs.vocabularyMenu.renderable = false; 
-   },
-   
    onNewRound : function() {
       App.startNewRound();
    },
    
+
    onCommunicationStart : function(){
 	   
 	   if(App.originalRole == 'Host') {
@@ -1199,7 +1210,7 @@ var pixijs = {
 	   
 	   
    },
-   
+   //Show the sub items of the menu
    onVocMenuItemClick : function(){
      
       
@@ -1220,12 +1231,10 @@ var pixijs = {
       }
      
    },
-   
+   //Hide the sub items when another part of the menu is clicked
    onVocMenuSubItemClick : function(notVisible){
      
-      //console.log(visible === notVisible);
       
-         //console.log(9);
          if(typeof notVisible.children != 'undefined'){
             $.each(notVisible.children, function(index, value){
                
