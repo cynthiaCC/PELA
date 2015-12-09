@@ -26,7 +26,8 @@ var pixijs = {
    UI : null,
    
    //Container for the text within gameArea
-   text : null,
+   instructorText : null,
+   builderText : null,
    
    //Container for the vocabulary menu
    vocabularyMenu : null,
@@ -61,12 +62,16 @@ var pixijs = {
    menu : null,
    menuBG : null,
    blocksPerPage : 6,
-   currentMenuY : (this.canvasH/(this.blocksPerPage*2)),
+   currentMenuY : 42 + ((this.canvasH-84)/(this.blocksPerPage*2)),
    menuPage : 1,
    totalPages : 1,
+   pagesFilled : 0,
    arrowUp : null,
    arrowDown : null,
    
+   
+   //Current state of building
+   finished : false,
    
    menuJSON : null,
    
@@ -105,6 +110,27 @@ var pixijs = {
       pixijs.stage.addChild(pixijs.bg);
       pixijs.renderer.view.style.border = "3px dashed black";
       
+      //Create the text container
+      pixijs.instructorText = new PIXI.Container();
+      pixijs.builderText = new PIXI.Container();
+      pixijs.stage.addChild(pixijs.instructorText);
+      pixijs.instructorText.renderable = false;
+      pixijs.stage.addChild(pixijs.builderText);
+      pixijs.builderText.renderable = false;
+      
+      //Create container for UI elements
+      pixijs.UI = new PIXI.Container();
+      pixijs.stage.addChild(pixijs.UI);
+      pixijs.addFinished();
+      
+      //Create the menu button
+      pixijs.addMenuButton();
+      
+      //Create the text container
+      pixijs.vocabularyMenu = new PIXI.Container();
+      pixijs.menuButton.addChild(pixijs.vocabularyMenu);
+      pixijs.vocabularyMenu.renderable = false;
+      
       //Create a container for all the objects and add it to stage
       pixijs.objects = new PIXI.Container();
       pixijs.stage.addChild(pixijs.objects);
@@ -115,27 +141,6 @@ var pixijs = {
       
       //Create the menu
       pixijs.blockMenu();
-      
-      //Create the text container
-      pixijs.text = new PIXI.Container();
-      pixijs.stage.addChild(pixijs.text);
-      pixijs.text.renderable = false;
-      
-      
-      
-      //Create container for UI elements
-      pixijs.UI = new PIXI.Container();
-      pixijs.stage.addChild(pixijs.UI);
-      pixijs.addFinished();
-      
-      
-      //Create the menu button
-      pixijs.addMenuButton();
-      
-      //Create the text container
-      pixijs.vocabularyMenu = new PIXI.Container();
-      pixijs.menuButton.addChild(pixijs.vocabularyMenu);
-      pixijs.vocabularyMenu.renderable = false;
       
       pixijs.createVocabularyMenu();
       
@@ -198,7 +203,7 @@ var pixijs = {
       //TODO replace with the proper texture
       pixijs.arrowUp = new PIXI.Sprite(PIXI.Texture.fromImage('img/arrow-up.png'));
       pixijs.arrowUp.anchor.set(0.5);
-      pixijs.arrowUp.position.y = 10;
+      pixijs.arrowUp.position.y = 30;
       pixijs.arrowUp.position.x = pixijs.canvasBlockW/2;
       pixijs.arrowUp.renderable = false;
       pixijs.arrowUp
@@ -265,7 +270,7 @@ var pixijs = {
    //Function for the vocabulary menu button
    addMenuButton : function(){
       
-	   //Create the icon from the image
+      //Create the icon from the image
       var menu = new PIXI.Texture.fromImage('img/Vocabulary-menu.png');
       pixijs.menuButton = new PIXI.Sprite(menu);
 
@@ -294,22 +299,22 @@ var pixijs = {
    //Function for the communication button
    addCommunicationButton : function(){
       
-	   //Create the icon from the image
+      //Create the icon from the image
       var voice = new PIXI.Texture.fromImage('img/Mike.png');
       pixijs.communicationButton = new PIXI.Sprite(voice);
       
       
       if(App.originalRole == 'Player'){
-    	  pixijs.communicationButton.renderable = false;
-	  	   pixijs.communicationButton.interactive = false;
-	  	   pixijs.communicationButton.buttonMode = false;
+         pixijs.communicationButton.renderable = false;
+           pixijs.communicationButton.interactive = false;
+           pixijs.communicationButton.buttonMode = false;
       }
       else{
-    	  
-    	//Set it to be interactive
-    	  pixijs.communicationButton.renderable = true;
-	  	   pixijs.communicationButton.interactive = true;
-	  	   pixijs.communicationButton.buttonMode = true;
+         
+       //Set it to be interactive
+         pixijs.communicationButton.renderable = true;
+           pixijs.communicationButton.interactive = true;
+           pixijs.communicationButton.buttonMode = true;
       }
       
       
@@ -354,45 +359,58 @@ var pixijs = {
       //pixijs.infoButton.height = 50;
       
       
-    //Show appropriate info depending on the role
-      if(App.originalRole == 'Host'){
+      //Show appropriate info depending on the role
+      //if(App.originalRole == 'Host'){
          //create the variables for the text
          var infoText1 = new PIXI.Text('Open menu to see the vocabulary.' , {font: '20px Arial', fill: 'white', align: 'center'});
          var infoText2 = new PIXI.Text('Describe the center image to the builder.' , {font: '20px Arial', fill: 'white', align: 'center'});
          var infoText3 = new PIXI.Text('Slide the slider up and down to change voice volume.' , {font: '20px Arial', fill: 'white', align: 'center'});
          
-      }
-      else{
+      //}
+      //else{
        //create the variables for the text
-         var infoText1 = new PIXI.Text('Open menu to see the vocabulary.' , {font: '20px Arial', fill: 'white', align: 'center'});
-         var infoText2 = new PIXI.Text('Click or tap blocks on the grey area to build.' , {font: '20px Arial', fill: 'white', align: 'center'});
-         var infoText3 = new PIXI.Text('Slide the slider up and down to change voice volume.' , {font: '20px Arial', fill: 'white', align: 'center'});
-      }
+         var infoText4 = new PIXI.Text('Open menu to see the vocabulary.' , {font: '20px Arial', fill: 'white', align: 'center'});
+         var infoText5 = new PIXI.Text('Click or tap blocks on the grey area to build.' , {font: '20px Arial', fill: 'white', align: 'center'});
+         var infoText6 = new PIXI.Text('Slide the slider up and down to change voice volume.' , {font: '20px Arial', fill: 'white', align: 'center'});
+      //}
           
       
       //Position the texts
       infoText1.position.x = 50;
       infoText1.position.y = 50;
       
+      infoText4.position.x = 50;
+      infoText4.position.y = 50;
+      
       infoText2.position.x = 400;
       infoText2.position.y = 100;
       
+      infoText5.position.x = 400;
+      infoText5.position.y = 100;
+      
       infoText3.position.x = 100;
       infoText3.position.y = 510;
+      
+      infoText6.position.x = 100;
+      infoText6.position.y = 510;
       
       //Events for the text
       pixijs.infoButton
                        .on('mousedown', pixijs.onTutorialStart)
                        .on('mouseup', pixijs.onTutorialEnd)
                        .on('touchstart', pixijs.onTutorialStart)
-                        .on('mouseupoutside', pixijs.onTutorialEnd)
-                        .on('touchend', pixijs.onTutorialEnd)
-                        .on('touchendoutside', pixijs.onTutorialEnd);
+                       .on('mouseupoutside', pixijs.onTutorialEnd)
+                       .on('touchend', pixijs.onTutorialEnd)
+                       .on('touchendoutside', pixijs.onTutorialEnd);
       
       //Add them to the text container
-      pixijs.text.addChild(infoText1);
-      pixijs.text.addChild(infoText2);
-      pixijs.text.addChild(infoText3);
+      pixijs.instructorText.addChild(infoText1);
+      pixijs.instructorText.addChild(infoText2);
+      pixijs.instructorText.addChild(infoText3);
+      
+      pixijs.builderText.addChild(infoText4);
+      pixijs.builderText.addChild(infoText5);
+      pixijs.builderText.addChild(infoText6);
       
       
       //Add the button to the UI container
@@ -475,7 +493,7 @@ var pixijs = {
       pixijs.clearContainer(pixijs.menu);
       pixijs.clearContainer(pixijs.tempCont);
       pixijs.clearContainer(pixijs.progressBar);
-      pixijs.currentMenuY = pixijs.canvasH/(pixijs.blocksPerPage*2);
+      pixijs.currentMenuY = 30+(pixijs.canvasH-30)/(pixijs.blocksPerPage*2);
       pixijs.currentBlocks = 0;
       pixijs.blockTotal = 0;
       pixijs.objects.position.x = 0;
@@ -487,6 +505,8 @@ var pixijs = {
       pixijs.menu.position.y = 0;
       pixijs.menuPage = 1;
       pixijs.totalPages = 1;
+      pixijs.pagesFilled = 0;
+      pixijs.finished = false;
       pixijs.arrowUp.renderable = false;
       pixijs.arrowUp.interactive = false;
       pixijs.arrowUp.buttonMode = false;
@@ -524,7 +544,8 @@ var pixijs = {
       pixijs.renderer.transparent = true;
       pixijs.UI.renderable = false;
       pixijs.menuBg.renderable = false;
-      pixijs.text.renderable = false;
+      pixijs.instructorText.renderable = false;
+      pixijs.builderText.renderable = false;
       pixijs.bg.renderable = false;
       pixijs.tempCont.renderable = false;
       pixijs.renderer.render(pixijs.stage);
@@ -669,13 +690,11 @@ var pixijs = {
       if (sprite.width > pixijs.canvasBlockW - 20) {
          scale = (pixijs.canvasBlockW - 20)/sprite.width;
       }
-      if (sprite.height > (pixijs.canvasH/pixijs.blocksPerPage) - 20) {
-         if (scale > ((pixijs.canvasH/pixijs.blocksPerPage) - 20)/sprite.height){
-            scale = ((pixijs.canvasH/pixijs.blocksPerPage) - 20)/sprite.height;
+      if (sprite.height > ((pixijs.canvasH-84)/pixijs.blocksPerPage) - 20) {
+         if (scale > (((pixijs.canvasH-84)/pixijs.blocksPerPage) - 20)/sprite.height){
+            scale = (((pixijs.canvasH-84)/pixijs.blocksPerPage) - 20)/sprite.height;
          }
       }
-      
-      console.log(scale);
       
       sprite.scale.set(scale, scale);
       
@@ -692,7 +711,7 @@ var pixijs = {
       
       //Set the position
       sprite.position.x = (pixijs.canvasBlockW)/2;
-      sprite.position.y = pixijs.currentMenuY;
+      sprite.position.y = pixijs.pagesFilled * pixijs.canvasH + pixijs.currentMenuY;
       
 
     //Add a text showing how many are remaining
@@ -700,7 +719,11 @@ var pixijs = {
 
       
       //Add the height+some padding to currentMenuY
-      pixijs.currentMenuY += pixijs.canvasH/pixijs.blocksPerPage;
+      pixijs.currentMenuY += (pixijs.canvasH -84)/pixijs.blocksPerPage;
+      if ((pixijs.currentMenuY+(pixijs.canvasH-84)/pixijs.blocksPerPage) - 20 > pixijs.canvasH) {
+         pixijs.pagesFilled++;
+         pixijs.currentMenuY = 42 + ((pixijs.canvasH-84)/(pixijs.blocksPerPage*2));
+      }
       pixijs.menu.addChild(sprite);
    },
    
@@ -769,11 +792,11 @@ var pixijs = {
       
       //Calculate how many pieces of the bar are needed
       var progress = Math.floor(((pixijs.currentBlocks/pixijs.blockTotal)*100)/5);
-	   
+      
       //Loop that adds the pieces to the progress bar. Runs as long as there are fewer
       //bar children than there should be
       while(progress > pixijs.progressBar.children.length){
-    	  
+         
         //Create a sprite from the image
          var prog = new PIXI.Texture.fromImage('img/ProgressBarBit5Percent.png');
          progUpdate = new PIXI.Sprite(prog);
@@ -781,8 +804,8 @@ var pixijs = {
          
          //If there are no children(bar is empty) then the first piece goes to the beginning
          if(pixijs.progressBar.children.length == 0){
-        	 
-        	 progUpdate.position.x = 1;
+            
+            progUpdate.position.x = 1;
              progUpdate.position.y = 1;
          }
          //If there are children , then place the new piece after the ones that are already there
@@ -812,7 +835,7 @@ var pixijs = {
 
       });
       
-	   
+      
    },
    //Function that builds the vocabulary menu
    vocMenu : function(data, parent){
@@ -983,52 +1006,62 @@ var pixijs = {
    //Player starts dragging the object from somewhere else besides the rotator
    onDragStart : function(event)
    {
-      // store a reference to the data
-      // the reason for this is because of multitouch
-      // we want to track the movement of this particular touch
-      if (typeof this.rotating == "undefined" || this.rotating == false){
-         this.data = event.data;
-         this.alpha = 0.5;
-         this.dragging = true;
-         this.rotating = false;
+      if (!pixijs.finished) {
+         // store a reference to the data
+         // the reason for this is because of multitouch
+         // we want to track the movement of this particular touch
+         if (typeof this.rotating == "undefined" || this.rotating == false){
+            this.data = event.data;
+            this.alpha = 0.5;
+            this.dragging = true;
+            this.rotating = false;
+         }
+         pixijs.setActive(this);
       }
-      pixijs.setActive(this);
    },
    
    //Begin the rotation towards the mouse
    onRotateStart : function(event) {
-      if (typeof this.parent.dragging == "undefined" || this.parent.dragging == false){
-         this.data = event.data;
-         this.parent.rotating = true;
-         this.parent.dragging = false;
+      if (!pixijs.finished) {
+         if (typeof this.parent.dragging == "undefined" || this.parent.dragging == false){
+            this.data = event.data;
+            this.parent.rotating = true;
+            this.parent.dragging = false;
+         }
       }
    },
 
    //Stop the movement of the object
    onDragEnd : function()
    {
-      this.alpha = 1;
-
-      this.dragging = false;
-
-      // set the interaction data to null
-      this.data = null;
+      if (!pixijs.finished) {
+         this.alpha = 1;
+   
+         this.dragging = false;
+   
+         // set the interaction data to null
+         this.data = null;
+      }
    },
    
    //Rotating of the object has ended
    onRotateEnd : function() {
-      this.parent.rotating = false;
-      this.data = null;
+      if (!pixijs.finished) {
+         this.parent.rotating = false;
+         this.data = null;
+      }
    },
    
    //Moves the object within the playarea
    onDragMove : function()
    {
-      if (this.dragging)
-      {
-         var newPosition = this.data.getLocalPosition(this.parent);
-         this.position.x = Math.max(0, Math.min(newPosition.x, pixijs.canvasBlueprintW));
-         this.position.y = Math.max(0, Math.min(newPosition.y, pixijs.canvasH));
+      if (!pixijs.finished) {
+         if (this.dragging)
+         {
+            var newPosition = this.data.getLocalPosition(this.parent);
+            this.position.x = Math.max(0, Math.min(newPosition.x, pixijs.canvasBlueprintW));
+            this.position.y = Math.max(0, Math.min(newPosition.y, pixijs.canvasH));
+         }
       }
    },
    
@@ -1036,9 +1069,11 @@ var pixijs = {
    //Note, DO NOT APPLY THIS EVEN TO AN OBJECT WITHOUT PARENT OBJECT. 
    //Only apply to rotators. Place the rotator above the sprite when rotation is set to 0
    onDragRotate : function() {
-      if (this.parent.rotating) {
-         var pointerPosition = this.data.global;
-         this.parent.rotation = Math.atan2(pointerPosition.y - this.parent.position.y, pointerPosition.x - this.parent.position.x) + (PIXI.DEG_TO_RAD * 90);
+      if (!pixijs.finished) {
+         if (this.parent.rotating) {
+            var pointerPosition = this.data.global;
+            this.parent.rotation = Math.atan2(pointerPosition.y - this.parent.position.y, pointerPosition.x - this.parent.position.x) + (PIXI.DEG_TO_RAD * 90);
+         }
       }
    },
    
@@ -1046,6 +1081,7 @@ var pixijs = {
    
    //Function to call when player clicks the button to finish the build, also hide the button again
    onFinished : function() {
+      pixijs.finished = true;
       this.renderable = false;
       this.interactive = false;
       this.buttonMode = false;
@@ -1106,8 +1142,12 @@ var pixijs = {
    //function to make the text viewable
    onTutorialStart : function(event){
       this.data = event.data;
-     
-      pixijs.text.renderable = true;
+      if(App.myRole === 'Host') {
+         pixijs.instructorText.renderable = true;
+      }
+      else {
+         pixijs.builderText.renderable = true;
+      }
    
       
    },
@@ -1115,7 +1155,8 @@ var pixijs = {
    onTutorialEnd : function(){
       this.data = null;
       //hide the info texts
-      pixijs.text.renderable = false;
+      pixijs.instructorText.renderable = false;
+      pixijs.builderText.renderable = false;
    },
    
    onArrowDown : function(){
@@ -1162,10 +1203,14 @@ var pixijs = {
      
      if(typeof pixijs.vocabularyMenu.children != 'undefined'){
         $.each(pixijs.vocabularyMenu.children,function(index, value){
-           
-           value.renderable = boolean;
-           value.interactive = boolean;
-           value.buttonMode = boolean;
+           if (boolean) {
+              value.renderable = boolean;
+              value.interactive = boolean;
+              value.buttonMode = boolean;
+           }
+           else {
+              pixijs.onVocMenuSubItemClick(value)
+           }
         });
 
         
@@ -1179,36 +1224,36 @@ var pixijs = {
    
 
    onCommunicationStart : function(){
-	   
-	   if(App.originalRole == 'Host') {
-	   
-	         console.log(App.audioSettings);
-	         if(App.audioSettings !== 'mute-audio-video') {
-	            console.log('Launched, audio settings: ' + App.audioSettings);
-	            if (App.sessionID !== 'undefined') {
-	               IO.socket.emit('audioStarted', App.gameId);
-	            } else {
-	               IO.socket.emit('audioStarted', App.gameId);
-	            }
-	            pixijs.communicationButton.renderable = false;
-	         pixijs.communicationButton.interactive = false;
-	         pixijs.communicationButton.buttonMode = false;
-	         }
-	         else {
-	          pixijs.communicationButton.renderable = false;
-             pixijs.communicationButton.interactive = false;
-             pixijs.communicationButton.buttonMode = false;
-	         }
-	      } else {
-	         console.log('Launched, audio settings: ' + App.audioSettings);
-	         IO.socket.emit('requestApiKey', App.gameId);
-	         pixijs.communicationButton.renderable = false;
-	      pixijs.communicationButton.interactive = false;
-	      pixijs.communicationButton.buttonMode = false;
-	      }
-	   
-	   
-	   
+      
+      if(App.originalRole == 'Host') {
+      
+            console.log(App.audioSettings);
+            if(App.audioSettings !== 'mute-audio-video') {
+               console.log('Launched, audio settings: ' + App.audioSettings);
+               if (App.sessionID !== 'undefined') {
+                  IO.socket.emit('audioStarted', App.gameId);
+               } else {
+                  IO.socket.emit('audioStarted', App.gameId);
+               }
+               pixijs.communicationButton.renderable = false;
+               pixijs.communicationButton.interactive = false;
+               pixijs.communicationButton.buttonMode = false;
+            }
+            else {
+               pixijs.communicationButton.renderable = false;
+               pixijs.communicationButton.interactive = false;
+               pixijs.communicationButton.buttonMode = false;
+            }
+         } else {
+            console.log('Launched, audio settings: ' + App.audioSettings);
+            IO.socket.emit('requestApiKey', App.gameId);
+            pixijs.communicationButton.renderable = false;
+            pixijs.communicationButton.interactive = false;
+            pixijs.communicationButton.buttonMode = false;
+         }
+      
+      
+      
    },
    //Show the sub items of the menu
    onVocMenuItemClick : function(){
@@ -1233,22 +1278,15 @@ var pixijs = {
    },
    //Hide the sub items when another part of the menu is clicked
    onVocMenuSubItemClick : function(notVisible){
-     
-      
-         if(typeof notVisible.children != 'undefined'){
-            $.each(notVisible.children, function(index, value){
+      if(typeof notVisible.children != 'undefined'){
+         $.each(notVisible.children, function(index, value){
+            value.renderable = false;
+            value.interactive = false;
+            value.buttonMode = false;
                
-               value.renderable = false;
-               value.interactive = false;
-               value.buttonMode = false;
-               
-               pixijs.onVocMenuSubItemClick( value);
-            });
-         }
-         
-         
-      
-      
+            pixijs.onVocMenuSubItemClick(value);
+         });
+      }
    },
    
 };
