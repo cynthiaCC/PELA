@@ -852,6 +852,8 @@ var pixijs = {
          var spacer = new PIXI.Sprite(pixijs.itemSpacer);
          
          var itemText = new PIXI.Text(name, {font: '10px Arial', fill: 'white', align: 'center', stroke:'black', strokeThickness : 1});
+         var menuPicture = new PIXI.Texture.fromImage('img' + path);
+         var itemPic = new PIXI.Sprite(menuPicture);
          //if the menu item is in the main tab then position it accordingly
          if(parent === pixijs.vocabularyMenu){
             vocMenuItem.position.x = 0;
@@ -864,6 +866,7 @@ var pixijs = {
             vocMenuItem.renderable = false;
             spacer.renderable = false;
             itemText.renderable = false;
+            itemPic.renderable = false;
          }
          
          //Same for y-dimension
@@ -890,11 +893,14 @@ var pixijs = {
          
          itemText.position.x = vocMenuItem.position.x;
          itemText.position.y = vocMenuItem.position.y;
+         itemPic.position.x = vocMenuItem.position.x + 30;
+         itemPic.position.y = vocMenuItem.position.y;
          
          //Add them to the parent container
          
          parent.addChild(vocMenuItem);
          parent.addChild(itemText);
+         parent.addChild(itemPic);
          parent.addChild(spacer);
          
          
