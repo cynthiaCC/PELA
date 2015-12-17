@@ -62,11 +62,13 @@ var App = {
       // Instructor (Host)
       App.$doc.on('click', '#btnCreateGame', App.Host.onCreateClick);
       App.$doc.on('click', '#startGame', App.Host.onStartClick);
-      
+      App.$doc.on('click', '#btnPractice', App.onPracticeClick);
 
       // Builder
       App.$doc.on('click', '#btnJoinGame', App.Player.onJoinClick);
       App.$doc.on('click', '#btnStart',App.Player.onPlayerStartClick);
+      App.$doc.on('click', '#btnPractice', App.onPracticeClick);
+
    },
 
    /* *************************************
@@ -84,6 +86,15 @@ var App = {
       $('#pb-game-template').hide();
       $('#pb-practice-template').hide();
       $('#pb-intro-screen-template').show();
+   },
+   
+   showPracticeScreen: function() {
+      console.log("Showing initial screen");
+      $('#pb-create-game-template').hide();
+      $('#pb-join-game-template').hide();
+      $('#pb-game-template').hide();
+      $('#pb-practice-template').show();
+      $('#pb-intro-screen-template').hide();
    },
    
    //Start the game
@@ -423,6 +434,11 @@ var App = {
       }
 
       return new Blob([ia], {type:mimeString});
+  },
+  
+  onPracticeClick : function(){
+     practice.init();
+     $('#practice-canvas').append(practice.renderer.view);
   }
 
 };

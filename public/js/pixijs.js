@@ -118,6 +118,14 @@ var pixijs = {
       pixijs.stage.addChild(pixijs.builderText);
       pixijs.builderText.renderable = false;
       
+      //Create a container for all the objects and add it to stage
+      pixijs.objects = new PIXI.Container();
+      pixijs.stage.addChild(pixijs.objects);
+      
+      //The temporary container that will have the instructions for builder and built object for instructor after finishing
+      pixijs.tempCont = new PIXI.Container();
+      pixijs.stage.addChild(pixijs.tempCont);
+      
       //Create container for UI elements
       pixijs.UI = new PIXI.Container();
       pixijs.stage.addChild(pixijs.UI);
@@ -131,13 +139,7 @@ var pixijs = {
       pixijs.menuButton.addChild(pixijs.vocabularyMenu);
       pixijs.vocabularyMenu.renderable = false;
       
-      //Create a container for all the objects and add it to stage
-      pixijs.objects = new PIXI.Container();
-      pixijs.stage.addChild(pixijs.objects);
-      
-      //The temporary container that will have the instructions for builder and built object for instructor after finishing
-      pixijs.tempCont = new PIXI.Container();
-      pixijs.stage.addChild(pixijs.tempCont);
+     
       
       //Create the menu
       pixijs.blockMenu();
@@ -855,7 +857,7 @@ var pixijs = {
          var vocMenuItem = new PIXI.Sprite(pixijs.vocMenuBackground);
          var spacer = new PIXI.Sprite(pixijs.itemSpacer);
          
-         var itemText = new PIXI.Text(name, {font: '10px Arial', fill: 'white', align: 'center', stroke:'black', strokeThickness : 1});
+         var itemText = new PIXI.Text(name, {font: '16px Arial', fill: 'white', align: 'center'});
          var menuPicture = new PIXI.Texture.fromImage('img' + path);
          var itemPic = new PIXI.Sprite(menuPicture);
          //if the menu item is in the main tab then position it accordingly
@@ -896,7 +898,7 @@ var pixijs = {
          
          itemText.position.x = vocMenuItem.position.x;
          itemText.position.y = vocMenuItem.position.y;
-         itemPic.position.x = vocMenuItem.position.x + 100;
+         itemPic.position.x = vocMenuItem.position.x + 130;
          itemPic.position.y = vocMenuItem.position.y;
          
          //Add them to the parent container
