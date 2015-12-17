@@ -45,11 +45,7 @@ var practice = {
          
          
          practice.renderer.view.style.border = "3px dashed black";
-       
-         
-         //Create container for UI elements
-         practice.UI = new PIXI.Container();
-         practice.stage.addChild(practice.UI);
+     
          
          
          //start the animation
@@ -78,33 +74,33 @@ var practice = {
            * Scale the canvas horizontally and vertically keeping in mind the screen estate we have
            * at our disposal. This keeps the relative game dimensions in place.
            */
-         var scaleWidth = width /pixijs.canvasW;
-         var scaleHeight = height / pixijs.canvasH;
+         var scaleWidth = width /practice.canvasW;
+         var scaleHeight = height / practice.canvasH;
           
          /**
            * Set the canvas size and display size
            * 
            */
          if (scaleHeight < scaleWidth) {
-            pixijs.scale = scaleHeight;
-            pixijs.renderer.view.height = Math.min(pixijs.canvasH, height * window.devicePixelRatio);
-            pixijs.renderer.view.style.height = Math.min(pixijs.canvasH, height) + 'px';
-            pixijs.renderer.view.width = pixijs.canvasW * Math.min(1,pixijs.scale);
-            pixijs.renderer.view.style.width = pixijs.canvasW * Math.min(1,pixijs.scale) + 'px';
-            pixijs.stage.scale.x = pixijs.stage.scale.y = Math.min(1,pixijs.scale);
+            practice.scale = scaleHeight;
+            practice.renderer.view.height = Math.min(practice.canvasH, height * window.devicePixelRatio);
+            practice.renderer.view.style.height = Math.min(practice.canvasH, height) + 'px';
+            practice.renderer.view.width = practice.canvasW * Math.min(1,practice.scale);
+            practice.renderer.view.style.width = practice.canvasW * Math.min(1,practice.scale) + 'px';
+            practice.stage.scale.x = practice.stage.scale.y = Math.min(1,practice.scale);
          } else {
-            pixijs.scale = scaleWidth;
-            pixijs.renderer.view.width = Math.min(pixijs.canvasW, width * window.devicePixelRatio);
-            pixijs.renderer.view.style.width = Math.min(pixijs.canvasW, width) + 'px';
-            pixijs.renderer.view.height = pixijs.canvasH * Math.min(1,pixijs.scale);
-            pixijs.renderer.view.style.height = pixijs.canvasH * Math.min(1,pixijs.scale) + 'px';
-            pixijs.stage.scale.x = pixijs.stage.scale.y = Math.min(1, pixijs.scale);
+            practice.scale = scaleWidth;
+            practice.renderer.view.width = Math.min(practice.canvasW, width * window.devicePixelRatio);
+            practice.renderer.view.style.width = Math.min(practice.canvasW, width) + 'px';
+            practice.renderer.view.height = practice.canvasH * Math.min(1,practice.scale);
+            practice.renderer.view.style.height = practice.canvasH * Math.min(1,practice.scale) + 'px';
+            practice.stage.scale.x = practice.stage.scale.y = Math.min(1, practice.scale);
          }
          /**
            * Resize the PIXI renderer
            * Let PIXI know that we changed the size of the viewport
            */
-             pixijs.renderer.resize(pixijs.renderer.view.width, pixijs.renderer.view.height);
+             practice.renderer.resize(practice.renderer.view.width, practice.renderer.view.height);
 
          /**
            * iOS likes to scroll when rotating - fix that 
@@ -120,10 +116,10 @@ var practice = {
       //The animation function, set any per frame calculations and functions here
       animate : function() {
 
-         requestAnimationFrame(pixijs.animate);
+         requestAnimationFrame(practice.animate);
 
          // render the stage
-         pixijs.renderer.render(pixijs.stage);
+         practice.renderer.render(practice.stage);
       },
    
 };

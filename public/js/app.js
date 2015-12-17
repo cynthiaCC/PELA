@@ -62,7 +62,7 @@ var App = {
       // Instructor (Host)
       App.$doc.on('click', '#btnCreateGame', App.Host.onCreateClick);
       App.$doc.on('click', '#startGame', App.Host.onStartClick);
-      App.$doc.on('click', '#btnPractice', App.onPracticeClick);
+     // App.$doc.on('click', '#btnPractice', App.onPracticeClick);
 
       // Builder
       App.$doc.on('click', '#btnJoinGame', App.Player.onJoinClick);
@@ -89,7 +89,6 @@ var App = {
    },
    
    showPracticeScreen: function() {
-      console.log("Showing initial screen");
       $('#pb-create-game-template').hide();
       $('#pb-join-game-template').hide();
       $('#pb-game-template').hide();
@@ -437,6 +436,8 @@ var App = {
   },
   
   onPracticeClick : function(){
+     App.showPracticeScreen();
+     console.log(0);
      practice.init();
      $('#practice-canvas').append(practice.renderer.view);
   }
