@@ -48,7 +48,7 @@ var pixijs = {
    comparisonText : null,
 
    //UI elements for sound adjustement
-   voiceSliderLocation : {x : 20, y : 50, padding: 20},
+   voiceSliderLocation : {x : 50, y : 50, padding: 20},
    voiceSlider : null,
    sliderBar : null,
    
@@ -184,7 +184,7 @@ var pixijs = {
       button
             .on('mousedown', pixijs.onNewRound)
             .on('touchstart', pixijs.onNewRound);
-      button.position.y = 60;
+      button.position.y = -450;
       pixijs.comparisonText.addChild(button);
       
       pixijs.UI.addChild(pixijs.comparisonText);
@@ -235,8 +235,8 @@ var pixijs = {
       //TODO: the placement could be changed to a better position later on
       pixijs.finishButton.height = 81;
       pixijs.finishButton.width = 201;
-      pixijs.finishButton.position.x = 50;
-      pixijs.finishButton.position.y = 250;
+      pixijs.finishButton.position.x = 380;
+      pixijs.finishButton.position.y = 15;
       pixijs.finishButton.renderable = false;
       pixijs.finishButton
             .on('mousedown', pixijs.onFinished)
@@ -328,7 +328,7 @@ var pixijs = {
       pixijs.communicationButton.anchor.set(0.5);
 
       pixijs.communicationButton.position.x = 150; 
-      pixijs.communicationButton.position.y = 550;
+      pixijs.communicationButton.position.y = 580;
       
      
       //pixijs.communicationButton.width = 100;
@@ -435,6 +435,8 @@ var pixijs = {
       
       //Set anchor to middle, adjust into position
       pixijs.voiceSlider.anchor.set(0.5);
+      pixijs.voiceSlider.width = 50;
+      pixijs.voiceSlider.height = 25;
       pixijs.voiceSlider.position.x = pixijs.voiceSliderLocation.x;
       pixijs.voiceSlider.position.y = pixijs.canvasH - pixijs.voiceSliderLocation.y - pixijs.voiceSliderLocation.padding;
       
@@ -636,8 +638,8 @@ var pixijs = {
             .on('mousemove', pixijs.onDragMove)
             .on('touchmove', pixijs.onDragMove);
       
-      sprite.position.x = Math.floor(Math.random() * (pixijs.canvasBlueprintW+1));
-      sprite.position.y = Math.floor(Math.random() * (pixijs.canvasH+1));
+      sprite.position.x = Math.floor(Math.random() * (600 - 200+1 )) +200;
+      sprite.position.y = Math.floor(Math.random() * ( 500 - 200 + 1)) + 200;
       
       //Make the rotator
       var rotator = new PIXI.Sprite(pixijs.rotatorTexture);

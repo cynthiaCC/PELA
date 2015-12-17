@@ -62,6 +62,7 @@ var App = {
       // Instructor (Host)
       App.$doc.on('click', '#btnCreateGame', App.Host.onCreateClick);
       App.$doc.on('click', '#startGame', App.Host.onStartClick);
+      
 
       // Builder
       App.$doc.on('click', '#btnJoinGame', App.Player.onJoinClick);
@@ -81,6 +82,7 @@ var App = {
       $('#pb-create-game-template').hide();
       $('#pb-join-game-template').hide();
       $('#pb-game-template').hide();
+      $('#pb-practice-template').hide();
       $('#pb-intro-screen-template').show();
    },
    
@@ -89,6 +91,7 @@ var App = {
       $('#pb-create-game-template').hide();
       $('#pb-join-game-template').hide();
       $('#pb-game-template').show();
+      $('#pb-practice-template').hide();
       $('#pb-intro-screen-template').hide();
       App[App.myRole].createGameScreen();
    },

@@ -32,7 +32,7 @@
                <button id="btnJoinGame" class="bigbutton">Join a Game (Builder)</button>
                <br>
                <br>
-               <button id="btnQuickgame" class="bigbutton">Practice</button>
+               <button id="btnPractice" class="bigbutton">Practice</button>
                <br>
                <br>
                <div style="clear:both"></div>
@@ -105,6 +105,22 @@
          <div id="publisherContainer"></div>
          
         
+      </div>
+      
+      <!-- This screen appears when a user clicks "Practice" on the Title Screen -->
+      <div id="pb-practice-template" type="text/template">
+         <div class="titleWrapper">
+            
+             <!-- the header image -->
+            <header><img alt="mainTitle" src="img/Title-graphic-outline.png"></header>
+
+            <!-- This is where the pixi.js canvas will be created for the practice images -->
+            <div id = "pixi-canvas" class="practice"> </div>
+            <br>
+            <br>
+            <button id="backToMainMenu" class="bigbutton">Back</button>
+            
+         </div>
       </div>
    </div>
    <!-- Audio files are loaded dynamically to this element -->
