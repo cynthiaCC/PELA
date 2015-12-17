@@ -21,85 +21,85 @@
 	"thumbnailImg": "",
 	"subItems": [{
 		"itemName": "Triangle",
-		"thumbnailImg": ""
+		"thumbnailImg": "\/geometry\/triangle.png"
 	}, {
 		"itemName": "Rectangle",
-		"thumbnailImg": ""
+		"thumbnailImg": "\/geometry\/rectangle.png"
 	}, {
 		"itemName": "Square",
-		"thumbnailImg": ""
+		"thumbnailImg": "\/geometry\/square.png"
 	}, {
 		"itemName": "Circle",
-		"thumbnailImg": ""
+		"thumbnailImg": "\/geometry\/circle.png"
 	}, {
 		"itemName": "Ellipse",
-		"thumbnailImg": ""
+		"thumbnailImg": "\/geometry\/ellipse.png"
 	}, {
 		"itemName": "Bar, Beam",
-		"thumbnailImg": ""
+		"thumbnailImg": "\/geometry\/bar.png"
 	}, {
 		"itemName": "Parallelogram",
-		"thumbnailImg": ""
+		"thumbnailImg": "\/geometry\/parallelogram.png"
 	}, {
 		"itemName": "Trapezoid",
-		"thumbnailImg": ""
+		"thumbnailImg": "\/geometry\/trapezoid.png"
 	}, {
 		"itemName": "Hexagon",
-		"thumbnailImg": ""
+		"thumbnailImg": "\/geometry\/hexagon.png"
 	}]
 }, {
 	"itemName": "Point",
 	"thumbnailImg": "",
 	"subItems": [{
 		"itemName": "Corner",
-    "thumbnailImg": ""
+    "thumbnailImg": "\/point\/corner.png"
 	}, {
 		"itemName": "Middle",
-    "thumbnailImg": ""
+    "thumbnailImg": "\/point\/middle.png"
 	}, {
 		"itemName": "Center",
-    "thumbnailImg": ""
+    "thumbnailImg": "\/point\/center.png"
 	}]
 }, {
 	"itemName": "Shape",
 	"thumbnailImg": "",
 	"subItems": [{
 		"itemName": "Round",
-    "thumbnailImg": ""
+		"thumbnailImg": "\/shape\/round.png"
 	}, {
 		"itemName": "Sharp",
-    "thumbnailImg": ""
+		"thumbnailImg": "\/shape\/sharp.png"
 	}]
 }, {
 	"itemName": "Size",
 	"thumbnailImg": "",
 	"subItems": [{
 		"itemName": "Large",
-    "thumbnailImg": ""
+    "thumbnailImg": "\/size\/large.png"
 	}, {
 		"itemName": "Medium",
-    "thumbnailImg": ""
+    "thumbnailImg": "\/size\/medium.png"
 	}, {
 		"itemName": "Small",
-    "thumbnailImg": ""
+    "thumbnailImg": "\/size\/small.png"
 	}, {
 		"itemName": "Long",
-    "thumbnailImg": ""
+    "thumbnailImg": "\/size\/long.png"
 	}, {
 		"itemName": "Equal",
-    "thumbnailImg": ""
+    "thumbnailImg": "\/size\/equal.png"
 	}, {
 		"itemName": "Short",
-    "thumbnailImg": ""
+    "thumbnailImg": "\/size\/short.png"
 	}, {
 		"itemName": "Wide",
-    "thumbnailImg": ""
+    "thumbnailImg": "\/size\/wide.png"
 	}, {
 		"itemName": "Narrow",
-    "thumbnailImg": ""
+    "thumbnailImg": "\/size\/narrow.png"
 	}]
 }, {
-	"itemName": "Directions and Positions",
+	"itemName": "Directions",
 	"thumbnailImg": "",
 	"subItems": [{
 		"itemName": "Left",
@@ -113,7 +113,11 @@
 	}, {
 		"itemName": "Down",
 		"thumbnailImg": "\/directions\/down.png"
-	}, {
+	}]
+}, {
+	"itemName": "Positions",
+	"thumbnailImg": "",
+	"subItems": [{
 		"itemName": "On",
 		"thumbnailImg": "\/directions\/on.png"
 	}, {

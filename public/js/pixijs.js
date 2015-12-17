@@ -250,6 +250,8 @@ var pixijs = {
       var pBar = new PIXI.Texture.fromImage('img/ProgressBarOutline.png');
       pixijs.progressBar = new PIXI.Sprite(pBar);
       
+      var infoText = new PIXI.Text('Progress:' , {font: '20px Arial', fill: 'white', align: 'center'});
+      
       //Set it to the default anchor
       pixijs.progressBar.anchor.set(0.0);
       
@@ -258,13 +260,17 @@ var pixijs = {
       //pixijs.progressBar.height = 20;
       
       //position the bar
-      pixijs.progressBar.position.x = 40;
+      pixijs.progressBar.position.x = pixijs.canvasBlueprintW/2;
       pixijs.progressBar.position.y = 580;
+      
+      infoText.position.x = pixijs.progressBar.position.x;
+      infoText.position.y = pixijs.progressBar.position.y- 35;
       
       pixijs.progressBar.children = [];
       
       //Add the bar to the UI container
       pixijs.UI.addChild(pixijs.progressBar);
+      pixijs.UI.addChild(infoText);
       
    },
    //Function for the vocabulary menu button
@@ -396,12 +402,9 @@ var pixijs = {
       
       //Events for the text
       pixijs.infoButton
-                       .on('mousedown', pixijs.onTutorialStart)
-                       .on('mouseup', pixijs.onTutorialEnd)
-                       .on('touchstart', pixijs.onTutorialStart)
-                       .on('mouseupoutside', pixijs.onTutorialEnd)
-                       .on('touchend', pixijs.onTutorialEnd)
-                       .on('touchendoutside', pixijs.onTutorialEnd);
+                       .on('mousedown', pixijs.tutorialToggle)
+                       .on('touchstart', pixijs.tutorialToggle);
+      
       
       //Add them to the text container
       pixijs.instructorText.addChild(infoText1);
@@ -846,7 +849,6 @@ var pixijs = {
          //Save the image and item name
          var path = value.thumbnailImg;
          var name = value.itemName;
-         
          //Create sprites from the background image and spacer
          var vocMenuItem = new PIXI.Sprite(pixijs.vocMenuBackground);
          var spacer = new PIXI.Sprite(pixijs.itemSpacer);
@@ -862,7 +864,7 @@ var pixijs = {
          }
          //Position the sub items correctly
          else {
-            vocMenuItem.position.x = 81;
+            vocMenuItem.position.x = 241;
             vocMenuItem.renderable = false;
             spacer.renderable = false;
             itemText.renderable = false;
@@ -886,14 +888,13 @@ var pixijs = {
          //Events for the clicking and touching the menu
          vocMenuItem.on('mousedown', pixijs.onVocMenuItemClick)
                      .on('touchstart', pixijs.onVocMenuItemClick);
-         
          //Position the spacer
          spacer.position.x = vocMenuItem.position.x;
          spacer.position.y = vocMenuItem.position.y + 28;
          
          itemText.position.x = vocMenuItem.position.x;
          itemText.position.y = vocMenuItem.position.y;
-         itemPic.position.x = vocMenuItem.position.x + 30;
+         itemPic.position.x = vocMenuItem.position.x + 100;
          itemPic.position.y = vocMenuItem.position.y;
          
          //Add them to the parent container
@@ -1146,23 +1147,22 @@ var pixijs = {
    },
    
    //function to make the text viewable
-   onTutorialStart : function(event){
-      this.data = event.data;
+   tutorialToggle : function(event){
+     
       if(App.myRole === 'Host') {
-         pixijs.instructorText.renderable = true;
+         pixijs.instructorText.renderable = !pixijs.instructorText.renderable; 
       }
       else {
-         pixijs.builderText.renderable = true;
+         pixijs.builderText.renderable = !pixijs.builderText.renderable;
       }
    
       
    },
    //Function the hide the text
    onTutorialEnd : function(){
-      this.data = null;
-      //hide the info texts
-      pixijs.instructorText.renderable = false;
-      pixijs.builderText.renderable = false;
+      var boolean =  !pixijs.instructorText.renderable;
+      pixijs.instructorText.renderable = boolean; 
+      pixijs.builderText.interactive = boolean;
    },
    
    onArrowDown : function(){
