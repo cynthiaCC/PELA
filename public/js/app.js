@@ -62,8 +62,6 @@ var App = {
       // Instructor (Host)
       App.$doc.on('click', '#btnCreateGame', App.Host.onCreateClick);
       App.$doc.on('click', '#startGame', App.Host.onStartClick);
-     // App.$doc.on('click', '#btnPractice', App.onPracticeClick);
-
       // Builder
       App.$doc.on('click', '#btnJoinGame', App.Player.onJoinClick);
       App.$doc.on('click', '#btnStart',App.Player.onPlayerStartClick);

@@ -15,10 +15,10 @@ var practice = {
       stage : null,
       
       
-      //Container for UI elements within gameArea
-      UI : null,
+      //Container for pictures
+      pictures : null,
       
-  
+      UI : null,
       
       //The button for the next tutorial
       nextButton : null,
@@ -26,7 +26,22 @@ var practice = {
       
       //The button for the previous tutorial
       previousButton : null,
-   
+      
+      //Variables for the tutoril pictures
+      first : PIXI.Texture.fromImage('img/tutorial1.png'),
+      
+      second : PIXI.Texture.fromImage('img/tutorial2.png'),
+      
+      third : PIXI.Texture.fromImage('img/tutorial3.png'),
+      fourth : PIXI.Texture.fromImage('img/tutorial4.png'),
+      
+      tutorial1 : null,
+      
+      tutorial2 : null,
+      tutorial3 : null,
+      tutorial4 : null,
+      
+      //TODO: Implement a proper way to show the pictures using the JSON-file since this is really ugly
       init : function() {
          //Initiate the renderer
          practice.renderer = PIXI.autoDetectRenderer(practice.canvasW, practice.canvasH,undefined,true);
@@ -34,15 +49,46 @@ var practice = {
          // create the root of the scene graph
          practice.stage = new PIXI.Container();
          
-         //Create background from image and add it to the stage
-         var first = PIXI.Texture.fromImage('img/tutorial1.png');
-         tutorial1 = new PIXI.Sprite(first);
+         //Create background from image
+         practice.tutorial1 = new PIXI.Sprite(practice.first);
+         practice.tutorial2 = new PIXI.Sprite(practice.second);
+         practice.tutorial3 = new PIXI.Sprite(practice.third);
+         practice.tutorial4 = new PIXI.Sprite(practice.fourth);
+         
+         //Ony render the first image initially
+         practice.tutorial2.renderable = false;
+         practice.tutorial3.renderable = false;
+         practice.tutorial4.renderable = false;
          
          
-         tutorial1.height = practice.canvasH;
-         tutorial1.width = practice.canvastW;
-         practice.stage.addChild(tutorial1);
+         //Create the stage
+         practice.pictures = new PIXI.Container();
+         practice.stage.addChild(practice.pictures);
          
+         
+         //The the image heights and widths
+         practice.tutorial1.height = practice.canvasH;
+         practice.tutorial1.width = practice.canvastW;
+         
+         practice.tutorial2.height = practice.canvasH;
+         practice.tutorial2.width = practice.canvastW;
+         
+         practice.tutorial3.height = practice.canvasH;
+         practice.tutorial3.width = practice.canvastW;
+         
+         practice.tutorial4.height = practice.canvasH;
+         practice.tutorial4.width = practice.canvastW;
+         
+         //Add the images to the picture container
+         practice.pictures.addChild(practice.tutorial1);
+         practice.pictures.addChild(practice.tutorial2);
+         practice.pictures.addChild(practice.tutorial3);
+         practice.pictures.addChild(practice.tutorial4);
+         
+         practice.UI = new PIXI.Container();
+         practice.stage.addChild(practice.UI);
+         
+         practice.addButtons();
          
          practice.renderer.view.style.border = "3px dashed black";
      
@@ -53,6 +99,112 @@ var practice = {
          
          practice.resize();
          practice.rendererResize();
+      },
+      //Creates the buttons for switching the images
+      addButtons : function(){
+         
+         var textButton1 = new PIXI.Text('Part 1' , {font: '20px Arial', fill: 'white', align: 'center'});
+         var textButton2 = new PIXI.Text('Part 2' , {font: '20px Arial', fill: 'white', align: 'center'});
+         var textButton3 = new PIXI.Text('Part 3' , {font: '20px Arial', fill: 'white', align: 'center'});
+         var textButton4 = new PIXI.Text('Part 4' , {font: '20px Arial', fill: 'white', align: 'center'});
+
+         
+         textButton1.interactive = true;
+         textButton1.buttonMode=true;
+         
+         textButton2.interactive = true;
+         textButton2.buttonMode=true;
+         
+         textButton3.interactive = true;
+         textButton3.buttonMode=true;
+         
+         textButton4.interactive = true;
+         textButton4.buttonMode=true;
+         
+         textButton1.position.x = 950;
+         textButton1.position.y = 440;
+         
+         textButton2.position.x = 950;
+         textButton2.position.y = 490;
+         
+         textButton3.position.x = 950;
+         textButton3.position.y = 540;
+         
+         textButton4.position.x = 950;
+         textButton4.position.y = 590;
+         
+         textButton1.on('mousedown', practice.onTutorialClick1)
+                              .on('touchstart', practice.onTutorialClick1);
+         
+         textButton2.on('mousedown', practice.onTutorialClick2)
+         .on('touchstart', practice.onTutorialClick2);
+         
+         textButton3.on('mousedown', practice.onTutorialClick3)
+         .on('touchstart', practice.onTutorialClick3);
+         
+         textButton4.on('mousedown', practice.onTutorialClick4)
+         .on('touchstart', practice.onTutorialClick4);
+         
+         practice.UI.addChild(textButton1);
+         practice.UI.addChild(textButton2);
+         practice.UI.addChild(textButton3);
+         practice.UI.addChild(textButton4);
+         
+      },
+      
+      //Functions that hide and show the pictures
+      onTutorialClick1 : function(){
+         
+         practice.tutorial1.renderable = !practice.tutorial1.renderable;
+         practice.tutorial2.renderable = false;
+         practice.tutorial3.renderable = false;
+         practice.tutorial4.renderable = false;
+         
+      },
+      
+      onTutorialClick2 : function(){
+         
+         practice.tutorial2.renderable = !practice.tutorial2.renderable;
+         practice.tutorial1.renderable = false;
+         practice.tutorial3.renderable = false;
+         practice.tutorial4.renderable = false;
+         
+      },
+      
+      onTutorialClick3 : function(){
+         
+         practice.tutorial3.renderable = !practice.tutorial3.renderable;
+         practice.tutorial1.renderable = false;
+         practice.tutorial2.renderable = false;
+         practice.tutorial4.renderable = false;
+         
+      },
+      
+      onTutorialClick4 : function(){
+         
+         practice.tutorial4.renderable = !practice.tutorial4.renderable;
+         practice.tutorial1.renderable = false;
+         practice.tutorial2.renderable = false;
+         practice.tutorial3.renderable = false;
+         
+      },
+      
+  //Function that initiates the creating of voc menu
+      createtutorial : function(){
+         
+         //Store the JSON-file
+         var menuFile = "JSON/tutorial.json";
+        
+          //get the file
+         $.getJSON(menuFile, function(data){
+            practice.menuJSON = data;
+         
+            //Call the builder function
+            practice.tutorial(practice.menuJSON, practice.vocabularyMenu)
+
+         });
+         
+         
       },
       
       
@@ -121,5 +273,8 @@ var practice = {
          // render the stage
          practice.renderer.render(practice.stage);
       },
+      
+   
+     
    
 };
